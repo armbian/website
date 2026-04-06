@@ -54,7 +54,10 @@ async function main(): Promise<void> {
     server.addHook('preHandler', async (request, reply) => {
       // Health endpoint stays open for Docker healthchecks
       if (request.url === '/api/v1/health') return;
-      // All other requests must provide a valid API key
+      // Allow requests from Docker internal network (www container, healthchecks)
+      const ip = request.ip;
+      if (ip === '127.0.0.1' || ip === '::1' || ip.startsWith('172.') || ip.startsWith('10.') || ip.startsWith('192.168.')) return;
+      // External requests must provide a valid API key
       const provided = request.headers['x-api-key'];
       if (provided !== INTERNAL_API_KEY) {
         void reply.status(401).send({ error: 'Unauthorized', statusCode: 401 });
