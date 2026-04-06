@@ -82,7 +82,7 @@ export function TeamCatalog({ maintainers, boardNames }: TeamCatalogProps) {
       </p>
 
       {/* Active members */}
-      {active.length > 0 ? (
+      {active.length > 0 && (
         <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
           {active.map((m, i) => (
             <MemberCard
@@ -95,7 +95,10 @@ export function TeamCatalog({ maintainers, boardNames }: TeamCatalogProps) {
             />
           ))}
         </div>
-      ) : (
+      )}
+
+      {/* No results at all */}
+      {active.length === 0 && inactive.length === 0 && (
         <div className="py-16 text-center">
           <p className="text-sm text-[rgb(var(--fg-3))]">{t('no_results')}</p>
         </div>
