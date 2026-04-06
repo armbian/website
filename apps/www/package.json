@@ -1,0 +1,44 @@
+{
+  "name": "@armbian/www",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@armbian/api-client": "workspace:*",
+    "@armbian/config": "workspace:*",
+    "@armbian/schemas": "workspace:*",
+    "@armbian/theme": "workspace:*",
+    "@fontsource-variable/dm-sans": "^5.2.8",
+    "@fontsource-variable/jetbrains-mono": "^5.2.8",
+    "@icons-pack/react-simple-icons": "^13.13.0",
+    "@payloadcms/db-postgres": "^3.81.0",
+    "@payloadcms/next": "^3.81.0",
+    "@payloadcms/richtext-lexical": "^3.81.0",
+    "@tailwindcss/typography": "^0.5.19",
+    "drizzle-kit": "^0.31.10",
+    "lucide-react": "^1.7.0",
+    "motion": "^12.38.0",
+    "next": "^16.2.2",
+    "next-intl": "^4.9.0",
+    "payload": "^3.81.0",
+    "pg": "^8.20.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "sanitize-html": "^2.17.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.2",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/sanitize-html": "^2.16.1",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.8.0"
+  }
+}

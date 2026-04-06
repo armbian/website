@@ -1,0 +1,31 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    ".next",
+    "dist"
+  ],
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "dist",
+    "jsx": "preserve",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@payload-config": ["./payload.config.ts"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  }
+}
