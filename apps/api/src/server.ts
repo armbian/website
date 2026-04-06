@@ -3,7 +3,8 @@ import cors from '@fastify/cors';
 import compress from '@fastify/compress';
 import etag from '@fastify/etag';
 import helmet from '@fastify/helmet';
-import rateLimit from '@fastify/rate-limit';
+
+import underPressure from '@fastify/under-pressure';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
 import { SyncService } from './services/sync.service.js';
@@ -26,6 +27,7 @@ const CACHE_DIR = process.env['CACHE_DIR'] ?? './data/.cache';
 const SYNC_INTERVAL_MS = parseInt(process.env['DATA_SYNC_INTERVAL_MS'] ?? '3600000', 10);
 const LOG_LEVEL = process.env['LOG_LEVEL'] ?? 'info';
 const IS_DEV = process.env['NODE_ENV'] !== 'production';
+const INTERNAL_API_KEY = process.env['INTERNAL_API_KEY'];
 
 /** Allowed CORS origins for production (all Armbian domains) */
 const CORS_ALLOWED_ORIGINS = [
@@ -36,19 +38,43 @@ const CORS_ALLOWED_ORIGINS = [
   'https://imager.armbian.com',
 ];
 
+
 async function main(): Promise<void> {
   const server = Fastify({
     logger: {
       level: LOG_LEVEL,
       ...(IS_DEV ? { transport: { target: 'pino-pretty' } } : {}),
     },
+    trustProxy: false,
   });
+
+  // --- Security: API key authentication ---
+
+  if (INTERNAL_API_KEY) {
+    server.addHook('preHandler', async (request, reply) => {
+      // Health endpoint stays open for Docker healthchecks
+      if (request.url === '/api/v1/health') return;
+      // All other requests must provide a valid API key
+      const provided = request.headers['x-api-key'];
+      if (provided !== INTERNAL_API_KEY) {
+        void reply.status(401).send({ error: 'Unauthorized', statusCode: 401 });
+      }
+    });
+    server.log.info('API key authentication enabled');
+  } else if (!IS_DEV) {
+    server.log.warn('INTERNAL_API_KEY not set — API is unprotected. Set it in .env for production.');
+  }
 
   // --- Plugins ---
 
   await server.register(helmet, {
     contentSecurityPolicy: false,
     crossOriginResourcePolicy: { policy: 'cross-origin' },
+    referrerPolicy: { policy: 'no-referrer' },
+    frameguard: { action: 'deny' },
+    permittedCrossDomainPolicies: { permittedPolicies: 'none' },
+    hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
+    dnsPrefetchControl: { allow: false },
   });
 
   // Extra CORS origins from env (e.g. PUBLIC_API_URL origin for Docker)
@@ -61,20 +87,13 @@ async function main(): Promise<void> {
     credentials: false,
   });
 
-  await server.register(rateLimit, {
-    max: 500,
-    timeWindow: '1 minute',
-    allowList: (req) => {
-      const ip = req.ip;
-      // Skip rate limit for localhost, Docker, and private networks (RFC 1918)
-      return ip === '127.0.0.1' || ip === '::1'
-        || ip.startsWith('10.')
-        || ip.startsWith('192.168.')
-        || /^172\.(1[6-9]|2\d|3[01])\./.test(ip)
-        || ip.startsWith('::ffff:10.')
-        || ip.startsWith('::ffff:192.168.')
-        || /^::ffff:172\.(1[6-9]|2\d|3[01])\./.test(ip);
-    },
+
+  await server.register(underPressure, {
+    maxEventLoopDelay: 1000,
+    maxHeapUsedBytes: 500_000_000,
+    maxRssBytes: 800_000_000,
+    retryAfter: 50,
+    message: 'Service temporarily unavailable',
   });
 
   await server.register(compress, {
@@ -82,6 +101,13 @@ async function main(): Promise<void> {
     encodings: ['br', 'gzip', 'deflate'],
   });
   await server.register(etag);
+
+  // No-cache on error responses
+  server.addHook('onSend', async (_request, reply) => {
+    if (reply.statusCode >= 400 && !reply.hasHeader('cache-control')) {
+      void reply.header('Cache-Control', 'no-store');
+    }
+  });
 
   await server.register(swagger, {
     openapi: {

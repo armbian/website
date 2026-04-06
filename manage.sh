@@ -280,7 +280,7 @@ cmd_env_check() {
   _load_env_vars
 
   local required_vars=("POSTGRES_PASSWORD" "PAYLOAD_SECRET")
-  local optional_vars=("OIDC_CLIENT_ID" "OIDC_CLIENT_SECRET" "OIDC_ISSUER_URL" "OIDC_ALLOWED_DOMAINS")
+  local optional_vars=("INTERNAL_API_KEY" "OIDC_CLIENT_ID" "OIDC_CLIENT_SECRET" "OIDC_ISSUER_URL" "OIDC_ALLOWED_DOMAINS")
   local all_ok=true
 
   for var in "${required_vars[@]}"; do
@@ -384,6 +384,40 @@ _wait_healthy() {
 }
 
 # ---------------------------------------------------------------------------
+# cmd: pnpm — run pnpm commands inside Docker (no local node_modules)
+# ---------------------------------------------------------------------------
+cmd_pnpm() {
+  if [[ $# -eq 0 ]]; then
+    error "Usage: ./manage.sh pnpm <args...>"
+    echo "  Examples:"
+    echo "    ./manage.sh pnpm add -F @armbian/api @fastify/under-pressure"
+    echo "    ./manage.sh pnpm add -F @armbian/www some-package"
+    echo "    ./manage.sh pnpm remove -F @armbian/api some-package"
+    echo "    ./manage.sh pnpm install"
+    echo "    ./manage.sh pnpm update"
+    exit 1
+  fi
+
+  info "Running: pnpm $* (inside Docker)"
+  docker run --rm \
+    -v "$(pwd)":/app \
+    -w /app \
+    node:22-alpine \
+    sh -c "corepack enable && corepack prepare pnpm@10 --activate && pnpm $*"
+
+  # Clean up any local artifacts Docker may have created
+  if [[ -d "node_modules" || -d "apps/www/node_modules" || -d "apps/api/node_modules" ]]; then
+    warn "Removing local node_modules created by Docker..."
+    rm -rf node_modules apps/www/node_modules apps/api/node_modules \
+           packages/schemas/node_modules packages/config/node_modules \
+           packages/api-client/node_modules packages/theme/node_modules \
+           .pnpm-store 2>/dev/null || true
+  fi
+
+  success "Done. Lockfile updated. Run './manage.sh rebuild' to apply."
+}
+
+# ---------------------------------------------------------------------------
 # Help
 # ---------------------------------------------------------------------------
 cmd_help() {
@@ -401,6 +435,7 @@ cmd_help() {
   echo -e "  ${CYAN}db${RESET}                   Connect to PostgreSQL via psql"
   echo -e "  ${CYAN}db:backup${RESET}            Dump the database to backups/ with a timestamp"
   echo -e "  ${CYAN}db:restore <file>${RESET}    Restore a database backup file (.sql or .sql.gz)"
+  echo -e "  ${CYAN}pnpm <args...>${RESET}       Run pnpm commands inside Docker (add/remove/update packages)"
   echo -e "  ${CYAN}clean${RESET}                Remove Docker images, volumes, and build cache (with confirmation)"
   echo -e "  ${CYAN}env${RESET}                  Validate .env file and required variables"
   echo -e "  ${CYAN}help${RESET}                 Show this help message"
@@ -434,6 +469,7 @@ case "$COMMAND" in
   db)          cmd_db ;;
   db:backup)   banner; cmd_db_backup ;;
   db:restore)  banner; cmd_db_restore "$@" ;;
+  pnpm)        banner; cmd_pnpm "$@" ;;
   clean)       banner; cmd_clean ;;
   env)         banner; cmd_env_check ;;
   help|--help|-h) cmd_help ;;

@@ -14,6 +14,7 @@ services:
       - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000}
       - PUBLIC_API_URL=${PUBLIC_API_URL:-http://localhost:3001}
       - LOG_LEVEL=${LOG_LEVEL:-info}
+      - INTERNAL_API_KEY=${INTERNAL_API_KEY:-}
     volumes:
       - api-cache:/app/cache
     healthcheck:
@@ -49,6 +50,7 @@ services:
     environment:
       - NODE_ENV=production
       - API_URL=http://api:3001
+      - INTERNAL_API_KEY=${INTERNAL_API_KEY:-}
       - PAYLOAD_SECRET=${PAYLOAD_SECRET:?Set PAYLOAD_SECRET in .env}
       - DATABASE_URL=postgresql://${POSTGRES_USER:-payload}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-payload}
       - OIDC_CLIENT_ID=${OIDC_CLIENT_ID:-}
