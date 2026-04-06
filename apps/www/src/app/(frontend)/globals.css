@@ -1,0 +1,584 @@
+@import 'tailwindcss';
+@import '@armbian/theme/css';
+
+@plugin '@tailwindcss/typography';
+
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-brand: rgb(var(--brand));
+  --color-brand-hover: rgb(var(--brand-hover));
+  --color-bg: rgb(var(--bg));
+  --color-bg-sub: rgb(var(--bg-sub));
+  --color-bg-el: rgb(var(--bg-el));
+  --color-border: rgb(var(--border));
+  --color-fg: rgb(var(--fg));
+  --color-fg-2: rgb(var(--fg-2));
+  --color-fg-3: rgb(var(--fg-3));
+  --font-sans: 'DM Sans Variable', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', monospace;
+
+  /* ── Fluid Typography (mobile 375px → desktop 1440px) ── */
+  --text-fluid-xs: clamp(0.625rem, 0.58rem + 0.19vw, 0.75rem);
+  --text-fluid-sm: clamp(0.75rem, 0.7rem + 0.19vw, 0.875rem);
+  --text-fluid-base: clamp(0.875rem, 0.83rem + 0.19vw, 1rem);
+  --text-fluid-lg: clamp(1rem, 0.91rem + 0.38vw, 1.25rem);
+  --text-fluid-xl: clamp(1.25rem, 1.06rem + 0.75vw, 1.75rem);
+  --text-fluid-2xl: clamp(1.5rem, 1.13rem + 1.5vw, 2.5rem);
+  --text-fluid-3xl: clamp(1.75rem, 1.19rem + 2.25vw, 3.25rem);
+  --text-fluid-hero: clamp(2rem, 1rem + 4vw, 5rem);
+
+  /* ── Fluid Spacing ── */
+  --space-fluid-xs: clamp(0.5rem, 0.38rem + 0.5vw, 0.75rem);
+  --space-fluid-sm: clamp(0.75rem, 0.56rem + 0.75vw, 1.25rem);
+  --space-fluid-md: clamp(1rem, 0.63rem + 1.5vw, 2rem);
+  --space-fluid-lg: clamp(1.5rem, 0.75rem + 3vw, 4rem);
+  --space-fluid-xl: clamp(2rem, 0.75rem + 5vw, 6rem);
+}
+
+html {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+body {
+  color: rgb(var(--fg));
+  font-family: 'DM Sans Variable', system-ui, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  width: 100%;
+  min-width: 0;
+
+  /* Layered background: base color + subtle dot grid + warm radial glow */
+  background-color: rgb(var(--bg));
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgb(var(--brand) / 0.03) 0%, transparent 60%),
+    radial-gradient(circle at 0% 100%, rgb(var(--brand) / 0.02) 0%, transparent 40%),
+    radial-gradient(rgb(var(--border) / 0.25) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 24px 24px;
+  background-attachment: fixed;
+}
+
+.dark body {
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgb(var(--brand) / 0.04) 0%, transparent 60%),
+    radial-gradient(circle at 0% 100%, rgb(var(--brand) / 0.025) 0%, transparent 40%),
+    radial-gradient(rgb(var(--border) / 0.4) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 24px 24px;
+}
+
+h1, h2, h3, h4 {
+  color: rgb(var(--fg));
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+/* ── Fluid Typography Utilities ── */
+.text-fluid-xs { font-size: var(--text-fluid-xs); }
+.text-fluid-sm { font-size: var(--text-fluid-sm); }
+.text-fluid-base { font-size: var(--text-fluid-base); }
+.text-fluid-lg { font-size: var(--text-fluid-lg); }
+.text-fluid-xl { font-size: var(--text-fluid-xl); }
+.text-fluid-2xl { font-size: var(--text-fluid-2xl); }
+.text-fluid-3xl { font-size: var(--text-fluid-3xl); }
+.text-fluid-hero { font-size: var(--text-fluid-hero); }
+
+/* ── Components ── */
+
+.card {
+  background: rgb(var(--bg-el));
+  border: 1px solid rgb(var(--border));
+  border-radius: var(--r-lg);
+  transition: border-color 150ms, box-shadow 150ms;
+}
+.card:hover {
+  border-color: rgb(var(--brand) / 0.3);
+  box-shadow: var(--shadow-md);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 12px;
+  border-radius: var(--r-full);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border-radius: var(--r-md);
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 150ms;
+  cursor: pointer;
+}
+.btn-brand { background: rgb(var(--brand)); color: #fff; }
+.btn-brand:hover { background: rgb(var(--brand-hover)); }
+.btn-outline { background: transparent; color: rgb(var(--fg)); border: 1px solid rgb(var(--border)); }
+.btn-outline:hover { background: rgb(var(--bg-sub)); }
+
+.section-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgb(var(--fg-3));
+}
+
+/* ── Terminal ── */
+.terminal {
+  background: #111;
+  border: 1px solid #222;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+}
+.terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 12px 16px;
+  background: #191919;
+  border-bottom: 1px solid #222;
+}
+.terminal-dot { width: 11px; height: 11px; border-radius: 50%; }
+
+/* ── Glass Card ── */
+.glass-card {
+  background: linear-gradient(180deg, rgba(28,28,31,0.6) 0%, rgba(18,18,20,0.6) 100%);
+  border: 1px solid rgba(255,255,255,0.05);
+  backdrop-filter: blur(12px);
+  transition: all 0.3s ease;
+}
+.glass-card:hover {
+  border-color: rgb(var(--brand) / 0.3);
+  box-shadow: 0 10px 40px -10px rgb(var(--brand) / 0.15);
+}
+
+/* ── Board Card ── */
+.board-card {
+  background: rgb(var(--bg-sub));
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.board-card:hover {
+  transform: translateY(-4px);
+  border-color: rgb(var(--brand));
+  box-shadow: 0 20px 40px -15px rgb(var(--brand) / 0.15);
+}
+.board-card:hover .board-img-container {
+  transform: scale(1.05);
+}
+
+/* ── Text Glow ── */
+.text-glow {
+  text-shadow: 0 0 20px rgb(var(--brand) / 0.5);
+}
+
+/* ── Glow Orb ── */
+.glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ── Partner Marquee ── */
+.marquee-container {
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+}
+.marquee-content {
+  display: inline-flex;
+  animation: marquee 30s linear infinite;
+}
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ── Code Gradient Text ── */
+.code-gradient {
+  background-image: linear-gradient(to right, #8b949e, #c9d1d9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Grid Pattern Background ── */
+.bg-grid-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h40v40H0V0zm1 1h38v38H1V1z' fill='%23ffffff' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+}
+
+/* ── Bento Grid ── */
+.bento {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 1024px) {
+  .bento {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto auto;
+  }
+  .bento-hero     { grid-column: 1; grid-row: 1 / 3; }
+  .bento-board    { grid-column: 2; grid-row: 1 / 3; min-height: 380px; }
+  .bento-stats    { grid-column: 1; grid-row: 3; }
+  .bento-terminal { grid-column: 1; grid-row: 4; }
+  .bento-imager   { grid-column: 2; grid-row: 3; }
+  .bento-community { grid-column: 2; grid-row: 4; }
+}
+
+/* ── Hero Gradient Orbs — auto-animated aurora ── */
+.hero-glow-1 {
+  animation: glow-drift-1 15s ease-in-out infinite;
+}
+.hero-glow-2 {
+  animation: glow-drift-2 20s ease-in-out infinite;
+}
+.hero-glow-3 {
+  animation: glow-drift-3 18s ease-in-out infinite;
+}
+
+@keyframes glow-drift-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.08; }
+  25% { transform: translate(8%, 12%) scale(1.15); opacity: 0.12; }
+  50% { transform: translate(-5%, 8%) scale(0.9); opacity: 0.06; }
+  75% { transform: translate(12%, -5%) scale(1.1); opacity: 0.1; }
+}
+
+@keyframes glow-drift-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.05; }
+  30% { transform: translate(-10%, 8%) scale(1.2); opacity: 0.08; }
+  60% { transform: translate(8%, -12%) scale(0.85); opacity: 0.04; }
+}
+
+@keyframes glow-drift-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.04; }
+  20% { transform: translate(15%, -8%) scale(1.1); opacity: 0.07; }
+  50% { transform: translate(-8%, 15%) scale(1.25); opacity: 0.06; }
+  80% { transform: translate(5%, 5%) scale(0.9); opacity: 0.03; }
+}
+
+/* ── Animations ── */
+@keyframes fade-up {
+  from { transform: translateY(12px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.anim-in { animation: fade-up 450ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+.d1 { animation-delay: 50ms; }
+.d2 { animation-delay: 100ms; }
+.d3 { animation-delay: 150ms; }
+.d4 { animation-delay: 200ms; }
+.d5 { animation-delay: 250ms; }
+
+@keyframes slide-up {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.animate-slide-up { animation: slide-up 300ms ease-out; }
+
+/* ── Hero Gradient Orbs ── */
+@keyframes hero-orb-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.15; }
+  25% { transform: translate(5%, 8%) scale(1.1); opacity: 0.2; }
+  50% { transform: translate(-3%, 5%) scale(0.95); opacity: 0.12; }
+  75% { transform: translate(8%, -3%) scale(1.05); opacity: 0.18; }
+}
+@keyframes hero-orb-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.08; }
+  30% { transform: translate(-8%, -5%) scale(1.15); opacity: 0.12; }
+  60% { transform: translate(5%, 10%) scale(0.9); opacity: 0.06; }
+}
+@keyframes hero-orb-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0; }
+  20% { opacity: 0.06; }
+  50% { transform: translate(10%, -8%) scale(1.2); opacity: 0.1; }
+  80% { opacity: 0.04; }
+}
+.hero-orb-1 { animation: hero-orb-1 12s ease-in-out infinite; }
+.hero-orb-2 { animation: hero-orb-2 16s ease-in-out infinite; }
+.hero-orb-3 { animation: hero-orb-3 20s ease-in-out infinite; }
+
+/* ── Text Gradient (generic utility) ── */
+.text-gradient {
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* ── Divider Glow ── */
+.divider-glow {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(var(--brand) / 0.3), transparent);
+}
+
+/* ── 3D Board Scene ── */
+.board-scene { perspective: 1200px; transform-style: preserve-3d; }
+.board-layer { transform-style: preserve-3d; backface-visibility: hidden; }
+
+/* ── Bento Card (premium glassmorphism) ── */
+.bento-card {
+  background: radial-gradient(120% 120% at 50% 0%, rgb(var(--bg-el) / 0.4) 0%, rgb(var(--bg) / 0.8) 100%);
+  border: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(10px);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.bento-card:hover {
+  border-color: rgb(var(--brand) / 0.2);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -10px rgba(0,0,0,0.8), 0 0 20px -5px rgb(var(--brand) / 0.1);
+}
+
+/* ── Hardware Card ── */
+.hw-card {
+  background: rgb(var(--bg));
+  border: 1px solid rgba(255,255,255,0.05);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hw-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at 50% 0%, rgb(var(--brand) / 0.05), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.hw-card:hover {
+  transform: translateY(-8px) scale(1.01);
+  border-color: rgb(var(--brand) / 0.4);
+  box-shadow: 0 30px 60px -15px rgba(0,0,0,0.9), 0 0 30px -10px rgb(var(--brand) / 0.15);
+  z-index: 10;
+}
+.hw-card:hover::before { opacity: 1; }
+.hw-img {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hw-card:hover .hw-img {
+  transform: scale(1.08) rotate(2deg);
+  filter: drop-shadow(0 15px 20px rgba(0,0,0,0.5));
+}
+
+/* ── Badge Platinum ── */
+.badge-platinum {
+  background: linear-gradient(135deg, #FFDF00 0%, #D4AF37 50%, rgb(var(--brand)) 100%);
+  color: #000;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+}
+
+/* ── Terminal Glass ── */
+.terminal-glass {
+  background: rgba(10, 10, 12, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 40px 80px -20px rgba(0,0,0,0.9), 0 0 40px -10px rgb(var(--brand) / 0.15);
+}
+
+/* ── Feature Card Orange ── */
+.feature-card-orange {
+  background: linear-gradient(180deg, rgb(var(--brand) / 0.08) 0%, rgb(var(--bg)) 100%);
+  border: 1px solid rgb(var(--brand) / 0.2);
+}
+
+/* ── Feature Card Dark ── */
+.feature-card-dark {
+  background: linear-gradient(180deg, rgb(var(--bg-el) / 0.2) 0%, rgb(var(--bg)) 100%);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ── Partner Box ── */
+.partner-box {
+  background: rgb(var(--bg-sub));
+  border: 1px solid rgba(255,255,255,0.05);
+  transition: all 0.3s;
+}
+.partner-box:hover {
+  background: rgb(var(--bg-el));
+  border-color: rgba(255,255,255,0.15);
+}
+
+/* ── Promoted Download Cards ── */
+.promoted-card-ubuntu {
+  background: linear-gradient(160deg, #E95420 0%, #77216F 60%, #2C001E 100%);
+}
+.promoted-card-debian {
+  background: linear-gradient(160deg, #A80030 0%, #5A0A3C 60%, #1A0011 100%);
+}
+
+:root .promoted-card-ubuntu {
+  background: linear-gradient(160deg, #F97B4B 0%, #E95420 40%, #9B3A8D 100%);
+}
+:root .promoted-card-debian {
+  background: linear-gradient(160deg, #D63060 0%, #A80030 40%, #8B2F6B 100%);
+}
+:root .promoted-card-ubuntu h3,
+:root .promoted-card-debian h3 {
+  color: #fff !important;
+}
+
+/* ── Partner Spotlight (platinum full-width) ── */
+.partner-spotlight {
+  position: relative;
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 2rem;
+  align-items: center;
+  padding: 2rem 2.5rem;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--r-xl);
+  background: linear-gradient(135deg, rgb(var(--bg-el) / 0.6) 0%, rgb(var(--bg) / 0.8) 100%);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.partner-spotlight::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(ellipse at 0% 0%, rgb(var(--brand) / 0.04), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+.partner-spotlight:hover {
+  border-color: rgb(var(--brand) / 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 20px 50px -15px rgba(0,0,0,0.5);
+}
+.partner-spotlight:hover::before { opacity: 1; }
+
+@media (max-width: 640px) {
+  .partner-spotlight {
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
+    gap: 1.25rem;
+  }
+}
+
+/* ── Pulse Glow Animation ── */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.1; }
+  50% { opacity: 0.3; }
+}
+.animate-pulse-glow { animation: pulse-glow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+/* ── Float Animations ── */
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(2deg); }
+}
+.animate-float-slow { animation: float 8s ease-in-out infinite; }
+.animate-float-medium { animation: float 6s ease-in-out infinite reverse; }
+.animate-float-fast { animation: float 4s ease-in-out infinite; }
+
+/* ── Heartbeat (donate hero) ── */
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.12); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.08); }
+  56% { transform: scale(1); }
+}
+.animate-heartbeat { animation: heartbeat 2.5s ease-in-out infinite; }
+
+/* ── Light Mode Overrides ── */
+:root .bento-card {
+  background: rgb(var(--bg-el));
+  border: 1px solid rgb(var(--border));
+  backdrop-filter: none;
+}
+:root .bento-card:hover {
+  box-shadow: 0 12px 24px -8px rgba(0,0,0,0.1), 0 0 0 1px rgb(var(--brand) / 0.15);
+}
+
+:root .hw-card {
+  background: rgb(var(--bg-el));
+  border: 1px solid rgb(var(--border));
+}
+:root .hw-card:hover {
+  border-color: rgb(var(--brand) / 0.4);
+  box-shadow: 0 16px 32px -8px rgba(0,0,0,0.12), 0 0 0 1px rgb(var(--brand) / 0.15);
+}
+
+:root .glass-card {
+  background: rgb(var(--bg-el));
+  border: 1px solid rgb(var(--border));
+  backdrop-filter: none;
+}
+
+:root .terminal-glass {
+  background: rgb(15 15 18);
+  border: 1px solid rgb(var(--border));
+  box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15);
+}
+
+/* Terminal snippets inside bento cards */
+:root .bento-card .bg-black\/60 {
+  background: rgb(20 20 24) !important;
+}
+
+/* Terminal snippets inside feature cards */
+:root .feature-card-dark .bg-black\/60 {
+  background: rgb(20 20 24) !important;
+}
+
+:root .feature-card-orange {
+  background: linear-gradient(180deg, rgb(var(--brand) / 0.06) 0%, rgb(var(--bg-el)) 100%);
+  border: 1px solid rgb(var(--brand) / 0.15);
+}
+
+:root .feature-card-dark {
+  background: rgb(var(--bg-el));
+  border: 1px solid rgb(var(--border));
+}
+
+:root .board-card {
+  background: rgb(var(--bg-el));
+  border: 1px solid rgb(var(--border));
+}
+
+:root .partner-box {
+  background: rgb(var(--bg-el));
+  border: 1px solid rgb(var(--border));
+}
+:root .partner-spotlight {
+  background: rgb(var(--bg-el));
+  border: 1px solid rgb(var(--border));
+}
+:root .partner-spotlight:hover {
+  box-shadow: 0 12px 32px -8px rgba(0,0,0,0.08);
+}
+
+/* Override dark-specific rgba(255,255,255,...) borders for light mode */
+:root .border-white\/5,
+:root .border-white\/\[0\.06\],
+:root .border-white\/10 {
+  border-color: rgb(var(--border)) !important;
+}
+
+/* Light mode body background: clean, no dot grid */
+:root body {
+  background-image: none;
+  background-color: rgb(var(--bg));
+}
+
+/* Invert white SVG icons in light mode */
+.os-icon-invert {
+  filter: invert(1);
+}
+.dark .os-icon-invert {
+  filter: invert(0);
+}
+
