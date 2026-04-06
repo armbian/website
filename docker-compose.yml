@@ -1,0 +1,75 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - DATA_SYNC_INTERVAL_MS=${DATA_SYNC_INTERVAL_MS:-14400000}
+      - CACHE_DIR=/app/cache
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000}
+      - PUBLIC_API_URL=${PUBLIC_API_URL:-http://localhost:3001}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    volumes:
+      - api-cache:/app/cache
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3001/api/v1/health').then(r=>{if(!r.ok)throw 1})"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-payload}
+      - POSTGRES_USER=${POSTGRES_USER:-payload}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-payload}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+  www:
+    build:
+      context: .
+      dockerfile: apps/www/Dockerfile
+      args:
+        - API_URL=http://api:3001
+        - PAYLOAD_SECRET=build-time-placeholder
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - API_URL=http://api:3001
+      - PAYLOAD_SECRET=${PAYLOAD_SECRET:?Set PAYLOAD_SECRET in .env}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-payload}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-payload}
+      - OIDC_CLIENT_ID=${OIDC_CLIENT_ID:-}
+      - OIDC_CLIENT_SECRET=${OIDC_CLIENT_SECRET:-}
+      - OIDC_ISSUER_URL=${OIDC_ISSUER_URL:-}
+      - OIDC_ALLOWED_DOMAINS=${OIDC_ALLOWED_DOMAINS:-}
+    depends_on:
+      api:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/').then(r=>{if(!r.ok)throw 1})"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+volumes:
+  api-cache:
+  postgres-data:

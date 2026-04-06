@@ -1,0 +1,41 @@
+FROM node:22-alpine AS base
+RUN corepack enable && corepack prepare pnpm@10 --activate
+
+FROM base AS build
+WORKDIR /app
+
+# Build arguments — passed from docker-compose build.args
+ARG API_URL=http://api:3001
+ARG PAYLOAD_SECRET=build-time-placeholder
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY packages/schemas/package.json ./packages/schemas/
+COPY packages/config/package.json ./packages/config/
+COPY packages/api-client/package.json ./packages/api-client/
+COPY packages/theme/package.json ./packages/theme/
+COPY apps/www/package.json ./apps/www/
+RUN pnpm install --frozen-lockfile
+COPY . .
+RUN pnpm --filter @armbian/schemas build && \
+    pnpm --filter @armbian/config build && \
+    pnpm --filter @armbian/api-client build && \
+    pnpm --filter @armbian/theme build && \
+    API_URL=${API_URL} PAYLOAD_SECRET=${PAYLOAD_SECRET} pnpm --filter @armbian/www build
+
+FROM base AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+RUN addgroup --system --gid 1001 appgroup && adduser --system --uid 1001 appuser
+
+COPY --from=build --chown=appuser:appgroup /app/apps/www/.next/standalone ./
+COPY --from=build --chown=appuser:appgroup /app/apps/www/.next/static ./apps/www/.next/static
+COPY --from=build --chown=appuser:appgroup /app/apps/www/public ./apps/www/public
+
+USER appuser
+EXPOSE 3000
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+CMD ["node", "apps/www/server.js"]

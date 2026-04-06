@@ -1,0 +1,34 @@
+# Version control
+.git
+
+# Dependencies (reinstalled in container)
+**/node_modules
+
+# Build artifacts (rebuilt in container)
+**/.next
+**/.turbo
+**/dist
+**/*.tsbuildinfo
+
+# Environment files (secrets injected at runtime)
+.env
+.env.*
+
+# CI/CD
+.github/
+
+# Testing
+coverage/
+test-results/
+playwright-report/
+
+# API runtime cache
+apps/api/data/.cache
+
+
+# Development config (not needed in image)
+.prettierrc
+.nvmrc
+turbo.json
+tsconfig.base.json
+docker-compose.yml

@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+.next/
+.turbo/
+*.tsbuildinfo
+
+# Environment — ignore all .env files except the example template
+.env
+.env.*
+!.env.example
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Debug logs
+pnpm-debug.log*
+
+# Testing
+coverage/
+playwright-report/
+test-results/
+
+# Payload CMS — auto-generated files
+apps/www/src/app/(payload)/admin/importMap.js
+apps/www/src/app/(payload)/admin/importMap.d.ts
+apps/www/src/payload-types.ts
+apps/www/media/
+
+# API runtime cache
+apps/api/data/.cache/
