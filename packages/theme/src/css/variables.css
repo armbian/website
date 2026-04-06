@@ -1,0 +1,57 @@
+/*
+ * Armbian Design System
+ *
+ * A strict, minimal token set. Every color, spacing value, and size
+ * used on the site MUST come from here. No ad-hoc values.
+ */
+
+:root {
+  /* ── Brand ── */
+  --brand: 242 101 34;
+  --brand-hover: 220 88 25;
+
+  /* ── Surfaces (light) ── */
+  --bg: 255 255 255;
+  --bg-sub: 245 245 248;
+  --bg-el: 250 250 252;
+  --border: 220 220 228;
+
+  /* ── Text (light) ── */
+  --fg: 15 15 20;
+  --fg-2: 60 60 75;
+  --fg-3: 130 130 145;
+
+  /* ── Semantic ── */
+  --green: 22 163 74;
+  --red: 220 38 38;
+  --blue: 37 99 235;
+  --purple: 124 58 237;
+  --amber: 217 119 6;
+
+  /* ── Radii ── */
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 16px;
+  --r-full: 9999px;
+
+  /* ── Shadows ── */
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 12px rgb(0 0 0 / 0.06);
+  --shadow-lg: 0 12px 32px rgb(0 0 0 / 0.08);
+}
+
+.dark {
+  --bg: 5 5 5;
+  --bg-sub: 18 18 20;
+  --bg-el: 28 28 31;
+  --border: 38 38 46;
+
+  --fg: 240 240 245;
+  --fg-2: 161 161 170;
+  --fg-3: 100 100 112;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.2);
+  --shadow-md: 0 4px 12px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 12px 32px rgb(0 0 0 / 0.4);
+}

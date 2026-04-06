@@ -1,0 +1,53 @@
+{
+  "colors": {
+    "brand": {
+      "primary": "#f26522",
+      "primaryHover": "#e55a1c",
+      "primaryLight": "#ff7849",
+      "secondary": "#cc3333"
+    },
+    "semantic": {
+      "success": "#10b981",
+      "warning": "#f59e0b",
+      "error": "#ef4444",
+      "info": "#3b82f6"
+    },
+    "light": {
+      "background": "#ffffff",
+      "surface": "#f8fafc",
+      "surfaceRaised": "#ffffff",
+      "border": "#e2e8f0",
+      "text": "#0f172a",
+      "textSecondary": "#475569",
+      "textMuted": "#94a3b8"
+    },
+    "dark": {
+      "background": "#020617",
+      "surface": "#0f172a",
+      "surfaceRaised": "#1e293b",
+      "border": "#1e293b",
+      "text": "#f1f5f9",
+      "textSecondary": "#94a3b8",
+      "textMuted": "#64748b"
+    }
+  },
+  "font": {
+    "family": "Inter",
+    "url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap",
+    "mono": "JetBrains Mono"
+  },
+  "radius": {
+    "sm": "0.375rem",
+    "md": "0.5rem",
+    "lg": "0.75rem",
+    "xl": "1rem"
+  },
+  "animation": {
+    "duration": {
+      "fast": "150ms",
+      "normal": "200ms",
+      "slow": "300ms"
+    },
+    "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
+  }
+}

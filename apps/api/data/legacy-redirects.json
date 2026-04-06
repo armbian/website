@@ -1,0 +1,12 @@
+[
+  {
+    "board_id": "orangepi-5",
+    "canonical": "/boards/orangepi-5",
+    "legacy": ["/download/orange-pi-5"]
+  },
+  {
+    "board_id": "musepipro",
+    "canonical": "/boards/musepipro",
+    "legacy": ["/muse-pi-pro", "/muse-pi-pro/"]
+  }
+]
