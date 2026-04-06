@@ -38,3 +38,6 @@ apps/www/media/
 
 # API runtime cache
 apps/api/data/.cache/
+
+# Database backups
+backups/
