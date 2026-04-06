@@ -5,6 +5,7 @@ import { Link } from '@/i18n/navigation';
 import { ARMBIAN_URLS } from '@armbian/config';
 import { SiGithub, SiDiscord, SiMastodon } from '@icons-pack/react-simple-icons';
 import { MessageSquare } from 'lucide-react';
+import { IconExternalLink } from '@/components/ui/icons';
 
 export function Footer() {
   const t = useTranslations('footer');
@@ -98,9 +99,10 @@ export function Footer() {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-[rgb(var(--fg-2))] transition-colors hover:text-[rgb(var(--fg))]"
+                    className="text-sm text-[rgb(var(--fg-2))] transition-colors hover:text-[rgb(var(--fg))] inline-flex items-center gap-1"
                   >
                     {t(link.key)}
+                    <IconExternalLink size={11} className="opacity-40" />
                   </a>
                 </li>
               ))}
@@ -114,15 +116,16 @@ export function Footer() {
             </h4>
             <ul className="mt-3 space-y-2">
               {communityLinks.map((link) =>
-                'external' in link ? (
+                'external' in link && link.external ? (
                   <li key={link.key}>
                     <a
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-[rgb(var(--fg-2))] transition-colors hover:text-[rgb(var(--fg))]"
+                      className="text-sm text-[rgb(var(--fg-2))] transition-colors hover:text-[rgb(var(--fg))] inline-flex items-center gap-1"
                     >
                       {t(link.key)}
+                      <IconExternalLink size={11} className="opacity-40" />
                     </a>
                   </li>
                 ) : (
