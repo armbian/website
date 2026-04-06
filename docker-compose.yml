@@ -43,9 +43,6 @@ services:
     build:
       context: .
       dockerfile: apps/www/Dockerfile
-      args:
-        - API_URL=http://api:3001
-        - PAYLOAD_SECRET=build-time-placeholder
     restart: unless-stopped
     ports:
       - "3000:3000"

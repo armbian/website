@@ -8,14 +8,25 @@ import { Announcements } from './src/payload/collections/Announcements';
 import { Pages } from './src/payload/collections/Pages';
 import { Changelogs } from './src/payload/collections/Changelogs';
 import { CompanyConfig } from './src/payload/globals/CompanyConfig';
+import { migrations } from './src/migrations';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
+
+function requireEnv(key: string): string {
+  const value = process.env[key];
+  if (!value && !isBuildPhase) {
+    throw new Error(`${key} env var is required`);
+  }
+  return value || `placeholder-${key}`;
+}
+
 export default buildConfig({
-  secret: process.env.PAYLOAD_SECRET || (() => { throw new Error('PAYLOAD_SECRET env var is required') })(),
+  secret: requireEnv('PAYLOAD_SECRET'),
 
   admin: {
     user: Users.slug,
@@ -25,8 +36,9 @@ export default buildConfig({
   editor: lexicalEditor(),
 
   db: postgresAdapter({
+    prodMigrations: migrations,
     pool: {
-      connectionString: process.env.DATABASE_URL || (() => { throw new Error('DATABASE_URL env var is required') })(),
+      connectionString: requireEnv('DATABASE_URL'),
     },
   }),
 

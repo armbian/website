@@ -4,10 +4,6 @@ RUN corepack enable && corepack prepare pnpm@10 --activate
 FROM base AS build
 WORKDIR /app
 
-# Build arguments — passed from docker-compose build.args
-ARG API_URL=http://api:3001
-ARG PAYLOAD_SECRET=build-time-placeholder
-
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY packages/schemas/package.json ./packages/schemas/
 COPY packages/config/package.json ./packages/config/
@@ -20,7 +16,7 @@ RUN pnpm --filter @armbian/schemas build && \
     pnpm --filter @armbian/config build && \
     pnpm --filter @armbian/api-client build && \
     pnpm --filter @armbian/theme build && \
-    API_URL=${API_URL} PAYLOAD_SECRET=${PAYLOAD_SECRET} pnpm --filter @armbian/www build
+    pnpm --filter @armbian/www build
 
 FROM base AS runner
 WORKDIR /app

@@ -29,6 +29,4 @@ apps/api/data/.cache
 # Development config (not needed in image)
 .prettierrc
 .nvmrc
-turbo.json
-tsconfig.base.json
 docker-compose.yml
