@@ -12,6 +12,7 @@ COPY packages/theme/package.json ./packages/theme/
 COPY apps/www/package.json ./apps/www/
 RUN pnpm install --frozen-lockfile
 COPY . .
+ENV API_URL=http://api:3001
 RUN pnpm --filter @armbian/schemas build && \
     pnpm --filter @armbian/config build && \
     pnpm --filter @armbian/api-client build && \
