@@ -153,7 +153,20 @@ cmd_status() {
 
   echo ""
   echo -e "${BOLD}Endpoint checks:${RESET}"
-  _http_check "http://localhost:3001/api/v1/health" "API (3001)"
+  # API port is not exposed to host — check via docker exec
+  local api_cid
+  api_cid=$($COMPOSE ps -q api 2>/dev/null || true)
+  if [[ -n "$api_cid" ]]; then
+    local api_code
+    api_code=$(docker exec "$api_cid" node -e "fetch('http://localhost:3001/api/v1/health').then(r=>process.stdout.write(String(r.status))).catch(()=>process.stdout.write('000'))" 2>/dev/null || echo "000")
+    if [[ "$api_code" =~ ^[23] ]]; then
+      echo -e "  ${GREEN}API (internal)${RESET}: HTTP $api_code"
+    else
+      echo -e "  ${RED}API (internal)${RESET}: HTTP $api_code (unreachable or error)"
+    fi
+  else
+    echo -e "  ${RED}API (internal)${RESET}: container not running"
+  fi
   _http_check "http://localhost:3000/" "WWW (3000)"
   echo ""
 

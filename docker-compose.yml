@@ -4,8 +4,6 @@ services:
       context: .
       dockerfile: apps/api/Dockerfile
     restart: unless-stopped
-    ports:
-      - "3001:3001"
     environment:
       - NODE_ENV=production
       - PORT=3001
@@ -57,6 +55,8 @@ services:
       - OIDC_CLIENT_SECRET=${OIDC_CLIENT_SECRET:-}
       - OIDC_ISSUER_URL=${OIDC_ISSUER_URL:-}
       - OIDC_ALLOWED_DOMAINS=${OIDC_ALLOWED_DOMAINS:-}
+    volumes:
+      - media-uploads:/app/apps/www/media
     depends_on:
       api:
         condition: service_healthy
@@ -72,3 +72,4 @@ services:
 volumes:
   api-cache:
   postgres-data:
+  media-uploads:
