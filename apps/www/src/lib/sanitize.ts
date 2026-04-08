@@ -15,6 +15,6 @@ export function sanitizeCmsHtml(html: string): string {
       img: ['src', 'alt', 'width', 'height', 'loading'],
       a: ['href', 'target', 'rel'],
     },
-    allowedSchemes: ['http', 'https', 'mailto'],
+    allowedSchemes: ['https', 'mailto'],
   });
 }

@@ -19,9 +19,9 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\""
   },
   "devDependencies": {
-    "prettier": "^3.5.0",
-    "turbo": "^2.5.0",
-    "typescript": "^5.8.0"
+    "prettier": "^3.8.1",
+    "turbo": "^2.9.5",
+    "typescript": "^5.9.3"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

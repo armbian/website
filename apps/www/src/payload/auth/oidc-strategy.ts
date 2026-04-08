@@ -1,3 +1,5 @@
+import { createRemoteJWKSet, jwtVerify } from 'jose';
+
 type AuthStrategy = {
   name: string;
   authenticate: (args: {
@@ -9,6 +11,8 @@ type AuthStrategy = {
 const OIDC_CLIENT_ID = process.env.OIDC_CLIENT_ID ?? '';
 const OIDC_CLIENT_SECRET = process.env.OIDC_CLIENT_SECRET ?? '';
 const OIDC_ISSUER_URL = process.env.OIDC_ISSUER_URL ?? '';
+const JWKS_URL = OIDC_ISSUER_URL ? new URL(`${OIDC_ISSUER_URL}/protocol/openid-connect/certs`) : null;
+const JWKS = JWKS_URL ? createRemoteJWKSet(JWKS_URL) : null;
 const OIDC_ALLOWED_DOMAINS = (process.env.OIDC_ALLOWED_DOMAINS ?? '').split(',').filter(Boolean);
 
 /**
@@ -33,32 +37,80 @@ function resolveRole(groups: string[]): string {
 
 export const isOidcEnabled = Boolean(OIDC_CLIENT_ID && OIDC_CLIENT_SECRET && OIDC_ISSUER_URL);
 
+if (isOidcEnabled && OIDC_ALLOWED_DOMAINS.length === 0) {
+  console.warn(
+    '[oidc] OIDC_ALLOWED_DOMAINS is not set — any authenticated OIDC user can be auto-created. ' +
+    'Set OIDC_ALLOWED_DOMAINS to restrict sign-ups to specific email domains.',
+  );
+}
+
+/** Verify JWT signature and extract claims, or fall back to userinfo endpoint for opaque tokens */
+async function resolveTokenClaims(token: string): Promise<{
+  sub: string;
+  email?: string;
+  preferred_username?: string;
+  name?: string;
+  groups?: string[];
+} | null> {
+  // Try JWT verification first (signed tokens from Authentik)
+  if (JWKS && token.split('.').length === 3) {
+    try {
+      const { payload: claims } = await jwtVerify(token, JWKS, {
+        issuer: OIDC_ISSUER_URL,
+        audience: OIDC_CLIENT_ID,
+      });
+      if (typeof claims.sub !== 'string' || claims.sub.length === 0) return null;
+      return {
+        sub: claims.sub,
+        email: claims.email as string | undefined,
+        preferred_username: claims.preferred_username as string | undefined,
+        name: claims.name as string | undefined,
+        groups: Array.isArray(claims.groups) ? claims.groups as string[] : [],
+      };
+    } catch {
+      // JWT verification failed — do not fall back, reject the token
+      return null;
+    }
+  }
+
+  // Opaque token — validate via userinfo endpoint
+  const userinfoUrl = `${OIDC_ISSUER_URL}/protocol/openid-connect/userinfo`;
+  const res = await fetch(userinfoUrl, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) return null;
+
+  const userinfo = (await res.json()) as {
+    sub: string;
+    email?: string;
+    preferred_username?: string;
+    name?: string;
+    groups?: string[];
+  };
+
+  if (typeof userinfo !== 'object' || userinfo === null || typeof userinfo.sub !== 'string' || userinfo.sub.length === 0) {
+    return null;
+  }
+  return userinfo;
+}
+
 export const oidcStrategy: AuthStrategy = {
   name: 'oidc',
   authenticate: async ({ payload, headers }) => {
     const token = headers.get('x-oidc-token');
     if (!token) return { user: null };
 
+    if (token.length < 20 || token.length > 4096) return { user: null };
+
     try {
-      const userinfoUrl = `${OIDC_ISSUER_URL}/protocol/openid-connect/userinfo`;
-      const res = await fetch(userinfoUrl, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) return { user: null };
+      const claims = await resolveTokenClaims(token);
+      if (!claims) return { user: null };
 
-      const userinfo = (await res.json()) as {
-        sub: string;
-        email?: string;
-        preferred_username?: string;
-        name?: string;
-        groups?: string[];
-      };
-
-      const sub = userinfo.sub;
-      const email = userinfo.email ?? userinfo.preferred_username ?? '';
+      const sub = claims.sub;
+      const email = claims.email ?? claims.preferred_username ?? '';
       if (!sub || !email) return { user: null };
 
-      const groups = userinfo.groups ?? [];
+      const groups = claims.groups ?? [];
       const role = resolveRole(groups);
 
       // Look up by OIDC subject ID first, then by email
@@ -106,7 +158,7 @@ export const oidcStrategy: AuthStrategy = {
         collection: 'users',
         data: {
           email,
-          name: userinfo.name ?? email,
+          name: claims.name ?? email,
           password: crypto.randomUUID(),
           role,
           oidcSub: sub,

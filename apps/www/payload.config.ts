@@ -11,6 +11,7 @@ import { CompanyConfig } from './src/payload/globals/CompanyConfig';
 import { migrations } from './src/migrations';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { randomBytes } from 'node:crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -49,16 +50,17 @@ export default buildConfig({
   onInit: async (payload: Payload) => {
     const existing = await payload.find({ collection: 'users', limit: 1 });
     if (existing.totalDocs === 0) {
+      const password = randomBytes(24).toString('base64url');
       await (payload.create as Function)({
         collection: 'users',
         data: {
           name: 'Admin',
           email: 'admin@armbian.com',
-          password: 'changeme',
+          password,
           role: 'admin',
         },
       });
-      payload.logger.info('Default admin user created (admin@armbian.com / changeme)');
+      payload.logger.info(`Default admin user created — email: admin@armbian.com  password: ${password}`);
     }
   },
 

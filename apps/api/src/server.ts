@@ -3,6 +3,8 @@ import cors from '@fastify/cors';
 import compress from '@fastify/compress';
 import etag from '@fastify/etag';
 import helmet from '@fastify/helmet';
+import { timingSafeEqual } from 'node:crypto';
+import { ARMBIAN_URLS } from '@armbian/config';
 
 import underPressure from '@fastify/under-pressure';
 import swagger from '@fastify/swagger';
@@ -31,11 +33,11 @@ const INTERNAL_API_KEY = process.env['INTERNAL_API_KEY'];
 
 /** Allowed CORS origins for production (all Armbian domains) */
 const CORS_ALLOWED_ORIGINS = [
-  'https://www.armbian.com',
+  ARMBIAN_URLS.WEBSITE,
   'https://armbian.com',
   'https://armbian.cn',
   'https://armbian.de',
-  'https://imager.armbian.com',
+  ARMBIAN_URLS.IMAGER,
 ];
 
 
@@ -45,21 +47,36 @@ async function main(): Promise<void> {
       level: LOG_LEVEL,
       ...(IS_DEV ? { transport: { target: 'pino-pretty' } } : {}),
     },
-    trustProxy: false,
+    // trustProxy: disabled by default to prevent IP spoofing via X-Forwarded-For.
+    // Set TRUST_PROXY=true only when running behind a known reverse proxy (e.g. Caddy/Nginx).
+    trustProxy: process.env['TRUST_PROXY'] === 'true',
   });
 
   // --- Security: API key authentication ---
 
   if (INTERNAL_API_KEY) {
+    const keyBuf = Buffer.from(INTERNAL_API_KEY);
     server.addHook('preHandler', async (request, reply) => {
       // Health endpoint stays open for Docker healthchecks
       if (request.url === '/api/v1/health') return;
-      // Allow requests from Docker internal network (www container, healthchecks)
+      // Allow requests from loopback and Docker private network ranges:
+      // 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16
       const ip = request.ip;
-      if (ip === '127.0.0.1' || ip === '::1' || ip.startsWith('172.') || ip.startsWith('10.') || ip.startsWith('192.168.')) return;
-      // External requests must provide a valid API key
+      if (
+        ip === '127.0.0.1' ||
+        ip === '::1' ||
+        /^172\.(1[6-9]|2\d|3[01])\./.test(ip) ||
+        ip.startsWith('10.') ||
+        ip.startsWith('192.168.')
+      ) return;
+      // External requests must provide a valid API key (timing-safe comparison)
       const provided = request.headers['x-api-key'];
-      if (provided !== INTERNAL_API_KEY) {
+      if (typeof provided !== 'string' || provided.length !== INTERNAL_API_KEY.length) {
+        void reply.status(401).send({ error: 'Unauthorized', statusCode: 401 });
+        return;
+      }
+      const providedBuf = Buffer.from(provided);
+      if (!timingSafeEqual(keyBuf, providedBuf)) {
         void reply.status(401).send({ error: 'Unauthorized', statusCode: 401 });
       }
     });
@@ -71,7 +88,12 @@ async function main(): Promise<void> {
   // --- Plugins ---
 
   await server.register(helmet, {
-    contentSecurityPolicy: false,
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'none'"],
+        frameAncestors: ["'none'"],
+      },
+    },
     crossOriginResourcePolicy: { policy: 'cross-origin' },
     referrerPolicy: { policy: 'no-referrer' },
     frameguard: { action: 'deny' },
@@ -82,10 +104,11 @@ async function main(): Promise<void> {
 
   // Extra CORS origins from env (e.g. PUBLIC_API_URL origin for Docker)
   const extraOrigins = process.env['CORS_ORIGINS']?.split(',').filter(Boolean) ?? [];
-  const allOrigins = [...CORS_ALLOWED_ORIGINS, ...extraOrigins];
+  const devOrigins = IS_DEV ? ['http://localhost:3000', 'http://localhost:3001'] : [];
+  const allOrigins = [...CORS_ALLOWED_ORIGINS, ...extraOrigins, ...devOrigins];
 
   await server.register(cors, {
-    origin: IS_DEV ? true : allOrigins,
+    origin: allOrigins,
     methods: ['GET', 'OPTIONS'],
     credentials: false,
   });
@@ -125,6 +148,7 @@ async function main(): Promise<void> {
     },
   });
 
+  // Swagger UI is only served in dev mode — not exposed in production.
   if (IS_DEV) {
     await server.register(swaggerUi, {
       routePrefix: '/api/docs',
@@ -134,8 +158,7 @@ async function main(): Promise<void> {
   // --- Data Layer ---
 
   const store = new DataStore();
-  const apiBase = process.env['API_BASE_PATH'] ?? '';
-  const sync = new SyncService(store, server.log, apiBase);
+  const sync = new SyncService(store, server.log);
   const imageCache = new ImageCache(CACHE_DIR, server.log);
 
   // Initial data load — try disk cache first for fast startup, then sync from network

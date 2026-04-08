@@ -19,12 +19,26 @@ const config: NextConfig = {
         { key: 'X-DNS-Prefetch-Control', value: 'on' },
         { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
         { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains' },
+        {
+          key: 'Content-Security-Policy',
+          value: [
+            "default-src 'self'",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+            "style-src 'self' 'unsafe-inline'",
+            "img-src 'self' https://cdn.jsdelivr.net https://avatars.githubusercontent.com data: blob:",
+            "font-src 'self' data:",
+            "connect-src 'self'",
+            "frame-ancestors 'none'",
+            "base-uri 'self'",
+            "form-action 'self' https://eu.bigin.online",
+          ].join('; '),
+        },
       ],
     }];
   },
   async rewrites() {
     return [
-      { source: '/api/v1/:path*', destination: `${process.env['API_URL'] ?? 'http://localhost:3001'}/api/v1/:path*` },
+      { source: '/api/v1/images/:path*', destination: `${process.env['API_URL'] ?? 'http://localhost:3001'}/api/v1/images/:path*` },
     ];
   },
 };
