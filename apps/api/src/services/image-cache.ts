@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { FastifyBaseLogger } from 'fastify';
-import { ASSET_URLS } from '@armbian/config';
+import { boardImageUrl, vendorLogoUrl } from '@armbian/config';
 
 /** Allowlisted hostname patterns for the image proxy */
 const PROXY_ALLOWED_HOSTS = [
@@ -84,15 +84,16 @@ export class ImageCache {
       // Not cached — fetch from CDN
     }
 
-    const baseUrl = type === 'board' ? ASSET_URLS.BOARD_IMAGES_BASE : ASSET_URLS.VENDOR_LOGOS_BASE;
-    const url = `${baseUrl}${size}/${slug}.png`;
+    const url = type === 'board'
+      ? boardImageUrl(slug, size, { cdn: true })
+      : vendorLogoUrl(slug, size, { cdn: true });
 
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+      // CDN URLs are trusted — follow redirects to mirrors
       const res = await fetch(url, { signal: controller.signal, redirect: 'follow' });
       clearTimeout(timeout);
-
       if (!res.ok) return null;
 
       const buffer = Buffer.from(await res.arrayBuffer());
@@ -132,8 +133,10 @@ export class ImageCache {
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
-      const res = await fetch(url, { signal: controller.signal, redirect: 'follow' });
+      const res = await fetch(url, { signal: controller.signal, redirect: 'manual' });
       clearTimeout(timeout);
+      // Reject redirects to prevent SSRF via open redirect chains
+      if (res.status >= 300 && res.status < 400) return null;
       if (!res.ok) return null;
 
       const contentLength = parseInt(res.headers.get('content-length') ?? '0', 10);
@@ -150,11 +153,42 @@ export class ImageCache {
     }
   }
 
+  /** Get cached partner logo or fetch from source URL and cache it by slug */
+  async getPartnerImage(slug: string, sourceUrl: string): Promise<{ data: Buffer; contentType: string } | null> {
+    if (!SAFE_SLUG_RE.test(slug)) return null;
+    const subDir = join(this.cacheDir, 'partner');
+    const filePath = join(subDir, `${slug}.png`);
+
+    try {
+      const data = await readFile(filePath);
+      return { data, contentType: 'image/png' };
+    } catch {
+      // Not cached
+    }
+
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+      const res = await fetch(sourceUrl, { signal: controller.signal, redirect: 'follow' });
+      clearTimeout(timeout);
+      if (!res.ok) return null;
+
+      const buffer = Buffer.from(await res.arrayBuffer());
+      if (buffer.byteLength > MAX_PROXY_RESPONSE_BYTES) return null;
+
+      await mkdir(subDir, { recursive: true });
+      await writeFile(filePath, buffer);
+      return { data: buffer, contentType: res.headers.get('content-type') ?? 'image/png' };
+    } catch {
+      return null;
+    }
+  }
+
   /** Pre-warm cache for a list of slugs across all used sizes */
   async warmup(boards: string[], vendors: string[]): Promise<void> {
     const CONCURRENCY = 10;
-    const boardSizes = [ASSET_URLS.BOARD_IMAGE_SIZE];
-    const vendorSizes = [ASSET_URLS.VENDOR_LOGO_SIZE];
+    const boardSizes = ['480'];
+    const vendorSizes = ['480'];
 
     let cached = 0;
     let fetched = 0;

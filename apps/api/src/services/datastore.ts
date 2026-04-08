@@ -26,6 +26,7 @@ export interface NormalizedData {
   partners: Partner[];
   maintainers: Maintainer[];
   redirects: Record<string, string>;
+  partnerLogoSources: Map<string, string>;
 }
 
 export class DataStore {
@@ -35,6 +36,7 @@ export class DataStore {
   private vendorsList: Vendor[] = [];
   private imagesByBoard = new Map<string, Image[]>();
   private partnersList: Partner[] = [];
+  private partnerLogoSources = new Map<string, string>();
   private maintainersList: Maintainer[] = [];
   private redirectsMap = new Map<string, string>();
   private searchIndex: MiniSearch;
@@ -114,6 +116,7 @@ export class DataStore {
     this.vendorsList = data.vendors;
     this.imagesByBoard = imagesByBoard;
     this.partnersList = data.partners;
+    this.partnerLogoSources = data.partnerLogoSources;
     this.maintainersList = data.maintainers;
     this.redirectsMap = redirectsMap;
     this.searchIndex = search;
@@ -260,6 +263,10 @@ export class DataStore {
 
   getPartners(): Partner[] {
     return this.partnersList;
+  }
+
+  getPartnerLogoSource(slug: string): string | undefined {
+    return this.partnerLogoSources.get(slug);
   }
 
   getMaintainers(): Maintainer[] {

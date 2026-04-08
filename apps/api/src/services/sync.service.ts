@@ -50,9 +50,8 @@ export class SyncService {
   constructor(
     private store: DataStore,
     private log: FastifyBaseLogger,
-    apiBase?: string,
   ) {
-    this.normalizer = new Normalizer(apiBase?.replace(/\/$/, '') ?? '');
+    this.normalizer = new Normalizer();
   }
 
   /** Try to load from local disk cache — fast startup without network */

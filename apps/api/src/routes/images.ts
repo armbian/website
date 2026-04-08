@@ -2,6 +2,8 @@ import type { FastifyInstance } from 'fastify';
 import { validateProxyUrl } from '../services/image-cache.js';
 import '../types.js';
 
+const VALID_IMAGE_SIZES = new Set(['480']);
+
 export function registerImageRoutes(server: FastifyInstance): void {
   /**
    * GET /api/v1/images/boards/:size/:slug.png
@@ -11,6 +13,9 @@ export function registerImageRoutes(server: FastifyInstance): void {
     '/api/v1/images/boards/:size/:slug.png',
     async (request, reply) => {
       const { size, slug } = request.params;
+      if (!VALID_IMAGE_SIZES.has(size)) {
+        return reply.code(400).send({ error: 'Invalid size parameter' });
+      }
       const result = await server.imageCache.getImage('board', slug, size);
       if (!result) {
         return reply.code(404).send({ error: 'Image not found' });
@@ -29,7 +34,32 @@ export function registerImageRoutes(server: FastifyInstance): void {
     '/api/v1/images/vendors/:size/:slug.png',
     async (request, reply) => {
       const { size, slug } = request.params;
+      if (!VALID_IMAGE_SIZES.has(size)) {
+        return reply.code(400).send({ error: 'Invalid size parameter' });
+      }
       const result = await server.imageCache.getImage('vendor', slug, size);
+      if (!result) {
+        return reply.code(404).send({ error: 'Image not found' });
+      }
+      void reply.header('Content-Type', result.contentType);
+      void reply.header('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
+      return reply.send(result.data);
+    },
+  );
+
+  /**
+   * GET /api/v1/images/partners/:slug.png
+   * Serve cached partner logo — fetches from source URL on first request.
+   */
+  server.get<{ Params: { slug: string } }>(
+    '/api/v1/images/partners/:slug.png',
+    async (request, reply) => {
+      const { slug } = request.params;
+      const sourceUrl = server.store.getPartnerLogoSource(slug);
+      if (!sourceUrl) {
+        return reply.code(404).send({ error: 'Partner logo not found' });
+      }
+      const result = await server.imageCache.getPartnerImage(slug, sourceUrl);
       if (!result) {
         return reply.code(404).send({ error: 'Image not found' });
       }

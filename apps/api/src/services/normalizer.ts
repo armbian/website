@@ -22,7 +22,9 @@ import {
   boardForumUrl,
   buildCommand,
   cleanVendorName,
-  ASSET_URLS,
+  boardImageUrl,
+  vendorLogoUrl,
+  partnerLogoUrl,
 } from '@armbian/config';
 import type { NormalizedData } from './datastore.js';
 
@@ -40,7 +42,7 @@ interface EnrichmentData {
 }
 
 export class Normalizer {
-  constructor(private apiBase: string = '') {}
+  constructor() {}
 
   normalize(raw: RawSyncData, enrichment: EnrichmentData): NormalizedData {
     const enrichmentMap = new Map(enrichment.enrichments.map((e) => [e.slug, e]));
@@ -101,7 +103,7 @@ export class Normalizer {
         image_count: boardImages.length,
         has_desktop: hasDesktop,
         promoted,
-        image_url: `${this.apiBase}/api/v1/images/boards/${ASSET_URLS.BOARD_IMAGE_SIZE}/${slug}.png`,
+        image_url: boardImageUrl(slug),
         soc: enrich?.soc ?? null,
         architecture: enrich?.architecture ?? this.detectArchitecture(slug, boardImages) ?? null,
         summary: enrich?.summary ?? null,
@@ -164,7 +166,7 @@ export class Normalizer {
         vendorByName.set(displayName, {
           slug: board.vendor_slug,
           name: displayName,
-          logo_url: `${this.apiBase}/api/v1/images/vendors/${ASSET_URLS.VENDOR_LOGO_SIZE}/${board.vendor_slug}.png`,
+          logo_url: vendorLogoUrl(board.vendor_slug),
           website: rawAsset?.company_website || null,
           description: null,
           board_count: 1,
@@ -188,13 +190,18 @@ export class Normalizer {
     const vendorMap = vendorByName;
 
     // 5. Build normalized partners
-    const partners: Partner[] = raw.partners.map((p) => ({
-      name: p.Account_Name,
-      tier: normalizePartnerTier(p.Partnership_Status),
-      website: p.Website ?? null,
-      logo_url: p.logo_url ? `${this.apiBase}/api/v1/images/proxy?url=${encodeURIComponent(p.logo_url)}` : null,
-      description: p.Description ?? null,
-    }));
+    const partnerLogoSources = new Map<string, string>();
+    const partners: Partner[] = raw.partners.map((p) => {
+      const slug = normalizeToSlug(p.Account_Name);
+      if (p.logo_url) partnerLogoSources.set(slug, p.logo_url);
+      return {
+        name: p.Account_Name,
+        tier: normalizePartnerTier(p.Partnership_Status),
+        website: p.Website ?? null,
+        logo_url: p.logo_url ? partnerLogoUrl(slug) : null,
+        description: p.Description ?? null,
+      };
+    });
 
     // 6. Build normalized maintainers
     const maintainers: Maintainer[] = raw.maintainers
@@ -259,6 +266,7 @@ export class Normalizer {
       partners,
       maintainers,
       redirects,
+      partnerLogoSources,
     };
   }
 
