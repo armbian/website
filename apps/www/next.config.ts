@@ -25,7 +25,7 @@ const config: NextConfig = {
             "default-src 'self'",
             "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
             "style-src 'self' 'unsafe-inline'",
-            "img-src 'self' https://cdn.jsdelivr.net https://avatars.githubusercontent.com data: blob:",
+            "img-src 'self' https://cdn.jsdelivr.net https://avatars.githubusercontent.com https://www.gravatar.com data: blob:",
             "font-src 'self' data:",
             "connect-src 'self'",
             "frame-ancestors 'none'",
