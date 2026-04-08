@@ -71,11 +71,11 @@
     "subtitle": "两种方式运行 Armbian，选择适合你的那一种。",
     "imager_title": "Armbian Imager",
     "imager_badge": "推荐",
-    "imager_description": "最快的上手方式。桌面应用为你的开发板选择正确的镜像，通过 SHA 校验验证完整性，直接写入 SD 卡或 USB 驱动器。无需终端——选择开发板，一键烧录。支持 Windows、macOS 和 Linux。",
+    "imager_description": "最快的上手方式。选择你的开发板，挑选镜像，直接烧录到 SD 卡或 USB 驱动器。Armbian Imager 一步完成下载、SHA 校验和写入。无需终端。支持 Windows、macOS 和 Linux。",
     "imager_cta": "下载 Armbian Imager",
     "manual_title": "手动下载",
     "manual_badge": "进阶",
-    "manual_description": "完全掌控整个流程。浏览目录，下载压缩的 .img.xz 文件，验证校验和，使用 dd、balenaEtcher 或任何你喜欢的工具烧录。所有镜像均包含 GPG 签名用于验证。",
+    "manual_description": "完全掌控整个流程。浏览目录，下载压缩的 .img.xz 文件，验证校验和，使用 dd 或任何你喜欢的工具烧录。所有镜像均包含 GPG 签名用于验证。",
     "manual_cta": "浏览下载"
   },
   "community": {

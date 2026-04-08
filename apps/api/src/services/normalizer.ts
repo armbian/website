@@ -121,6 +121,7 @@ export class Normalizer {
     const normalizedImages: Image[] = [];
     for (const asset of raw.images) {
       if (asset.file_extension !== 'img.xz') continue;
+      if (asset.file_url.includes('.fip.img.xz')) continue;
 
       normalizedImages.push({
         id: hashString(asset.file_url),
@@ -134,10 +135,11 @@ export class Normalizer {
         promoted: asset.promoted === 'true',
         stability: asset.branch === 'edge' ? 'edge' : 'stable',
         download: {
-          file_url: asset.file_url,
-          sha_url: asset.file_url_sha || null,
-          asc_url: asset.file_url_asc || null,
-          torrent_url: asset.file_url_torrent || null,
+          file_url: asset.redi_url || asset.file_url,
+          direct_url: asset.file_url,
+          sha_url: asset.redi_url_sha || asset.file_url_sha || null,
+          asc_url: asset.redi_url_asc || asset.file_url_asc || null,
+          torrent_url: asset.redi_url_torrent || asset.file_url_torrent || null,
           size_bytes: parseInt(asset.file_size, 10) || 0,
           updated_at: asset.file_date || new Date().toISOString(),
         },

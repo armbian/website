@@ -1,4 +1,4 @@
-import { buildConfig } from 'payload';
+import { buildConfig, type Payload } from 'payload';
 import { postgresAdapter } from '@payloadcms/db-postgres';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import { Users } from './src/payload/collections/Users';
@@ -45,6 +45,22 @@ export default buildConfig({
   collections: [Users, Media, FlashGuides, Announcements, Pages, Changelogs],
 
   globals: [CompanyConfig],
+
+  onInit: async (payload: Payload) => {
+    const existing = await payload.find({ collection: 'users', limit: 1 });
+    if (existing.totalDocs === 0) {
+      await (payload.create as Function)({
+        collection: 'users',
+        data: {
+          name: 'Admin',
+          email: 'admin@armbian.com',
+          password: 'changeme',
+          role: 'admin',
+        },
+      });
+      payload.logger.info('Default admin user created (admin@armbian.com / changeme)');
+    }
+  },
 
   typescript: {
     outputFile: path.resolve(__dirname, 'src/payload-types.ts'),

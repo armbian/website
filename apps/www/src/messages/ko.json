@@ -71,11 +71,11 @@
     "subtitle": "Armbian을 실행하는 두 가지 방법. 워크플로에 맞는 것을 선택하세요.",
     "imager_title": "Armbian Imager",
     "imager_badge": "추천",
-    "imager_description": "가장 빠른 시작 방법. 데스크톱 앱이 보드에 맞는 이미지를 선택하고, SHA 체크섬으로 무결성을 검증하며, SD 카드나 USB 드라이브에 직접 기록합니다. 터미널 불필요 — 보드를 선택하고 플래시하세요. Windows, macOS, Linux에서 사용 가능.",
+    "imager_description": "가장 빠른 시작 방법. 보드를 선택하고, 이미지를 고른 다음, SD 카드나 USB 드라이브에 바로 플래시하세요. Armbian Imager가 다운로드, SHA 검증, 쓰기를 한 번에 처리합니다. 터미널이 필요 없습니다. Windows, macOS, Linux에서 사용 가능.",
     "imager_cta": "Armbian Imager 다운로드",
     "manual_title": "수동 다운로드",
     "manual_badge": "고급",
-    "manual_description": "프로세스의 완전한 제어. 카탈로그를 탐색하고, 압축된 .img.xz 파일을 다운로드하고, 체크섬을 검증하고, dd, balenaEtcher 또는 원하는 도구로 플래시하세요. 모든 이미지에 검증용 GPG 서명이 포함됩니다.",
+    "manual_description": "프로세스의 완전한 제어. 카탈로그를 탐색하고, 압축된 .img.xz 파일을 다운로드하고, 체크섬을 검증하고, dd 또는 원하는 도구로 플래시하세요. 모든 이미지에 검증용 GPG 서명이 포함됩니다.",
     "manual_cta": "다운로드 탐색"
   },
   "community": {

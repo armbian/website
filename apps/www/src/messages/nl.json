@@ -71,11 +71,11 @@
     "subtitle": "Twee manieren om Armbian te draaien. Kies wat bij je werkwijze past.",
     "imager_title": "Armbian Imager",
     "imager_badge": "Aanbevolen",
-    "imager_description": "De snelste manier om te starten. Onze desktopapp selecteert de juiste image voor je board, verifieert de integriteit via SHA-checksum en schrijft direct naar SD-kaart of USB-stick. Geen terminal nodig — kies je board en flash. Beschikbaar voor Windows, macOS en Linux.",
+    "imager_description": "De snelste manier om aan de slag te gaan. Kies je board, selecteer een image en flash direct naar SD-kaart of USB-stick. Armbian Imager regelt download, SHA-verificatie en schrijven in één stap. Geen terminal nodig. Beschikbaar voor Windows, macOS en Linux.",
     "imager_cta": "Armbian Imager downloaden",
     "manual_title": "Handmatige download",
     "manual_badge": "Geavanceerd",
-    "manual_description": "Volledige controle over het proces. Blader door de catalogus, download gecomprimeerde .img.xz-bestanden, verifieer checksums en flash met dd, balenaEtcher of een andere tool. Elke image bevat een GPG-handtekening voor verificatie.",
+    "manual_description": "Volledige controle over het proces. Blader door de catalogus, download gecomprimeerde .img.xz-bestanden, verifieer checksums en flash met dd of een andere tool. Elke image bevat een GPG-handtekening voor verificatie.",
     "manual_cta": "Downloads bekijken"
   },
   "community": {

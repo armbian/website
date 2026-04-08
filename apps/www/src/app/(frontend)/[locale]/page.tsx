@@ -403,9 +403,9 @@ export default async function HomePage({ params }: Props) {
                 <div className="absolute right-0 top-0 w-64 h-64 bg-white/5 blur-[80px] rounded-full pointer-events-none" />
                 <div className="relative z-10 flex flex-col h-full">
                   <div className="flex items-center justify-between mb-5">
-                    <div className="w-16 h-16 bg-[rgb(var(--bg-el))] border border-white/10 text-[rgb(var(--fg-2))] rounded-2xl flex items-center justify-center shadow-inner">
+                    <Link href="/boards" className="w-16 h-16 bg-[rgb(var(--bg-el))] border border-white/10 text-[rgb(var(--fg-2))] hover:text-[rgb(var(--brand))] hover:border-[rgb(var(--brand)/0.3)] rounded-2xl flex items-center justify-center shadow-inner transition-colors">
                       <IconDownload size={28} />
-                    </div>
+                    </Link>
                     <span className="px-3 py-1 border border-white/10 text-[rgb(var(--fg-3))] text-xs font-bold uppercase tracking-widest rounded bg-[rgb(var(--bg-el))]">
                       {tDeploy('manual_badge')}
                     </span>
@@ -414,13 +414,8 @@ export default async function HomePage({ params }: Props) {
                   <p className="text-[rgb(var(--fg-2))] mb-5 text-sm leading-relaxed">{tDeploy('manual_description')}</p>
                   {(() => {
                     const s = stats.sample_image;
-                    const slug = s?.board_slug ?? 'nanopi-r6s';
-                    const distro = s?.distribution ?? 'noble';
-                    const branch = s?.kernel_branch ?? 'current';
-                    const variant = s?.variant ?? 'minimal';
-                    const cap = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
-                    const redir = `dl.armbian.com/${slug}/${cap(distro)}_${branch}_${variant}`;
-                    const fileName = s?.file_url?.split('/').pop() ?? `Armbian_${slug}_${distro}.img.xz`;
+                    const redir = s?.file_url ?? 'https://dl.armbian.com/nanopi-r6s/Noble_current_minimal';
+                    const fileName = redir.split('/').pop() ?? 'Armbian_image.img.xz';
                     return (
                       <div className="bg-[rgb(20_20_24)] border border-white/10 rounded-xl p-4 mb-8 font-mono text-[11px] leading-[1.7] overflow-x-auto">
                         <div className="text-gray-400"><span className="text-emerald-400">$</span> wget {redir}</div>

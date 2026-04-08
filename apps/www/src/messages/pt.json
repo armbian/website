@@ -71,11 +71,11 @@
     "subtitle": "Duas formas de rodar Armbian. Escolha a que se encaixa no seu fluxo de trabalho.",
     "imager_title": "Armbian Imager",
     "imager_badge": "Recomendado",
-    "imager_description": "A forma mais rápida de começar. Nosso aplicativo seleciona a imagem certa para sua placa, verifica a integridade com checksum SHA e grava diretamente no cartão SD ou USB. Sem terminal — basta escolher sua placa e gravar. Disponível para Windows, macOS e Linux.",
+    "imager_description": "A forma mais rápida de começar. Escolha sua placa, selecione uma imagem e grave diretamente no cartão SD ou unidade USB. O Armbian Imager cuida do download, verificação SHA e gravação em uma única etapa. Sem terminal necessário. Disponível para Windows, macOS e Linux.",
     "imager_cta": "Baixar Armbian Imager",
     "manual_title": "Download manual",
     "manual_badge": "Avançado",
-    "manual_description": "Controle total do processo. Navegue pelo catálogo, baixe arquivos .img.xz compactados, verifique checksums e grave com dd, balenaEtcher ou qualquer ferramenta de sua preferência. Cada imagem inclui assinatura GPG para verificação.",
+    "manual_description": "Controle total do processo. Navegue pelo catálogo, baixe arquivos .img.xz compactados, verifique checksums e grave com dd ou qualquer ferramenta de sua preferência. Cada imagem inclui assinatura GPG para verificação.",
     "manual_cta": "Explorar downloads"
   },
   "community": {

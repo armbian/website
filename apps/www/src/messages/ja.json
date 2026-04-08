@@ -71,11 +71,11 @@
     "subtitle": "Armbianを実行する2つの方法。ワークフローに合うものを選んでください。",
     "imager_title": "Armbian Imager",
     "imager_badge": "推奨",
-    "imager_description": "最速の開始方法。デスクトップアプリがボードに適したイメージを選択し、SHAチェックサムで整合性を検証し、SDカードやUSBドライブに直接書き込みます。ターミナル不要 — ボードを選んでフラッシュするだけ。Windows、macOS、Linuxで利用可能。",
+    "imager_description": "最速の始め方。ボードを選び、イメージを選択して、SDカードやUSBドライブに直接フラッシュ。Armbian Imagerがダウンロード、SHA検証、書き込みを一括で処理します。ターミナル不要。Windows、macOS、Linuxで利用可能。",
     "imager_cta": "Armbian Imagerをダウンロード",
     "manual_title": "手動ダウンロード",
     "manual_badge": "上級者向け",
-    "manual_description": "プロセスの完全な制御。カタログを閲覧し、圧縮された.img.xzファイルをダウンロードし、チェックサムを検証し、dd、balenaEtcher、またはお好みのツールでフラッシュ。すべてのイメージにGPG署名が含まれています。",
+    "manual_description": "プロセスの完全な制御。カタログを閲覧し、圧縮された.img.xzファイルをダウンロードし、チェックサムを検証し、dd またはお好みのツールでフラッシュ。すべてのイメージにGPG署名が含まれています。",
     "manual_cta": "ダウンロードを閲覧"
   },
   "community": {

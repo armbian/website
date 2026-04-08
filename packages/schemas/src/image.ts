@@ -3,6 +3,7 @@ import { z } from 'zod';
 /** Download file metadata */
 export const DownloadInfoSchema = z.object({
   file_url: z.string().url(),
+  direct_url: z.string().url(),
   sha_url: z.string().url().nullable(),
   asc_url: z.string().url().nullable(),
   torrent_url: z.string().url().nullable(),

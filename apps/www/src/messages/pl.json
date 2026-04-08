@@ -71,11 +71,11 @@
     "subtitle": "Dwa sposoby uruchomienia Armbian. Wybierz ten, ktory pasuje do twojego sposobu pracy.",
     "imager_title": "Armbian Imager",
     "imager_badge": "Zalecany",
-    "imager_description": "Najlatwiejszy sposob na start. Nasza aplikacja desktopowa automatycznie wybiera odpowiedni obraz dla twojej plyty, weryfikuje integralnosc pliku za pomoca sum kontrolnych SHA i zapisuje bezposrednio na karte SD lub USB. Bez recznych krokow, bez wiersza polecen — wystarczy wybrac plyte i sflaszowac. Dostepne dla Windows, macOS i Linux.",
+    "imager_description": "Najszybszy sposob na start. Wybierz plyte, obraz i flashuj bezposrednio na karte SD lub dysk USB. Armbian Imager obsluguje pobieranie, weryfikacje SHA i zapis w jednym kroku. Terminal nie jest potrzebny. Dostepne dla Windows, macOS i Linux.",
     "imager_cta": "Pobierz Armbian Imager",
     "manual_title": "Reczne pobieranie",
     "manual_badge": "Zaawansowane",
-    "manual_description": "Dla zaawansowanych uzytkownikow preferujacych pelna kontrole. Przegladaj katalog plyt, pobieraj skompresowane pliki .img.xz, recznie weryfikuj sumy kontrolne i flashuj za pomoca dd, balenaEtcher lub dowolnego preferowanego narzedzia. Wszystkie obrazy zawieraja podpisy GPG do weryfikacji.",
+    "manual_description": "Dla zaawansowanych uzytkownikow preferujacych pelna kontrole. Przegladaj katalog plyt, pobieraj skompresowane pliki .img.xz, recznie weryfikuj sumy kontrolne i flashuj za pomoca dd lub dowolnego preferowanego narzedzia. Wszystkie obrazy zawieraja podpisy GPG do weryfikacji.",
     "manual_cta": "Przegladaj pobierania"
   },
   "community": {

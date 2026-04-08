@@ -71,11 +71,11 @@
     "subtitle": "Två sätt att köra Armbian. Välj det som passar ditt arbetsflöde.",
     "imager_title": "Armbian Imager",
     "imager_badge": "Rekommenderat",
-    "imager_description": "Det enklaste sättet att komma igång. Vår skrivbordsapp väljer automatiskt rätt avbildning för ditt kort, verifierar filintegriteten med SHA-kontrollsummor och skriver direkt till SD-kort eller USB-enhet. Inga manuella steg, ingen kommandorad — välj bara ditt kort och flasha. Tillgänglig för Windows, macOS och Linux.",
+    "imager_description": "Det snabbaste sättet att komma igång. Välj ditt kort, välj en avbildning och flasha direkt till SD-kort eller USB-enhet. Armbian Imager hanterar nedladdning, SHA-verifiering och skrivning i ett steg. Ingen terminal behövs. Tillgänglig för Windows, macOS och Linux.",
     "imager_cta": "Ladda ner Armbian Imager",
     "manual_title": "Manuell nedladdning",
     "manual_badge": "Avancerat",
-    "manual_description": "För avancerade användare som föredrar full kontroll. Bläddra i kortkatalogen, ladda ner komprimerade img.xz-filer, verifiera kontrollsummor manuellt och flasha med dd, balenaEtcher eller valfritt verktyg. Alla avbildningar inkluderar GPG-signaturer för verifiering.",
+    "manual_description": "För avancerade användare som föredrar full kontroll. Bläddra i kortkatalogen, ladda ner komprimerade img.xz-filer, verifiera kontrollsummor manuellt och flasha med dd eller valfritt verktyg. Alla avbildningar inkluderar GPG-signaturer för verifiering.",
     "manual_cta": "Bläddra bland nedladdningar"
   },
   "community": {

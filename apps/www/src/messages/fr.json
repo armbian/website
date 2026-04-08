@@ -71,11 +71,11 @@
     "subtitle": "Deux façons d'utiliser Armbian. Choisissez celle qui correspond à votre workflow.",
     "imager_title": "Armbian Imager",
     "imager_badge": "Recommandé",
-    "imager_description": "Le moyen le plus rapide de démarrer. Notre application de bureau sélectionne la bonne image pour votre carte, vérifie l'intégrité via checksum SHA et écrit directement sur carte SD ou clé USB. Pas de terminal — choisissez votre carte et flashez. Disponible pour Windows, macOS et Linux.",
+    "imager_description": "Le moyen le plus rapide de démarrer. Choisissez votre carte, sélectionnez une image et flashez directement sur carte SD ou clé USB. Armbian Imager gère le téléchargement, la vérification SHA et l'écriture en une seule étape. Aucun terminal nécessaire. Disponible pour Windows, macOS et Linux.",
     "imager_cta": "Télécharger Armbian Imager",
     "manual_title": "Téléchargement manuel",
     "manual_badge": "Avancé",
-    "manual_description": "Contrôle total du processus. Parcourez le catalogue, téléchargez les fichiers .img.xz compressés, vérifiez les checksums et flashez avec dd, balenaEtcher ou l'outil de votre choix. Chaque image inclut une signature GPG pour vérification.",
+    "manual_description": "Contrôle total du processus. Parcourez le catalogue, téléchargez les fichiers .img.xz compressés, vérifiez les checksums et flashez avec dd ou l'outil de votre choix. Chaque image inclut une signature GPG pour vérification.",
     "manual_cta": "Parcourir les téléchargements"
   },
   "community": {

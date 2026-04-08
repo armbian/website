@@ -71,11 +71,11 @@
     "subtitle": "Armbian'i calistirmanin iki yolu. Is akisiniza uyan birini secin.",
     "imager_title": "Armbian Imager",
     "imager_badge": "Onerilen",
-    "imager_description": "Baslamanin en kolay yolu. Masaustu uygulamamiz kartiniz icin dogru imaji otomatik olarak secer, SHA saglama toplamlariyla dosya butunlugunu dogrular ve dogrudan SD kart veya USB'ye yazar. Manuel adim yok, komut satiri yok — sadece kartinizi secin ve yazin. Windows, macOS ve Linux icin mevcuttur.",
+    "imager_description": "Baslamanin en hizli yolu. Kartinizi secin, bir imaj belirleyin ve dogrudan SD kart veya USB suruculere yazin. Armbian Imager indirme, SHA dogrulama ve yazma islemini tek adimda halleder. Terminal gerekmez. Windows, macOS ve Linux icin mevcuttur.",
     "imager_cta": "Armbian Imager Indir",
     "manual_title": "Manuel Indirme",
     "manual_badge": "Gelismis",
-    "manual_description": "Tam kontrol isteyen ileri duzey kullanicilar icin. Kart kataloguna gozatin, sikistirilmis .img.xz dosyalarini indirin, saglama toplamlarini manuel olarak dogrulayin ve dd, balenaEtcher veya tercih ettiginiz herhangi bir aracla yazin. Tum imajlar dogrulama icin GPG imzalari icerir.",
+    "manual_description": "Tam kontrol isteyen ileri duzey kullanicilar icin. Kart kataloguna gozatin, sikistirilmis .img.xz dosyalarini indirin, saglama toplamlarini manuel olarak dogrulayin ve dd veya tercih ettiginiz herhangi bir aracla yazin. Tum imajlar dogrulama icin GPG imzalari icerir.",
     "manual_cta": "Indirmelere Gozat"
   },
   "community": {

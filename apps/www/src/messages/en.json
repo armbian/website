@@ -81,11 +81,11 @@
     "subtitle": "Two paths to run Armbian. Choose the one that fits your workflow.",
     "imager_title": "Armbian Imager",
     "imager_badge": "Recommended",
-    "imager_description": "The fastest way to get running. Our desktop app selects the right image for your board, verifies integrity via SHA checksum, and writes directly to SD card or USB drive. No terminal needed — pick your board and flash. Available for Windows, macOS, and Linux.",
+    "imager_description": "The fastest way to get running. Pick your board, select an image, and flash directly to SD card or USB drive. Armbian Imager handles download, SHA verification, and writing in one step. No terminal needed. Available for Windows, macOS, and Linux.",
     "imager_cta": "Download Armbian Imager",
     "manual_title": "Manual Download",
     "manual_badge": "Advanced",
-    "manual_description": "Full control over the process. Browse the catalog, download compressed .img.xz files, verify checksums, and flash with dd, balenaEtcher, or your preferred tool. Every image ships with a GPG signature for verification.",
+    "manual_description": "Full control over the process. Browse the catalog, download compressed .img.xz files, verify checksums, and flash with dd or your preferred tool. Every image ships with a GPG signature for verification.",
     "manual_cta": "Browse Downloads"
   },
   "community": {

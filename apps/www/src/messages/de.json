@@ -71,11 +71,11 @@
     "subtitle": "Zwei Wege, Armbian zu nutzen. Nimm den, der zu deinem Workflow passt.",
     "imager_title": "Armbian Imager",
     "imager_badge": "Empfohlen",
-    "imager_description": "Der schnellste Weg zum Laufen. Unsere Desktop-App wählt das richtige Image für dein Board, prüft die Integrität per SHA-Checksumme und schreibt direkt auf SD-Karte oder USB-Stick. Kein Terminal nötig — Board auswählen und flashen. Verfügbar für Windows, macOS und Linux.",
+    "imager_description": "Der schnellste Weg zum Loslegen. Wähle dein Board, ein Image und flashe direkt auf SD-Karte oder USB-Stick. Armbian Imager übernimmt Download, SHA-Verifizierung und Schreibvorgang in einem Schritt. Kein Terminal nötig. Verfügbar für Windows, macOS und Linux.",
     "imager_cta": "Armbian Imager herunterladen",
     "manual_title": "Manueller Download",
     "manual_badge": "Fortgeschritten",
-    "manual_description": "Volle Kontrolle über den Prozess. Durchsuche den Katalog, lade komprimierte .img.xz-Dateien herunter, prüfe Checksummen und flashe mit dd, balenaEtcher oder deinem bevorzugten Tool. Jedes Image enthält eine GPG-Signatur zur Verifizierung.",
+    "manual_description": "Volle Kontrolle über den Prozess. Durchsuche den Katalog, lade komprimierte .img.xz-Dateien herunter, prüfe Checksummen und flashe mit dd oder deinem bevorzugten Tool. Jedes Image enthält eine GPG-Signatur zur Verifizierung.",
     "manual_cta": "Downloads durchsuchen"
   },
   "community": {

@@ -892,6 +892,42 @@ All variables are defined in `.env` (copied from `.env.example`). Docker Compose
 
 **Optional variables**: Leave empty to disable features (e.g., OIDC auth). If empty, local username/password login is used.
 
+### Default Admin User
+
+On first boot with an empty database, Payload automatically creates a default admin:
+
+- **Email**: `admin@armbian.com`
+- **Password**: `changeme`
+- **Role**: `admin`
+
+Change the password immediately after first login at `/admin`.
+
+### OIDC Authentication with Authentik
+
+When `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, and `OIDC_ISSUER_URL` are set, users can log in via Authentik. Roles are mapped from Authentik groups:
+
+| Authentik Group | Payload Role | Permissions |
+|---|---|---|
+| `armbian-admin` | admin | Full access: users, content, settings |
+| `armbian-editor` | editor | Create/edit/delete content, no user management |
+| `armbian-maintainer` | maintainer | Flash guides only (assigned boards) |
+| *(no matching group)* | editor | Default for new OIDC users |
+
+**Setup in Authentik:**
+
+1. Create an OAuth2/OIDC provider for the CMS application
+2. Add a `groups` scope to the provider (so groups are included in the userinfo response)
+3. Create the groups: `armbian-admin`, `armbian-editor`, `armbian-maintainer`
+4. Assign users to the appropriate groups
+5. Set `OIDC_ALLOWED_DOMAINS` to restrict auto-creation to specific email domains (e.g., `armbian.com`)
+
+**Behavior:**
+
+- First login creates the user automatically with the role matching their Authentik group
+- Role syncs on every login — changing a group in Authentik updates the Payload role
+- If `OIDC_ALLOWED_DOMAINS` is set, only emails from those domains can auto-register
+- Users created via OIDC get a random password (they authenticate via Authentik, not local login)
+
 ## Troubleshooting
 
 ### Tailwind Styles Not Loading

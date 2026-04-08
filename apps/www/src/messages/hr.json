@@ -71,11 +71,11 @@
     "subtitle": "Dva načina za pokretanje Armbiana. Odaberite onaj koji odgovara vašem načinu rada.",
     "imager_title": "Armbian Imager",
     "imager_badge": "Preporučeno",
-    "imager_description": "Najlakši način za početak. Naša desktop aplikacija automatski odabire pravu sliku za vašu ploču, provjerava integritet datoteke SHA kontrolnim zbrojevima i zapisuje izravno na SD karticu ili USB. Bez ručnih koraka, bez naredbenog retka — samo odaberite ploču i zapišite. Dostupno za Windows, macOS i Linux.",
+    "imager_description": "Najbrži način za početak. Odaberite ploču, odaberite sliku i zapišite izravno na SD karticu ili USB pogon. Armbian Imager obavlja preuzimanje, SHA provjeru i zapisivanje u jednom koraku. Terminal nije potreban. Dostupno za Windows, macOS i Linux.",
     "imager_cta": "Preuzmi Armbian Imager",
     "manual_title": "Ručno preuzimanje",
     "manual_badge": "Napredno",
-    "manual_description": "Za napredne korisnike koji preferiraju potpunu kontrolu. Pregledajte katalog ploča, preuzmite komprimirane img.xz datoteke, ručno provjerite kontrolne zbrojeve i zapišite s dd, balenaEtcher ili bilo kojim alatom. Sve slike uključuju GPG potpise za verifikaciju.",
+    "manual_description": "Za napredne korisnike koji preferiraju potpunu kontrolu. Pregledajte katalog ploča, preuzmite komprimirane img.xz datoteke, ručno provjerite kontrolne zbrojeve i zapišite s dd ili bilo kojim alatom. Sve slike uključuju GPG potpise za verifikaciju.",
     "manual_cta": "Pregledaj preuzimanja"
   },
   "community": {
