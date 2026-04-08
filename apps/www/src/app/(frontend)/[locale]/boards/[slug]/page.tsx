@@ -251,7 +251,7 @@ export default async function BoardPage({ params }: Props) {
                     <ArrowRight size={12} strokeWidth={2} className="opacity-30 shrink-0" />
                   </a>
                 )}
-                <a href={`${ARMBIAN_URLS.DOCS}/Developer-Guide_Build-Preparation/`} target="_blank" rel="noopener noreferrer"
+                <a href={ARMBIAN_URLS.BUILD_DOCS} target="_blank" rel="noopener noreferrer"
                   className={`flex items-center gap-3 px-4 py-3 text-sm font-medium text-[rgb(var(--fg-2))] transition-colors hover:bg-[rgb(var(--bg-sub))] hover:text-[rgb(var(--fg))] ${board.github_url ? 'border-t border-[rgb(var(--border)/0.3)]' : ''}`}>
                   <Code size={16} strokeWidth={1.5} className="opacity-50 shrink-0" />
                   <span className="flex-1">{t('build_docs')}</span>
@@ -300,7 +300,7 @@ export default async function BoardPage({ params }: Props) {
                 </pre>
               </div>
               <div className="px-6 py-4 flex gap-4 border-t border-[rgb(var(--border)/0.2)]">
-                <a href={`${ARMBIAN_URLS.DOCS}/Developer-Guide_Build-Preparation/`} target="_blank" rel="noopener noreferrer"
+                <a href={ARMBIAN_URLS.BUILD_DOCS} target="_blank" rel="noopener noreferrer"
                   className="text-sm font-medium text-[rgb(var(--brand))] hover:underline inline-flex items-center gap-1.5">
                   <BookOpen size={14} strokeWidth={2} />
                   {t('build_docs')}

@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { Send, CheckCircle, Loader2 } from 'lucide-react';
+import { ARMBIAN_URLS } from '@armbian/config';
 
 export function ContactForm() {
   const t = useTranslations('contact');
@@ -43,7 +44,7 @@ export function ContactForm() {
       <iframe ref={iframeRef} name="biginHiddenFrame" className="hidden" onLoad={handleIframeLoad} />
       <form
         method="POST"
-        action="https://eu.bigin.online/crm/WebToRecordForm"
+        action={ARMBIAN_URLS.BIGIN_FORM}
         target="biginHiddenFrame"
         acceptCharset="UTF-8"
         onSubmit={handleSubmit}
