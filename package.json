@@ -29,6 +29,12 @@
       "@parcel/watcher",
       "@swc/core",
       "sharp"
-    ]
+    ],
+    "overrides": {
+      "drizzle-orm": ">=0.45.2",
+      "vite": ">=6.4.2",
+      "dompurify": ">=3.3.2",
+      "esbuild": ">=0.25.0"
+    }
   }
 }
