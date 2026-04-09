@@ -31,9 +31,7 @@ coverage/
 playwright-report/
 test-results/
 
-# Payload CMS — auto-generated files
-apps/www/src/app/(payload)/admin/importMap.js
-apps/www/src/app/(payload)/admin/importMap.d.ts
+# Payload CMS — auto-generated types
 apps/www/src/payload-types.ts
 apps/www/media/
 
