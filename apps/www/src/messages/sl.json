@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Armbian — Optimiziran Linux za 300+ ARM plošč",
-    "description": "Produkcijsko pripravljene Debian in Ubuntu slike s pokrpanimi jedri za ARM enoploščne računalnike. Testirane izdaje, avtomatizirane gradnje, neodvisno od proizvajalcev."
+    "description": "Produkcijsko pripravljene Debian in Ubuntu slike z optimiziranimi jedri za ARM enoploščne računalnike. Testirane izdaje, avtomatizirane gradnje, neodvisno od proizvajalcev."
   },
   "nav": {
     "boards": "Plošče",
@@ -64,7 +64,7 @@
     "feature_3_title": "Ponovljivo",
     "feature_3_desc": "Ista izvorna koda, ista konfiguracija, isti rezultat. Vsakokrat.",
     "feature_4_title": "Docker izvorno",
-    "feature_4_desc": "Gradnje se izvajajo v vsebnikih. Brez onesnaževanja gostitelja."
+    "feature_4_desc": "Gradnje potekajo v izoliranih okoljih – brez vpliva na gostiteljski sistem."
   },
   "deploy": {
     "title": "Začnite.",
@@ -80,7 +80,7 @@
   },
   "community": {
     "label": "Skupnost",
-    "title": "Zgrajeno s strani ljudi, ki dostavljajo.",
+    "title": "Zgrajeno s strani tistih, ki poganjajo ekosistem.",
     "subtitle": "Armbian vzdržujejo razvijalci, testerji in strojni inženirji, ki prostovoljno namenjajo svoj čas ohranjanju zanesljivosti ARM Linux.",
     "contribute": "Sodelujte",
     "forums_title": "Forumi",
@@ -89,7 +89,7 @@
     "github_title": "Izvorna koda",
     "github_description": "Ogrodje za gradnjo, popravki jeder, paketi podpore za plošče — vse odprto.",
     "docs_title": "Dokumentacija",
-    "docs_description": "Vodiči za namestitev, navodila za gradnjo in dokumentacija za prispevnike.",
+    "docs_description": "Celovit nabor vodičev za namestitev, gradnjo in prispevanje.",
     "github_stars": "{count} zvezdic",
     "github_stars_empty": "-- zvezdic"
   },
