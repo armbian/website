@@ -31,8 +31,6 @@ coverage/
 playwright-report/
 test-results/
 
-# Payload CMS — auto-generated types
-apps/www/src/payload-types.ts
 apps/www/media/
 
 # API runtime cache
