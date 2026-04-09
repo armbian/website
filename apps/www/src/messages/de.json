@@ -64,7 +64,7 @@
     "feature_3_title": "Reproduzierbar",
     "feature_3_desc": "Gleicher Quellcode, gleiche Konfiguration, gleiches Ergebnis. Deterministische Builds, jedes Mal.",
     "feature_4_title": "Docker-nativ",
-    "feature_4_desc": "Der gesamte Build läuft in Containern. Keine Host-Verunreinigung."
+    "feature_4_desc": "Der gesamte Vorgang läuft in Containern. Keine Host-Verunreinigung."
   },
   "deploy": {
     "title": "Loslegen.",
@@ -75,7 +75,7 @@
     "imager_cta": "Armbian Imager herunterladen",
     "manual_title": "Manueller Download",
     "manual_badge": "Fortgeschritten",
-    "manual_description": "Volle Kontrolle über den Prozess. Durchsuche den Katalog, lade komprimierte .img.xz-Dateien herunter, prüfe Checksummen und flashe mit dd oder deinem bevorzugten Tool. Jedes Image enthält eine GPG-Signatur zur Verifizierung.",
+    "manual_description": "Volle Kontrolle über den Prozess. Durchsuche den Katalog, lade komprimierte .img.xz-Dateien herunter, verifiziere Prüfsummen und flashe mit dd oder deinem bevorzugten Tool. Jedes Image enthält eine GPG-Signatur zur Verifizierung.",
     "manual_cta": "Downloads durchsuchen"
   },
   "community": {
