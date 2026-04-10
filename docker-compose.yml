@@ -14,6 +14,8 @@ services:
       - LOG_LEVEL=${LOG_LEVEL:-info}
     volumes:
       - api-cache:/app/cache
+      - caddy-snippets:/app/shared/caddy
+      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://localhost:3001/api/v1/health').then(r=>{if(!r.ok)throw 1})"]
       interval: 10s
@@ -74,6 +76,7 @@ services:
       - "${API_HOST_PORT:-8080}:8080"
     volumes:
       - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-snippets:/etc/caddy/snippets:ro
       - caddy-data:/data
       - caddy-config:/config
     environment:
@@ -98,3 +101,4 @@ volumes:
   media-uploads:
   caddy-data:
   caddy-config:
+  caddy-snippets:

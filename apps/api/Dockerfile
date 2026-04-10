@@ -25,7 +25,7 @@ COPY --from=build /app/pruned/node_modules ./node_modules
 COPY --from=build /app/apps/api/dist ./dist
 COPY --from=build /app/apps/api/data ./data
 COPY --from=build /app/apps/api/package.json ./package.json
-RUN mkdir -p /app/cache && chown -R 1001:1001 /app/cache
+RUN mkdir -p /app/cache /app/shared/caddy && chown -R 1001:1001 /app/cache /app/shared
 
 USER appuser
 EXPOSE 3001
