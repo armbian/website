@@ -4,11 +4,10 @@ import { ScrollReveal } from '@/components/scroll-reveal';
 import { Link } from '@/i18n/navigation';
 import { ARMBIAN_URLS } from '@armbian/config';
 import {
-  Heart, ArrowRight, CreditCard, Bitcoin, ShoppingBag, Handshake,
+  Heart, ArrowRight, ShoppingBag, Handshake,
   Cpu, Server, Users, Wrench,
 } from 'lucide-react';
 import { SiGithub, SiPaypal, SiLiberapay } from '@icons-pack/react-simple-icons';
-import { CopyAddress } from '@/components/donate/copy-address';
 import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
 
@@ -104,24 +103,6 @@ export default async function DonatePage({ params }: Props) {
             <ScrollReveal delay={0.1} distance={20}>
               <DonateCard icon={<SiLiberapay size={22} className="text-white" />} iconBg="#F6C915"
                 title={t('method_liberapay_title')} desc={t('method_liberapay_desc')} cta={t('method_liberapay_cta')} href={ARMBIAN_URLS.LIBERAPAY} />
-            </ScrollReveal>
-            <ScrollReveal delay={0.15} distance={20}>
-              <DonateCard icon={<CreditCard size={22} strokeWidth={1.5} className="text-white" />} iconBg="#e74c3c"
-                title={t('method_subscriptions_title')} desc={t('method_subscriptions_desc')} cta={t('method_subscriptions_cta')} href={ARMBIAN_URLS.SUBSCRIPTIONS} />
-            </ScrollReveal>
-            <ScrollReveal delay={0.2} distance={20}>
-              <div className="hw-card rounded-xl p-5 h-full flex flex-col relative overflow-hidden">
-                <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-3 shrink-0" style={{ backgroundColor: '#F7931A' }}>
-                  <Bitcoin size={22} strokeWidth={1.5} className="text-white" />
-                </div>
-                <h3 className="text-sm font-bold mb-1">{t('method_btc_title')}</h3>
-                <p className="text-xs text-[rgb(var(--fg-2))] leading-relaxed mb-4 flex-1">{t('method_btc_desc')}</p>
-                <CopyAddress address={t('method_btc_address')} />
-              </div>
-            </ScrollReveal>
-            <ScrollReveal delay={0.25} distance={20}>
-              <DonateCard icon={<ShoppingBag size={22} strokeWidth={1.5} className="text-white" />} iconBg="#FF9900"
-                title={t('method_amazon_title')} desc={t('method_amazon_desc')} cta={t('method_amazon_cta')} href={ARMBIAN_URLS.AMAZON_WISHLIST} />
             </ScrollReveal>
           </div>
         </section>

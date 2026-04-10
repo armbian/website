@@ -30,7 +30,6 @@ export const ARMBIAN_URLS = {
   PAYPAL: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=A2AM5NWLVENF2',
   LIBERAPAY: 'https://liberapay.com/armbian',
   SUBSCRIPTIONS: 'https://forum.armbian.com/subscriptions/',
-  AMAZON_WISHLIST: 'https://www.amazon.de/hz/wishlist/ls/38S6D8XLO48IO?ref_=wl_share',
   MERCH_EU: 'http://swag.armbian.com/',
   GITHUB_API_REPO: 'https://api.github.com/repos/armbian/build',
   CALENDLY_OFFICE_HOURS: 'https://calendly.com/armbian/office-hours',
