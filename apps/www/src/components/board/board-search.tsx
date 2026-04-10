@@ -24,7 +24,7 @@ export function BoardSearch() {
       }
       setLoading(true);
       try {
-        const res = await fetch(`/api/v1/search?q=${encodeURIComponent(q)}`);
+        const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
         if (res.ok) {
           const json = (await res.json()) as { data: BoardSummary[] };
           setResults(json.data.slice(0, 8));

@@ -195,7 +195,7 @@ export function BoardsCatalog({ initialBoards, platinumBoards, vendors: initialV
     if (q.length < 2) { setSearchResults(null); setSearching(false); return; }
     setSearching(true);
     try {
-      const res = await fetch(`/api/v1/search?q=${encodeURIComponent(q)}`);
+      const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
       if (res.ok) {
         const json = (await res.json()) as { data: BoardSummary[] };
         setSearchResults(json.data);
@@ -221,12 +221,11 @@ export function BoardsCatalog({ initialBoards, platinumBoards, vendors: initialV
   }
 
   return (
-    <div>
+    <div className="pt-8">
       {/* ── Platinum Featured ── */}
-      {!search && featuredPlatinum.length > 0 && (
-        <section className="relative mb-10 py-10 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-b from-[#D4AF37]/[0.03] via-transparent to-transparent pointer-events-none" />
-          <div className="relative z-10">
+      {featuredPlatinum.length > 0 && (
+        <section className="relative mb-10 py-10">
+          <div>
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#FFDF00] to-[#D4AF37] flex items-center justify-center shadow-lg shadow-[#D4AF37]/20">
