@@ -24,7 +24,7 @@ cp .env.example .env
 ./manage.sh up
 ```
 
-The site is available at `http://localhost:3000`. The CMS admin panel is at `http://localhost:3000/admin`.
+The site is available at `http://localhost`. The CMS admin panel is at `http://localhost/admin`. The API is exposed at `http://localhost:8080/api/v1/` for Imager and third-party clients.
 
 ## Architecture
 
@@ -71,15 +71,16 @@ Run `./manage.sh help` for the full list.
 
 ## Deployment
 
-Three Docker Compose services:
+Four Docker Compose services:
 
 | Service | Port | Notes |
 |---------|------|-------|
-| `www` | `3000` | Public — place a reverse proxy (Caddy/Nginx) in front for HTTPS |
-| `api` | Internal only | Accessible only from Docker network |
+| `caddy` | `80`, `443`, `8080` | Reverse proxy — automatic HTTPS when real domains are set |
+| `www` | Internal only | Next.js app reached through Caddy |
+| `api` | Internal only | Fastify API reached through Caddy (port 8080 for external clients) |
 | `postgres` | Internal only | Data persisted in Docker volume |
 
-Required environment variables: `POSTGRES_PASSWORD`, `PAYLOAD_SECRET`. See `.env.example` for all options.
+Required environment variables: `POSTGRES_PASSWORD`, `PAYLOAD_SECRET`. For production, set `WWW_HOSTNAME`, `API_HOSTNAME`, and `CADDY_EMAIL` to enable automatic TLS. See `.env.example` for all options.
 
 Payload migrations run automatically on startup — no manual steps needed.
 

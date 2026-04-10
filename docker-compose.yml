@@ -42,8 +42,6 @@ services:
       context: .
       dockerfile: apps/www/Dockerfile
     restart: unless-stopped
-    ports:
-      - "3000:3000"
     environment:
       - NODE_ENV=production
       - API_URL=http://api:3001
@@ -67,7 +65,36 @@ services:
       retries: 5
       start_period: 15s
 
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "${API_HOST_PORT:-8080}:8080"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    environment:
+      - WWW_HOSTNAME=${WWW_HOSTNAME:-:80}
+      - API_HOSTNAME=${API_HOSTNAME:-:8080}
+      - CADDY_EMAIL=${CADDY_EMAIL:-admin@localhost}
+    depends_on:
+      www:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
 volumes:
   api-cache:
   postgres-data:
   media-uploads:
+  caddy-data:
+  caddy-config:

@@ -33,8 +33,9 @@ Paste them into `.env`, then start:
 ```
 
 Once healthy:
-- **Website**: http://localhost:3000
-- **CMS Admin**: http://localhost:3000/admin
+- **Website**: http://localhost
+- **CMS Admin**: http://localhost/admin
+- **API (external)**: http://localhost:8080/api/v1/
 
 The default admin password is generated randomly on first boot. Find it with:
 
@@ -325,6 +326,6 @@ Common causes: upstream JSON changed format, Zod schema mismatch, rate limiting 
 The www service uses port 3000. The API and PostgreSQL are internal only (no host ports). If 3000 is in use:
 
 ```bash
-lsof -i :3000
+lsof -i :80
 kill -9 <PID>
 ```

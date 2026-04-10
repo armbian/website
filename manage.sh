@@ -133,7 +133,7 @@ cmd_status() {
   echo -e "${BOLD}Health checks:${RESET}"
   local all_healthy=true
 
-  for svc in api postgres www; do
+  for svc in api postgres www caddy; do
     local cid
     cid=$($COMPOSE ps -q "$svc" 2>/dev/null || true)
     if [[ -z "$cid" ]]; then
@@ -167,7 +167,8 @@ cmd_status() {
   else
     echo -e "  ${RED}API (internal)${RESET}: container not running"
   fi
-  _http_check "http://localhost:3000/" "WWW (3000)"
+  _http_check "http://localhost/" "WWW (Caddy :80)"
+  _http_check "http://localhost:${API_HOST_PORT:-8080}/api/v1/health" "API (Caddy :${API_HOST_PORT:-8080})"
   echo ""
 
   $all_healthy && success "Stack is healthy." || warn "Some services need attention."
@@ -368,7 +369,7 @@ _wait_healthy() {
   local timeout="${1:-120}"
   local elapsed=0
   local interval=5
-  local services=("api" "postgres" "www")
+  local services=("api" "postgres" "www" "caddy")
 
   while (( elapsed < timeout )); do
     local all_healthy=true

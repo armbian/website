@@ -1,0 +1,29 @@
+{
+	email {$CADDY_EMAIL:admin@localhost}
+}
+
+# Website — defaults to HTTP on :80 for local dev (any host).
+# Override WWW_HOSTNAME in .env with a real domain for automatic HTTPS.
+{$WWW_HOSTNAME::80} {
+	encode zstd gzip
+
+	reverse_proxy www:3000
+
+	log {
+		output stdout
+		format console
+	}
+}
+
+# API — defaults to HTTP on :8080 for local dev.
+# Override API_HOSTNAME in .env with a real domain for automatic HTTPS.
+{$API_HOSTNAME::8080} {
+	encode zstd gzip
+
+	reverse_proxy api:3001
+
+	log {
+		output stdout
+		format console
+	}
+}
