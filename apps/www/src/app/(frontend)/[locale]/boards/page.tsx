@@ -4,6 +4,7 @@ import { getApiClient } from '@/lib/api.server';
 import { PageHero } from '@/components/layout/page-hero';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { BoardsCatalog } from '@/components/board/boards-catalog';
+import { BoardGridSkeleton } from '@/components/ui/skeleton';
 import type { BoardSummary, Vendor } from '@armbian/schemas';
 import type { Metadata } from 'next';
 
@@ -72,7 +73,7 @@ export default async function BoardsPage({ params }: Props) {
 
       <section className="pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Suspense fallback={<div className="py-24 text-center text-sm text-[rgb(var(--fg-3))]">Loading...</div>}>
+          <Suspense fallback={<div className="pt-8"><BoardGridSkeleton count={12} /></div>}>
             <BoardsCatalog
               initialBoards={initialBoards}
               platinumBoards={platinumBoards}
