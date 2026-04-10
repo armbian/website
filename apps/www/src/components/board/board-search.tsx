@@ -12,6 +12,7 @@ export function BoardSearch() {
   const [results, setResults] = useState<BoardSummary[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadError, setLoadError] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -20,20 +21,22 @@ export function BoardSearch() {
       if (q.length < 2) {
         setResults([]);
         setIsOpen(false);
+        setLoadError(false);
         return;
       }
       setLoading(true);
+      setLoadError(false);
       try {
         const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
-        if (res.ok) {
-          const json = (await res.json()) as { data: BoardSummary[] };
-          setResults(json.data.slice(0, 8));
-          setIsOpen(true);
-        }
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = (await res.json()) as { data: BoardSummary[] };
+        setResults(json.data.slice(0, 8));
       } catch {
-        // Silently fail
+        setResults([]);
+        setLoadError(true);
       } finally {
         setLoading(false);
+        setIsOpen(true);
       }
     },
     [],
@@ -77,37 +80,57 @@ export function BoardSearch() {
         </div>
       )}
 
-      {isOpen && results.length > 0 && (
-        <ul
+      {isOpen && (
+        <div
           role="listbox"
           className="absolute z-50 mt-1 w-full overflow-hidden rounded-lg border border-[rgb(var(--border))] bg-[rgb(var(--bg-el))] shadow-lg"
         >
-          {results.map((board) => (
-            <li key={board.slug}>
+          {loadError ? (
+            <div className="px-4 py-5 text-center">
+              <p className="text-sm font-semibold">{t('load_error_title')}</p>
+              <p className="mt-0.5 text-xs text-[rgb(var(--fg-3))]">{t('load_error_subtitle')}</p>
               <button
                 type="button"
-                role="option"
-                aria-selected={false}
-                className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition-colors hover:bg-[rgb(var(--bg-sub))]"
-                onClick={() => {
-                  setIsOpen(false);
-                  setQuery('');
-                  router.push(`/boards/${board.slug}`);
-                }}
+                onClick={() => void search(query)}
+                className="mt-3 inline-flex items-center gap-1.5 rounded-md border border-[rgb(var(--border))] px-3 py-1 text-xs font-semibold transition-colors hover:bg-[rgb(var(--bg-sub))]"
               >
-                <div className="flex-1">
-                  <p className="font-medium">{board.name}</p>
-                  <p className="text-xs text-[rgb(var(--fg-3))]">
-                    {board.vendor_name}
-                  </p>
-                </div>
-                <span className="shrink-0 text-xs text-[rgb(var(--fg-3))]">
-                  {t('images_short', { count: board.image_count })}
-                </span>
+                {t('retry')}
               </button>
-            </li>
-          ))}
-        </ul>
+            </div>
+          ) : results.length > 0 ? (
+            <ul>
+              {results.map((board) => (
+                <li key={board.slug}>
+                  <button
+                    type="button"
+                    role="option"
+                    aria-selected={false}
+                    className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition-colors hover:bg-[rgb(var(--bg-sub))]"
+                    onClick={() => {
+                      setIsOpen(false);
+                      setQuery('');
+                      router.push(`/boards/${board.slug}`);
+                    }}
+                  >
+                    <div className="flex-1">
+                      <p className="font-medium">{board.name}</p>
+                      <p className="text-xs text-[rgb(var(--fg-3))]">
+                        {board.vendor_name}
+                      </p>
+                    </div>
+                    <span className="shrink-0 text-xs text-[rgb(var(--fg-3))]">
+                      {t('images_short', { count: board.image_count })}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="px-4 py-5 text-center text-sm text-[rgb(var(--fg-3))]">
+              {t('no_results')}
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

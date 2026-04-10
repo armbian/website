@@ -14,25 +14,28 @@ export function BoardSelector() {
   const [selectedBoard, setSelectedBoard] = useState('');
   const [loadingVendors, setLoadingVendors] = useState(true);
   const [loadingBoards, setLoadingBoards] = useState(false);
+  const [loadError, setLoadError] = useState(false);
 
   // Load vendors on mount
-  useEffect(() => {
-    async function loadVendors() {
-      try {
-        const res = await fetch(`/api/vendors`);
-        if (res.ok) {
-          const json = (await res.json()) as { data: Vendor[] };
-          const sorted = json.data.sort((a, b) => b.board_count - a.board_count);
-          setVendors(sorted);
-        }
-      } catch {
-        // Fail silently
-      } finally {
-        setLoadingVendors(false);
-      }
+  const loadVendors = useCallback(async () => {
+    setLoadingVendors(true);
+    setLoadError(false);
+    try {
+      const res = await fetch(`/api/vendors`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = (await res.json()) as { data: Vendor[] };
+      const sorted = json.data.sort((a, b) => b.board_count - a.board_count);
+      setVendors(sorted);
+    } catch {
+      setLoadError(true);
+    } finally {
+      setLoadingVendors(false);
     }
-    loadVendors();
   }, []);
+
+  useEffect(() => {
+    void loadVendors();
+  }, [loadVendors]);
 
   // Load boards when vendor changes
   const loadBoards = useCallback(
@@ -42,17 +45,17 @@ export function BoardSelector() {
         return;
       }
       setLoadingBoards(true);
+      setLoadError(false);
       setSelectedBoard('');
       try {
         const res = await fetch(
           `/api/boards?vendor=${encodeURIComponent(vendorSlug)}&limit=100`,
         );
-        if (res.ok) {
-          const json = (await res.json()) as { data: BoardSummary[] };
-          setBoards(json.data);
-        }
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = (await res.json()) as { data: BoardSummary[] };
+        setBoards(json.data);
       } catch {
-        // Fail silently
+        setLoadError(true);
       } finally {
         setLoadingBoards(false);
       }
@@ -70,6 +73,22 @@ export function BoardSelector() {
     if (selectedBoard) {
       router.push(`/boards/${selectedBoard}`);
     }
+  }
+
+  if (loadError && vendors.length === 0) {
+    return (
+      <div className="rounded-lg border border-[rgb(var(--border))] bg-[rgb(var(--bg-el))] p-4 text-center">
+        <p className="text-sm font-semibold">{t('load_error_title')}</p>
+        <p className="mt-0.5 text-xs text-[rgb(var(--fg-3))]">{t('load_error_subtitle')}</p>
+        <button
+          type="button"
+          onClick={() => void loadVendors()}
+          className="mt-3 inline-flex items-center gap-1.5 rounded-md border border-[rgb(var(--border))] px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-[rgb(var(--bg-sub))]"
+        >
+          {t('retry')}
+        </button>
+      </div>
+    );
   }
 
   return (

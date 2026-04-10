@@ -8,7 +8,8 @@ import { SupportBadge } from '@/components/ui/support-badge';
 import { Pill } from '@/components/ui/pill';
 import { SUPPORT_TIERS } from '@armbian/config';
 import type { BoardSummary, Vendor, SupportTier } from '@armbian/schemas';
-import { Search, X, ArrowRight, Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, X, ArrowRight, Star, ChevronLeft, ChevronRight, AlertCircle, RefreshCw } from 'lucide-react';
+import { BoardGridSkeleton } from '@/components/ui/skeleton';
 
 interface BoardsCatalogProps {
   initialBoards: BoardSummary[];
@@ -117,6 +118,7 @@ export function BoardsCatalog({ initialBoards, platinumBoards, vendors: initialV
   const [currentTotal, setCurrentTotal] = useState(serverTotal);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [loadError, setLoadError] = useState(false);
   const [vendor, setVendor] = useState(searchParams.get('vendor') ?? '');
   const [support, setSupport] = useState(searchParams.get('support') ?? '');
   const [sort, setSort] = useState<SortKey>((searchParams.get('sort') as SortKey) ?? 'popularity');
@@ -136,6 +138,7 @@ export function BoardsCatalog({ initialBoards, platinumBoards, vendors: initialV
   // Fetch page from API
   const fetchPage = useCallback(async (p: number, v: string, s: string, srt: SortKey) => {
     setLoading(true);
+    setLoadError(false);
     const params = new URLSearchParams();
     if (v) params.set('vendor', v);
     if (s) params.set('support', s);
@@ -144,13 +147,15 @@ export function BoardsCatalog({ initialBoards, platinumBoards, vendors: initialV
     params.set('limit', String(PAGE_SIZE));
     try {
       const res = await fetch(`/api/boards?${params}`);
-      if (res.ok) {
-        const json = (await res.json()) as { data: BoardSummary[]; meta: { total: number } };
-        setBoards(json.data);
-        setCurrentTotal(json.meta.total);
-      }
-    } catch { /* */ }
-    setLoading(false);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = (await res.json()) as { data: BoardSummary[]; meta: { total: number } };
+      setBoards(json.data);
+      setCurrentTotal(json.meta.total);
+    } catch {
+      setLoadError(true);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   // When filters change → reset to page 1 and fetch
@@ -192,15 +197,19 @@ export function BoardsCatalog({ initialBoards, platinumBoards, vendors: initialV
 
   // Search
   const doSearch = useCallback(async (q: string) => {
-    if (q.length < 2) { setSearchResults(null); setSearching(false); return; }
+    if (q.length < 2) { setSearchResults(null); setSearching(false); setLoadError(false); return; }
     setSearching(true);
+    setLoadError(false);
     try {
       const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
-      if (res.ok) {
-        const json = (await res.json()) as { data: BoardSummary[] };
-        setSearchResults(json.data);
-      }
-    } catch { /* */ } finally { setSearching(false); }
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = (await res.json()) as { data: BoardSummary[] };
+      setSearchResults(json.data);
+    } catch {
+      setLoadError(true);
+    } finally {
+      setSearching(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -347,16 +356,25 @@ export function BoardsCatalog({ initialBoards, platinumBoards, vendors: initialV
 
       {/* ── Board Grid ── */}
       {loading ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-          {Array.from({ length: PAGE_SIZE }).map((_, i) => (
-            <div key={i} className="hw-card rounded-2xl p-4 animate-pulse">
-              <div className="h-28 sm:h-32 bg-[rgb(var(--bg-sub))] rounded-xl mb-3" />
-              <div className="border-t border-white/10 pt-3">
-                <div className="h-2 w-16 bg-[rgb(var(--bg-sub))] rounded mb-2" />
-                <div className="h-4 w-24 bg-[rgb(var(--bg-sub))] rounded" />
-              </div>
-            </div>
-          ))}
+        <BoardGridSkeleton count={PAGE_SIZE} />
+      ) : loadError ? (
+        <div className="mt-20 text-center">
+          <div className="inline-flex w-16 h-16 items-center justify-center rounded-2xl bg-red-500/10 mb-4">
+            <AlertCircle size={28} strokeWidth={1.5} className="text-red-500" />
+          </div>
+          <p className="text-lg font-bold">{t('load_error_title')}</p>
+          <p className="mt-1 text-sm text-[rgb(var(--fg-3))]">{t('load_error_subtitle')}</p>
+          <button
+            type="button"
+            onClick={() => {
+              if (search.length >= 2) void doSearch(search);
+              else void fetchPage(page, vendor, support, sort);
+            }}
+            className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[rgb(var(--brand))] text-white font-semibold text-sm hover:bg-[rgb(var(--brand-hover))] transition-colors"
+          >
+            <RefreshCw size={14} strokeWidth={2.5} />
+            {t('retry')}
+          </button>
         </div>
       ) : displayBoards.length > 0 ? (
         <>
