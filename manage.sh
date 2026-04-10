@@ -175,6 +175,36 @@ cmd_status() {
 }
 
 # ---------------------------------------------------------------------------
+# cmd: sync — force an immediate upstream data sync
+# ---------------------------------------------------------------------------
+cmd_sync() {
+  local api_cid
+  api_cid=$($COMPOSE ps -q api 2>/dev/null || true)
+  [[ -n "$api_cid" ]] || die "API container is not running."
+
+  info "Triggering upstream sync and Caddy redirect reload..."
+  local response
+  response=$(docker exec "$api_cid" node -e "
+    fetch('http://localhost:3001/api/v1/sync', {
+      method: 'POST',
+      headers: { 'X-Armbian-Client': 'manage.sh' },
+    })
+      .then(r => r.text().then(body => ({ status: r.status, body })))
+      .then(({ status, body }) => {
+        process.stdout.write(status + ' ' + body);
+        process.exit(status >= 200 && status < 300 ? 0 : 1);
+      })
+      .catch(err => {
+        process.stdout.write('error ' + err.message);
+        process.exit(1);
+      });
+  " 2>&1) || { error "$response"; die "Sync trigger failed."; }
+
+  success "Sync started. Watch progress with: ./manage.sh logs api"
+  info "The Caddy redirect map will update automatically when sync completes (~2s)."
+}
+
+# ---------------------------------------------------------------------------
 # cmd: shell [service]
 # ---------------------------------------------------------------------------
 cmd_shell() {
@@ -340,8 +370,8 @@ _load_env_vars() {
 _validate_service() {
   local service="$1"
   case "$service" in
-    api|postgres|www) ;;
-    *) die "Unknown service: '$service'. Valid services: api, postgres, www" ;;
+    api|postgres|www|caddy) ;;
+    *) die "Unknown service: '$service'. Valid services: api, postgres, www, caddy" ;;
   esac
 }
 
@@ -445,6 +475,7 @@ cmd_help() {
   echo -e "  ${CYAN}rebuild [service]${RESET}    Rebuild a specific service (www, api) or all if unspecified"
   echo -e "  ${CYAN}logs [service]${RESET}       Follow logs — defaults to all services"
   echo -e "  ${CYAN}status${RESET}               Show container status, health, and endpoint checks"
+  echo -e "  ${CYAN}sync${RESET}                 Force an immediate upstream sync and Caddy redirect reload"
   echo -e "  ${CYAN}shell [service]${RESET}      Open a shell inside a container — defaults to www"
   echo -e "  ${CYAN}db${RESET}                   Connect to PostgreSQL via psql"
   echo -e "  ${CYAN}db:backup${RESET}            Dump the database to backups/ with a timestamp"
@@ -479,6 +510,7 @@ case "$COMMAND" in
   rebuild)     banner; cmd_rebuild "$@" ;;
   logs)        cmd_logs "$@" ;;
   status)      banner; cmd_status ;;
+  sync)        banner; cmd_sync ;;
   shell)       cmd_shell "$@" ;;
   db)          cmd_db ;;
   db:backup)   banner; cmd_db_backup ;;

@@ -4,6 +4,25 @@ import '../types.js';
 
 export function registerHealthRoutes(server: FastifyInstance, sync: SyncService): void {
   /**
+   * POST /api/v1/sync — trigger an immediate upstream sync.
+   * Restricted to loopback callers; operators invoke it via `manage.sh sync`
+   * which proxies through `docker exec` so the source is the container's
+   * own loopback interface.
+   */
+  server.post('/api/v1/sync', async (request, reply) => {
+    const ip = request.ip;
+    const isLoopback = ip === '127.0.0.1' || ip === '::1' || ip === '::ffff:127.0.0.1';
+    if (!isLoopback) {
+      return reply.code(403).send({ error: 'Forbidden', statusCode: 403 });
+    }
+    void sync.sync().catch((err) => server.log.error({ err }, 'Manual sync failed'));
+    return reply.code(202).send({
+      status: 'accepted',
+      message: 'Sync started in background',
+    });
+  });
+
+  /**
    * GET /api/v1/health
    * Health check with sync status, data counts, and source statuses.
    */
