@@ -26,7 +26,7 @@ export default async function AuthorsPage({ params }: Props) {
   setRequestLocale(locale);
   const t = await getTranslations('team');
 
-  const api = getApiClient();
+  const api = await getApiClient();
   let maintainers: Awaited<ReturnType<typeof api.getMaintainers>>['data'] = [];
   let boards: Awaited<ReturnType<typeof api.getBoards>>['data'] = [];
   try {

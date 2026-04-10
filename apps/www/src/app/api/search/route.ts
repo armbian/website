@@ -12,7 +12,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const api = getApiClient();
+    const api = await getApiClient();
     const result = await api.search(q);
     return NextResponse.json(result);
   } catch {

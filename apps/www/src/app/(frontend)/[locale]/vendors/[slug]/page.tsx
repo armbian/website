@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const t = await getTranslations({ locale, namespace: 'vendors' });
   try {
-    const api = getApiClient();
+    const api = await getApiClient();
     const res = await api.getVendor(slug);
     return {
       title: `${res.data.name} — Armbian ${t('title')}`,
@@ -35,7 +35,7 @@ export default async function VendorPage({ params }: Props) {
   setRequestLocale(locale);
   const t = await getTranslations('vendors');
 
-  const api = getApiClient();
+  const api = await getApiClient();
   let vendor: Awaited<ReturnType<typeof api.getVendor>>['data'];
   try {
     const res = await api.getVendor(slug);

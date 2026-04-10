@@ -58,7 +58,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const t = await getTranslations({ locale, namespace: 'support' });
   try {
-    const api = getApiClient();
+    const api = await getApiClient();
     const boardRes = await api.getBoard(slug);
     const board = boardRes.data;
     return {
@@ -94,7 +94,7 @@ export default async function BoardPage({ params }: Props) {
   const t = await getTranslations('board');
   const tDownload = await getTranslations('download');
 
-  const api = getApiClient();
+  const api = await getApiClient();
   let board: Awaited<ReturnType<typeof api.getBoard>>['data'];
   let images: BoardImage[];
 

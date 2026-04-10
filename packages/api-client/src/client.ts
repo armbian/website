@@ -39,12 +39,14 @@ export class ArmbianApiClient {
   private timeout: number;
   private fetchImpl: typeof globalThis.fetch;
   private clientId: string;
+  private forwardedFor?: string;
 
-  constructor(baseUrl: string, options?: { timeout?: number; fetch?: typeof globalThis.fetch; clientId?: string }) {
+  constructor(baseUrl: string, options?: { timeout?: number; fetch?: typeof globalThis.fetch; clientId?: string; forwardedFor?: string }) {
     this.baseUrl = baseUrl.replace(/\/$/, '');
     this.timeout = options?.timeout ?? 10_000;
     this.fetchImpl = options?.fetch ?? globalThis.fetch;
     this.clientId = options?.clientId ?? 'armbian-website';
+    this.forwardedFor = options?.forwardedFor;
   }
 
   async getBoards(
@@ -152,6 +154,7 @@ export class ArmbianApiClient {
         Accept: 'application/json',
         'X-Armbian-Client': this.clientId,
       };
+      if (this.forwardedFor) headers['X-Forwarded-For'] = this.forwardedFor;
 
       const response = await this.fetchImpl(url, {
         signal: controller.signal,

@@ -38,7 +38,7 @@ export default async function PartnersPage({ params }: Props) {
   setRequestLocale(locale);
   const t = await getTranslations('partners');
 
-  const api = getApiClient();
+  const api = await getApiClient();
   let partners: Partner[] = [];
   try {
     const res = await api.getPartners();

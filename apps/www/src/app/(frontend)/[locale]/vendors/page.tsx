@@ -23,7 +23,7 @@ export default async function VendorsPage({ params }: Props) {
   setRequestLocale(locale);
   const t = await getTranslations('vendors');
 
-  const api = getApiClient();
+  const api = await getApiClient();
   let vendors: Awaited<ReturnType<typeof api.getVendors>>['data'] = [];
   try {
     const res = await api.getVendors();

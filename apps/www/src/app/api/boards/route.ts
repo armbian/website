@@ -20,7 +20,7 @@ export async function GET(request: Request) {
   if (limit) params.limit = parseInt(limit, 10) || 24;
 
   try {
-    const api = getApiClient();
+    const api = await getApiClient();
     const result = await api.getBoards(params as Parameters<typeof api.getBoards>[0]);
     return NextResponse.json(result);
   } catch {

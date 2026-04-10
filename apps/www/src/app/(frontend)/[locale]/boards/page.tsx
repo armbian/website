@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   let total = 0;
   let vendorCount = 0;
   try {
-    const api = getApiClient();
+    const api = await getApiClient();
     const result = await api.getBoardsInit();
     total = result.data.total;
     vendorCount = result.data.vendors.length;
@@ -44,7 +44,7 @@ export default async function BoardsPage({ params }: Props) {
   let total = 0;
   let tierCounts: Record<string, number> = {};
   try {
-    const api = getApiClient();
+    const api = await getApiClient();
     const result = await api.getBoardsInit();
     initialBoards = result.data.boards;
     platinumBoards = result.data.platinumBoards;

@@ -52,9 +52,10 @@ async function main(): Promise<void> {
         },
       },
     },
-    // trustProxy: disabled by default to prevent IP spoofing via X-Forwarded-For.
-    // Set TRUST_PROXY=true only when running behind a known reverse proxy (e.g. Caddy/Nginx).
-    trustProxy: process.env['TRUST_PROXY'] === 'true',
+    // Trust X-Forwarded-For so the real visitor IP surfaces from Caddy and
+    // the www container. Safe because the API is not exposed to the host —
+    // only reachable from the Docker network.
+    trustProxy: true,
     disableRequestLogging: true,
   });
 
@@ -70,12 +71,14 @@ async function main(): Promise<void> {
   });
 
   // --- Security: require client identification header ---
-  // Public API, but requests without X-Armbian-Client are rejected to prevent
-  // casual browser scraping. The header is not a secret — it identifies the
-  // client (official website, Imager, third-party tools) for logging and
-  // rate limiting. Real abuse prevention is handled at the reverse proxy.
+  // Public API, but non-image requests without X-Armbian-Client are rejected to
+  // prevent casual browser scraping. The header is not a secret — it identifies
+  // the client (official website, Imager, third-party tools) for logging.
+  // Image routes are excluded because browsers load them via <img src> and
+  // cannot set custom headers on navigation requests.
   server.addHook('preHandler', async (request, reply) => {
     if (request.url === '/api/v1/health') return;
+    if (request.url.startsWith('/api/v1/images/')) return;
     const client = request.headers['x-armbian-client'];
     if (typeof client !== 'string' || client.length === 0) {
       void reply.status(403).send({ error: 'Client identification required', statusCode: 403 });

@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const api = getApiClient();
+    const api = await getApiClient();
     const result = await api.getVendors();
     return NextResponse.json(result);
   } catch {

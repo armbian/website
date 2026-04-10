@@ -52,7 +52,7 @@ export default async function HomePage({ params }: Props) {
   const tPartners = await getTranslations('partners');
   const tBlog = await getTranslations('blog');
 
-  const api = getApiClient();
+  const api = await getApiClient();
 
   const [homeResult, blogResult, statsResult] = await Promise.allSettled([
     api.getHomePage(),
