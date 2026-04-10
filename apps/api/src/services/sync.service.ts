@@ -26,6 +26,11 @@ import type { DataStore } from './datastore.js';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = join(__dirname, '..', '..', 'data');
 const CACHE_DIR = process.env['CACHE_DIR'] ?? join(DATA_DIR, '.cache');
+const CADDY_SNIPPETS_DIR = process.env['CADDY_SNIPPETS_DIR'] ?? '/app/shared/caddy';
+const CADDY_ADMIN_URL = process.env['CADDY_ADMIN_URL'] ?? 'http://caddy:2019';
+const CADDY_FILE_PATH = process.env['CADDY_FILE_PATH'] ?? '/etc/caddy/Caddyfile';
+const CADDY_RELOAD_MAX_ATTEMPTS = 10;
+const CADDY_RELOAD_RETRY_DELAY_MS = 2_000;
 
 const FETCH_TIMEOUT_MS = 15_000;
 
@@ -91,6 +96,10 @@ export class SyncService {
         { boards: this.store.getBoardCount(), savedAt: cached.savedAt },
         'Loaded from disk cache',
       );
+
+      // Fire and forget — don't block startup on Caddy reload
+      void this.writeCaddyRedirects();
+
       return true;
     } catch {
       return false;
@@ -196,6 +205,9 @@ export class SyncService {
 
     this.store.load(normalized);
 
+    // Update Caddy redirects snippet after each successful sync
+    void this.writeCaddyRedirects();
+
     // Fetch GitHub stars during sync — avoids live third-party calls at request time
     try {
       const ghRes = await fetch(ARMBIAN_URLS.GITHUB_API_REPO, {
@@ -248,6 +260,98 @@ export class SyncService {
       clearInterval(this.interval);
       this.interval = null;
     }
+  }
+
+  /** Write the legacy redirect map as a Caddy snippet imported by the reverse proxy. */
+  async writeCaddyRedirects(): Promise<void> {
+    const redirects = this.store.getRedirects();
+    const entries = Object.entries(redirects);
+    if (entries.length === 0) return;
+
+    // Emit bare and trailing-slash variants from a deduplicated set —
+    // Caddy's `map` directive rejects duplicate input keys.
+    const map = new Map<string, string>();
+    for (const [rawSource, target] of entries) {
+      const source = rawSource.replace(/\/+$/, '');
+      if (!source) continue;
+      if (!map.has(source)) map.set(source, target);
+      const withSlash = `${source}/`;
+      if (!map.has(withSlash)) map.set(withSlash, target);
+    }
+
+    // The `route` block forces Caddy to evaluate `map` before `redir`;
+    // otherwise `redir` is hoisted and the matcher sees an empty placeholder.
+    const lines: string[] = [
+      '# Auto-generated from API redirects map — do not edit manually',
+      `# Generated at ${new Date().toISOString()}`,
+      `# Entries: ${map.size}`,
+      '',
+      'route {',
+      '\tmap {http.request.uri.path} {legacy_target} {',
+    ];
+    for (const [source, target] of map) {
+      lines.push(`\t\t${source} ${target}`);
+    }
+    lines.push('\t\tdefault ""');
+    lines.push('\t}');
+    lines.push('\t@is_legacy not vars {legacy_target} ""');
+    lines.push('\tredir @is_legacy {legacy_target}/ 301');
+    lines.push('}');
+
+    try {
+      await mkdir(CADDY_SNIPPETS_DIR, { recursive: true });
+      await writeFile(join(CADDY_SNIPPETS_DIR, 'redirects.caddy'), lines.join('\n'));
+      this.log.info({ count: map.size }, 'Caddy redirects snippet written');
+      await this.reloadCaddy();
+    } catch (err) {
+      this.log.warn({ err }, 'Failed to write Caddy redirects snippet');
+    }
+  }
+
+  /**
+   * Reload Caddy via its admin API so the new snippet takes effect without
+   * restarting any container. Retried with fixed backoff to cover the
+   * startup race before Caddy is ready; failures are non-fatal.
+   */
+  private async reloadCaddy(): Promise<void> {
+    let caddyfile: string;
+    try {
+      caddyfile = await readFile(CADDY_FILE_PATH, 'utf-8');
+    } catch (err) {
+      this.log.debug({ err, path: CADDY_FILE_PATH }, 'Caddyfile not mounted — skipping reload');
+      return;
+    }
+
+    for (let attempt = 1; attempt <= CADDY_RELOAD_MAX_ATTEMPTS; attempt++) {
+      try {
+        const res = await fetch(`${CADDY_ADMIN_URL}/load`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/caddyfile',
+            'Cache-Control': 'must-revalidate',
+            // Caddy parses Origin as a URL, so the scheme is required.
+            Origin: 'http://caddy:2019',
+          },
+          body: caddyfile,
+          signal: AbortSignal.timeout(5_000),
+        });
+        if (res.ok) {
+          this.log.info({ attempt }, 'Caddy config reloaded');
+          return;
+        }
+        const body = await res.text().catch(() => '');
+        this.log.debug({ attempt, status: res.status, body }, 'Caddy reload returned non-OK');
+      } catch (err) {
+        this.log.debug({ attempt, err: (err as Error).message }, 'Caddy admin API unreachable');
+      }
+      if (attempt < CADDY_RELOAD_MAX_ATTEMPTS) {
+        await new Promise((r) => setTimeout(r, CADDY_RELOAD_RETRY_DELAY_MS));
+      }
+    }
+    this.log.warn(
+      { attempts: CADDY_RELOAD_MAX_ATTEMPTS },
+      'Caddy reload failed after retries — snippet written but proxy not refreshed',
+    );
   }
 
   getLastSyncTime(): Date | null {

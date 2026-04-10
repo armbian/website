@@ -232,23 +232,13 @@ export class Normalizer {
       const target = `/boards/${board.slug}`;
       const paths = [`/${board.slug}`, `/download/${board.slug}`];
 
-      // Old URL formats with hyphens from board name
+      // Alias derived from the full board name, e.g. "NanoPC T6 LTS" → nanopc-t6-lts.
+      // Stripped-vendor variants (e.g. "one", "pi", "cb1") are intentionally
+      // skipped to avoid generic collisions with site pages and CMS slugs.
       if (board.name) {
         const fullHyphenated = board.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
         if (fullHyphenated && fullHyphenated !== board.slug) {
           paths.push(`/${fullHyphenated}`, `/download/${fullHyphenated}`);
-        }
-
-        // Also generate without vendor prefix: "SpacemiT MusePi Pro" → "musepi-pro"
-        const vendorName = (board.vendor_name ?? '').toLowerCase();
-        if (vendorName && board.name.toLowerCase().startsWith(vendorName)) {
-          const nameWithoutVendor = board.name.slice(vendorName.length).trim();
-          if (nameWithoutVendor) {
-            const shortHyphenated = nameWithoutVendor.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-            if (shortHyphenated && shortHyphenated !== board.slug && shortHyphenated !== fullHyphenated) {
-              paths.push(`/${shortHyphenated}`, `/download/${shortHyphenated}`);
-            }
-          }
         }
       }
 
