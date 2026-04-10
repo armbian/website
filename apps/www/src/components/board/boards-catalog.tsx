@@ -143,7 +143,7 @@ export function BoardsCatalog({ initialBoards, platinumBoards, vendors: initialV
     params.set('page', String(p));
     params.set('limit', String(PAGE_SIZE));
     try {
-      const res = await fetch(`/api/v1/boards?${params}`);
+      const res = await fetch(`/api/boards?${params}`);
       if (res.ok) {
         const json = (await res.json()) as { data: BoardSummary[]; meta: { total: number } };
         setBoards(json.data);

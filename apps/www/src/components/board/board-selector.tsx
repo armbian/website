@@ -19,7 +19,7 @@ export function BoardSelector() {
   useEffect(() => {
     async function loadVendors() {
       try {
-        const res = await fetch(`/api/v1/vendors`);
+        const res = await fetch(`/api/vendors`);
         if (res.ok) {
           const json = (await res.json()) as { data: Vendor[] };
           const sorted = json.data.sort((a, b) => b.board_count - a.board_count);
@@ -45,7 +45,7 @@ export function BoardSelector() {
       setSelectedBoard('');
       try {
         const res = await fetch(
-          `/api/v1/boards?vendor=${encodeURIComponent(vendorSlug)}&limit=100`,
+          `/api/boards?vendor=${encodeURIComponent(vendorSlug)}&limit=100`,
         );
         if (res.ok) {
           const json = (await res.json()) as { data: BoardSummary[] };

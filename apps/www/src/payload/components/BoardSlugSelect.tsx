@@ -5,7 +5,7 @@ import { SelectInput, useField, FieldLabel } from '@payloadcms/ui';
 import type { TextFieldClientComponent } from 'payload';
 
 const API_URL = typeof window !== 'undefined'
-  ? `${window.location.origin}/api/v1/boards?limit=500&sort=name`
+  ? `${window.location.origin}/api/boards?limit=500&sort=name`
   : '';
 
 interface Board {
