@@ -3,8 +3,7 @@ import { ArmbianApiClient } from '@armbian/api-client';
 /** Server-side API client — uses internal Docker network URL */
 export function getApiClient(): ArmbianApiClient {
   const url = process.env['API_URL'] ?? 'http://localhost:3001';
-  const apiKey = process.env['INTERNAL_API_KEY'];
-  return new ArmbianApiClient(url, { timeout: 5_000, apiKey });
+  return new ArmbianApiClient(url, { timeout: 5_000, clientId: 'armbian-website' });
 }
 
 /** Format bytes to human-readable size */

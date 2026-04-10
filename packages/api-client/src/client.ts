@@ -38,13 +38,13 @@ export class ArmbianApiClient {
   private baseUrl: string;
   private timeout: number;
   private fetchImpl: typeof globalThis.fetch;
-  private apiKey?: string;
+  private clientId: string;
 
-  constructor(baseUrl: string, options?: { timeout?: number; fetch?: typeof globalThis.fetch; apiKey?: string }) {
+  constructor(baseUrl: string, options?: { timeout?: number; fetch?: typeof globalThis.fetch; clientId?: string }) {
     this.baseUrl = baseUrl.replace(/\/$/, '');
     this.timeout = options?.timeout ?? 10_000;
     this.fetchImpl = options?.fetch ?? globalThis.fetch;
-    this.apiKey = options?.apiKey;
+    this.clientId = options?.clientId ?? 'armbian-website';
   }
 
   async getBoards(
@@ -148,8 +148,10 @@ export class ArmbianApiClient {
     const timer = setTimeout(() => controller.abort(), this.timeout);
 
     try {
-      const headers: Record<string, string> = { Accept: 'application/json' };
-      if (this.apiKey) headers['x-api-key'] = this.apiKey;
+      const headers: Record<string, string> = {
+        Accept: 'application/json',
+        'X-Armbian-Client': this.clientId,
+      };
 
       const response = await this.fetchImpl(url, {
         signal: controller.signal,

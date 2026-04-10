@@ -293,7 +293,7 @@ cmd_env_check() {
   _load_env_vars
 
   local required_vars=("POSTGRES_PASSWORD" "PAYLOAD_SECRET")
-  local optional_vars=("INTERNAL_API_KEY" "OIDC_CLIENT_ID" "OIDC_CLIENT_SECRET" "OIDC_ISSUER_URL" "OIDC_ALLOWED_DOMAINS")
+  local optional_vars=("OIDC_CLIENT_ID" "OIDC_CLIENT_SECRET" "OIDC_ISSUER_URL" "OIDC_ALLOWED_DOMAINS")
   local all_ok=true
 
   for var in "${required_vars[@]}"; do

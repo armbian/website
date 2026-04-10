@@ -3,7 +3,6 @@ import cors from '@fastify/cors';
 import compress from '@fastify/compress';
 import etag from '@fastify/etag';
 import helmet from '@fastify/helmet';
-import { timingSafeEqual } from 'node:crypto';
 import { ARMBIAN_URLS } from '@armbian/config';
 
 import underPressure from '@fastify/under-pressure';
@@ -29,8 +28,6 @@ const CACHE_DIR = process.env['CACHE_DIR'] ?? './data/.cache';
 const SYNC_INTERVAL_MS = parseInt(process.env['DATA_SYNC_INTERVAL_MS'] ?? '3600000', 10);
 const LOG_LEVEL = process.env['LOG_LEVEL'] ?? 'info';
 const IS_DEV = process.env['NODE_ENV'] !== 'production';
-const INTERNAL_API_KEY = process.env['INTERNAL_API_KEY'];
-
 /** Allowed CORS origins for production (all Armbian domains) */
 const CORS_ALLOWED_ORIGINS = [
   ARMBIAN_URLS.WEBSITE,
@@ -45,45 +42,45 @@ async function main(): Promise<void> {
   const server = Fastify({
     logger: {
       level: LOG_LEVEL,
-      ...(IS_DEV ? { transport: { target: 'pino-pretty' } } : {}),
+      transport: {
+        target: 'pino-pretty',
+        options: {
+          colorize: true,
+          translateTime: 'SYS:HH:MM:ss',
+          ignore: 'pid,hostname,reqId',
+          singleLine: true,
+        },
+      },
     },
     // trustProxy: disabled by default to prevent IP spoofing via X-Forwarded-For.
     // Set TRUST_PROXY=true only when running behind a known reverse proxy (e.g. Caddy/Nginx).
     trustProxy: process.env['TRUST_PROXY'] === 'true',
+    disableRequestLogging: true,
   });
 
-  // --- Security: API key authentication ---
+  // Custom single-line request logger
+  server.addHook('onResponse', async (request, reply) => {
+    const method = request.method;
+    const url = request.url;
+    const status = reply.statusCode;
+    const ms = reply.elapsedTime.toFixed(1);
+    const ip = request.ip;
+    const symbol = status >= 500 ? '◉' : status >= 400 ? '○' : '●';
+    request.log.info(`${symbol} ${method} ${url} ${status} ${ms}ms ← ${ip}`);
+  });
 
-  if (INTERNAL_API_KEY) {
-    const keyBuf = Buffer.from(INTERNAL_API_KEY);
-    server.addHook('preHandler', async (request, reply) => {
-      // Health endpoint stays open for Docker healthchecks
-      if (request.url === '/api/v1/health') return;
-      // Allow requests from loopback and Docker private network ranges:
-      // 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16
-      const ip = request.ip;
-      if (
-        ip === '127.0.0.1' ||
-        ip === '::1' ||
-        /^172\.(1[6-9]|2\d|3[01])\./.test(ip) ||
-        ip.startsWith('10.') ||
-        ip.startsWith('192.168.')
-      ) return;
-      // External requests must provide a valid API key (timing-safe comparison)
-      const provided = request.headers['x-api-key'];
-      if (typeof provided !== 'string' || provided.length !== INTERNAL_API_KEY.length) {
-        void reply.status(401).send({ error: 'Unauthorized', statusCode: 401 });
-        return;
-      }
-      const providedBuf = Buffer.from(provided);
-      if (!timingSafeEqual(keyBuf, providedBuf)) {
-        void reply.status(401).send({ error: 'Unauthorized', statusCode: 401 });
-      }
-    });
-    server.log.info('API key authentication enabled');
-  } else if (!IS_DEV) {
-    server.log.warn('INTERNAL_API_KEY not set — API is unprotected. Set it in .env for production.');
-  }
+  // --- Security: require client identification header ---
+  // Public API, but requests without X-Armbian-Client are rejected to prevent
+  // casual browser scraping. The header is not a secret — it identifies the
+  // client (official website, Imager, third-party tools) for logging and
+  // rate limiting. Real abuse prevention is handled at the reverse proxy.
+  server.addHook('preHandler', async (request, reply) => {
+    if (request.url === '/api/v1/health') return;
+    const client = request.headers['x-armbian-client'];
+    if (typeof client !== 'string' || client.length === 0) {
+      void reply.status(403).send({ error: 'Client identification required', statusCode: 403 });
+    }
+  });
 
   // --- Plugins ---
 

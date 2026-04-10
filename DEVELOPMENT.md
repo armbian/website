@@ -263,7 +263,6 @@ Copy `.env.example` to `.env`. All variables:
 |----------|----------|---------|-------------|
 | `POSTGRES_PASSWORD` | **Yes** | — | Database password |
 | `PAYLOAD_SECRET` | **Yes** | — | 64-char hex for Payload auth |
-| `INTERNAL_API_KEY` | No | — | API key for external access |
 | `DATA_SYNC_INTERVAL_MS` | No | `14400000` | Sync interval (4h) |
 | `CORS_ORIGINS` | No | `http://localhost:3000` | Extra CORS origins |
 | `LOG_LEVEL` | No | `info` | API log level |
