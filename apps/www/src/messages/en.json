@@ -85,7 +85,7 @@
     "imager_cta": "Download Armbian Imager",
     "manual_title": "Manual Download",
     "manual_badge": "Advanced",
-    "manual_description": "Full control over the process. Browse the catalog, download compressed .img.xz files, verify checksums, and flash with dd or your preferred tool. Every image ships with a GPG signature for verification.",
+    "manual_description": "Full control over the process. Browse the catalog, pick the image format that fits your target — SD card, QEMU, Hyper-V or rootfs tarball — verify the GPG signature, then flash or import with the right tool. Every release ships with checksums and signed metadata.",
     "manual_cta": "Browse Downloads"
   },
   "community": {
@@ -158,6 +158,8 @@
     "load_error_title": "Couldn't load boards",
     "load_error_subtitle": "Check your connection and try again",
     "retry": "Retry",
+    "og_description": "Download Armbian for {board} by {vendor}. {tier} support, {count, plural, one {# image} other {# images}} available.",
+    "og_description_with_distros": "Download Armbian for {board} by {vendor}. {tier} support, {count, plural, one {# image} other {# images}} available including {distros}.",
     "images_count": "{count, plural, one {# image} other {# images}}",
     "view_board": "View board",
     "all": "All",
@@ -192,7 +194,12 @@
     "promoted_status": "Status",
     "direct_download": "Direct download",
     "torrent_download": "Torrent",
-    "flash_guide": "How to flash"
+    "flash_guide": "How to flash",
+    "required_files": "Required files",
+    "files": "files",
+    "flash_alongside_main": "Flash alongside the main image",
+    "display_panel": "Display panel",
+    "boot_for_display": "Boot for {label}"
   },
   "support": {
     "platinum": "Platinum",
@@ -205,6 +212,7 @@
   "download": {
     "variant": "Variant",
     "extension": "Extension",
+    "type": "Type",
     "distribution": "Distribution",
     "kernel": "Kernel",
     "size": "Size",

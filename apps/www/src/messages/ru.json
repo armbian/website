@@ -75,7 +75,7 @@
     "imager_cta": "Скачать Armbian Imager",
     "manual_title": "Ручная загрузка",
     "manual_badge": "Продвинутый",
-    "manual_description": "Полный контроль над процессом. Просмотрите каталог, скачайте сжатые файлы .img.xz, проверьте контрольные суммы и прошейте с помощью dd или любого другого инструмента. Каждый образ включает GPG-подпись для верификации.",
+    "manual_description": "Полный контроль над процессом. Просмотрите каталог, выберите формат, подходящий для вашей платформы — SD-карта, QEMU, Hyper-V или rootfs tarball — проверьте подпись GPG, затем запишите или импортируйте подходящим инструментом. Каждый релиз включает контрольные суммы и подписанные метаданные.",
     "manual_cta": "Перейти к загрузкам"
   },
   "community": {
@@ -147,6 +147,8 @@
     "load_error_title": "Не удалось загрузить платы",
     "load_error_subtitle": "Проверьте подключение и попробуйте снова",
     "retry": "Повторить",
+    "og_description": "Скачайте Armbian для {board} от {vendor}. Поддержка {tier}, доступно {count, plural, one {# образ} few {# образа} other {# образов}}.",
+    "og_description_with_distros": "Скачайте Armbian для {board} от {vendor}. Поддержка {tier}, доступно {count, plural, one {# образ} few {# образа} other {# образов}}, включая {distros}.",
     "images_count": "{count, plural, one {# образ} few {# образа} many {# образов} other {# образов}}",
     "view_board": "Подробнее о плате",
     "all": "Все",
@@ -182,7 +184,12 @@
     "torrent_download": "Torrent",
     "flash_guide": "Инструкция по прошивке",
     "back_to_catalog": "Назад в каталог",
-    "promoted_status": "Статус"
+    "promoted_status": "Статус",
+    "required_files": "Требуемые файлы",
+    "files": "файлов",
+    "flash_alongside_main": "Прошить вместе с основным образом",
+    "display_panel": "Панель дисплея",
+    "boot_for_display": "Загрузка для {label}"
   },
   "support": {
     "platinum": "Платиновая",
@@ -211,7 +218,8 @@
     "extension": "Расширение",
     "direct_download": "Прямая загрузка",
     "rolling_title": "Скользящий релиз",
-    "rolling_subtitle": "Сборки, постоянно обновляемые из основной ветки."
+    "rolling_subtitle": "Сборки, постоянно обновляемые из основной ветки.",
+    "type": "Тип"
   },
   "donation": {
     "title": "Поддержите Armbian",

@@ -75,7 +75,7 @@
     "imager_cta": "Armbian Imager Indir",
     "manual_title": "Manuel Indirme",
     "manual_badge": "Gelismis",
-    "manual_description": "Tam kontrol isteyen ileri duzey kullanicilar icin. Kart kataloguna gozatin, sikistirilmis .img.xz dosyalarini indirin, saglama toplamlarini manuel olarak dogrulayin ve dd veya tercih ettiginiz herhangi bir aracla yazin. Tum imajlar dogrulama icin GPG imzalari icerir.",
+    "manual_description": "Süreç üzerinde tam kontrol. Kataloğu inceleyin, hedefinize uyan formatı seçin — SD kart, QEMU, Hyper-V veya rootfs tarball — GPG imzasını doğrulayın ve doğru araçla yazın veya içe aktarın. Her sürüm sağlama toplamları ve imzalanmış meta verilerle birlikte gelir.",
     "manual_cta": "Indirmelere Gozat"
   },
   "community": {
@@ -147,6 +147,8 @@
     "load_error_title": "Kartlar yüklenemedi",
     "load_error_subtitle": "Bağlantınızı kontrol edip tekrar deneyin",
     "retry": "Yeniden dene",
+    "og_description": "{vendor} tarafından üretilen {board} için Armbian'ı indirin. {tier} desteği, {count, plural, other {# görüntü}} mevcut.",
+    "og_description_with_distros": "{vendor} tarafından üretilen {board} için Armbian'ı indirin. {tier} desteği, {distros} dahil {count, plural, other {# görüntü}} mevcut.",
     "images_count": "{count, plural, one {# imaj} other {# imaj}}",
     "view_board": "Karti goruntule",
     "all": "Tumu",
@@ -182,7 +184,12 @@
     "torrent_download": "Torrent",
     "flash_guide": "Flash kılavuzu",
     "back_to_catalog": "Kataloğa dön",
-    "promoted_status": "Durum"
+    "promoted_status": "Durum",
+    "required_files": "Gerekli dosyalar",
+    "files": "dosya",
+    "flash_alongside_main": "Ana görüntüyle birlikte yaz",
+    "display_panel": "Ekran paneli",
+    "boot_for_display": "{label} için önyükleme"
   },
   "support": {
     "platinum": "Platin",
@@ -211,7 +218,8 @@
     "extension": "Uzantı",
     "direct_download": "Doğrudan indirme",
     "rolling_title": "Rolling Release",
-    "rolling_subtitle": "Ana daldan sürekli güncellenen geliştirme derlemeleri."
+    "rolling_subtitle": "Ana daldan sürekli güncellenen geliştirme derlemeleri.",
+    "type": "Tür"
   },
   "donation": {
     "title": "Armbian'i Destekleyin",

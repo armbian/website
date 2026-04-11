@@ -75,7 +75,7 @@
     "imager_cta": "Armbian Imager herunterladen",
     "manual_title": "Manueller Download",
     "manual_badge": "Fortgeschritten",
-    "manual_description": "Volle Kontrolle über den Prozess. Durchsuche den Katalog, lade komprimierte .img.xz-Dateien herunter, verifiziere Prüfsummen und flashe mit dd oder deinem bevorzugten Tool. Jedes Image enthält eine GPG-Signatur zur Verifizierung.",
+    "manual_description": "Volle Kontrolle über den Vorgang. Durchsuche den Katalog, wähl das Format, das zu deinem Ziel passt — SD-Karte, QEMU, Hyper-V oder Rootfs-Tarball — verifiziere die GPG-Signatur und flashe oder importiere mit dem passenden Tool. Jedes Release liefert Prüfsummen und signierte Metadaten.",
     "manual_cta": "Downloads durchsuchen"
   },
   "community": {
@@ -147,6 +147,8 @@
     "load_error_title": "Boards konnten nicht geladen werden",
     "load_error_subtitle": "Prüfe deine Verbindung und versuche es erneut",
     "retry": "Erneut versuchen",
+    "og_description": "Lade Armbian für {board} von {vendor} herunter. {tier} Support, {count, plural, one {# Image verfügbar} other {# Images verfügbar}}.",
+    "og_description_with_distros": "Lade Armbian für {board} von {vendor} herunter. {tier} Support, {count, plural, one {# Image verfügbar} other {# Images verfügbar}} inklusive {distros}.",
     "images_count": "{count, plural, one {# Image} other {# Images}}",
     "view_board": "Board ansehen",
     "all": "Alle",
@@ -182,7 +184,12 @@
     "torrent_download": "Torrent",
     "flash_guide": "Anleitung zum Flashen",
     "back_to_catalog": "Zurück zum Katalog",
-    "promoted_status": "Status"
+    "promoted_status": "Status",
+    "required_files": "Benötigte Dateien",
+    "files": "Dateien",
+    "flash_alongside_main": "Zusammen mit dem Hauptimage flashen",
+    "display_panel": "Displaypanel",
+    "boot_for_display": "Boot für {label}"
   },
   "support": {
     "platinum": "Platin",
@@ -211,7 +218,8 @@
     "extension": "Erweiterung",
     "direct_download": "Direkter Download",
     "rolling_title": "Rolling Release",
-    "rolling_subtitle": "Entwicklungs-Builds, kontinuierlich aus dem Hauptbranch aktualisiert."
+    "rolling_subtitle": "Entwicklungs-Builds, kontinuierlich aus dem Hauptbranch aktualisiert.",
+    "type": "Typ"
   },
   "donation": {
     "title": "Armbian unterstützen",

@@ -75,7 +75,7 @@
     "imager_cta": "Descargar Armbian Imager",
     "manual_title": "Descarga manual",
     "manual_badge": "Avanzado",
-    "manual_description": "Control total sobre el proceso. Navega el catálogo, descarga archivos .img.xz comprimidos, verifica checksums y flashea con dd o la herramienta que prefieras. Cada imagen incluye una firma GPG para verificación.",
+    "manual_description": "Control total sobre el proceso. Navega el catálogo, elige el formato que se adapte a tu destino — tarjeta SD, QEMU, Hyper-V o tarball rootfs — verifica la firma GPG y luego graba o importa con la herramienta adecuada. Cada versión incluye checksums y metadatos firmados.",
     "manual_cta": "Explorar descargas"
   },
   "community": {
@@ -147,6 +147,8 @@
     "load_error_title": "No se pudieron cargar las placas",
     "load_error_subtitle": "Comprueba tu conexión e inténtalo de nuevo",
     "retry": "Reintentar",
+    "og_description": "Descarga Armbian para {board} de {vendor}. Soporte {tier}, {count, plural, one {# imagen disponible} other {# imágenes disponibles}}.",
+    "og_description_with_distros": "Descarga Armbian para {board} de {vendor}. Soporte {tier}, {count, plural, one {# imagen disponible} other {# imágenes disponibles}} incluyendo {distros}.",
     "images_count": "{count, plural, one {# imagen} other {# imágenes}}",
     "view_board": "Ver placa",
     "all": "Todos",
@@ -182,7 +184,12 @@
     "torrent_download": "Torrent",
     "flash_guide": "Guía de flash",
     "back_to_catalog": "Volver al catálogo",
-    "promoted_status": "Estado"
+    "promoted_status": "Estado",
+    "required_files": "Archivos requeridos",
+    "files": "archivos",
+    "flash_alongside_main": "Flashear junto con la imagen principal",
+    "display_panel": "Panel de pantalla",
+    "boot_for_display": "Arranque para {label}"
   },
   "support": {
     "platinum": "Platino",
@@ -211,7 +218,8 @@
     "extension": "Extensión",
     "direct_download": "Descarga directa",
     "rolling_title": "Rolling Release",
-    "rolling_subtitle": "Compilaciones actualizadas continuamente desde la rama principal."
+    "rolling_subtitle": "Compilaciones actualizadas continuamente desde la rama principal.",
+    "type": "Tipo"
   },
   "donation": {
     "title": "Apoya Armbian",

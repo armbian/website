@@ -75,7 +75,7 @@
     "imager_cta": "下载 Armbian Imager",
     "manual_title": "手动下载",
     "manual_badge": "进阶",
-    "manual_description": "完全掌控整个流程。浏览目录，下载压缩的 .img.xz 文件，验证校验和，使用 dd 或任何你喜欢的工具烧录。所有镜像均包含 GPG 签名用于验证。",
+    "manual_description": "完全掌控整个流程。浏览目录,选择适合目标的镜像格式 — SD 卡、QEMU、Hyper-V 或 rootfs 压缩包 — 验证 GPG 签名,然后用合适的工具刷写或导入。每个版本都附带校验和与签名元数据。",
     "manual_cta": "浏览下载"
   },
   "community": {
@@ -147,6 +147,8 @@
     "load_error_title": "无法加载开发板",
     "load_error_subtitle": "请检查您的网络连接并重试",
     "retry": "重试",
+    "og_description": "下载 {vendor} 的 {board} 版 Armbian。{tier} 支持,提供 {count, plural, other {# 个镜像}}。",
+    "og_description_with_distros": "下载 {vendor} 的 {board} 版 Armbian。{tier} 支持,提供 {count, plural, other {# 个镜像}},包括 {distros}。",
     "images_count": "{count, plural, one {# 个镜像} other {# 个镜像}}",
     "view_board": "查看开发板",
     "all": "全部",
@@ -182,7 +184,12 @@
     "torrent_download": "Torrent",
     "flash_guide": "刷写指南",
     "back_to_catalog": "返回目录",
-    "promoted_status": "状态"
+    "promoted_status": "状态",
+    "required_files": "必需文件",
+    "files": "文件",
+    "flash_alongside_main": "与主镜像一起烧录",
+    "display_panel": "显示面板",
+    "boot_for_display": "{label} 启动"
   },
   "support": {
     "platinum": "铂金",
@@ -211,7 +218,8 @@
     "extension": "扩展",
     "direct_download": "直接下载",
     "rolling_title": "滚动发布",
-    "rolling_subtitle": "从主分支持续更新的构建。"
+    "rolling_subtitle": "从主分支持续更新的构建。",
+    "type": "类型"
   },
   "donation": {
     "title": "支持 Armbian",

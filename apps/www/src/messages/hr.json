@@ -75,7 +75,7 @@
     "imager_cta": "Preuzmi Armbian Imager",
     "manual_title": "Ručno preuzimanje",
     "manual_badge": "Napredno",
-    "manual_description": "Za napredne korisnike koji preferiraju potpunu kontrolu. Pregledajte katalog ploča, preuzmite komprimirane img.xz datoteke, ručno provjerite kontrolne zbrojeve i zapišite s dd ili bilo kojim alatom. Sve slike uključuju GPG potpise za verifikaciju.",
+    "manual_description": "Potpuna kontrola nad procesom. Pregledajte katalog, odaberite format koji odgovara vašem cilju — SD kartica, QEMU, Hyper-V ili rootfs tarball — provjerite GPG potpis, zatim zapišite ili uvezite odgovarajućim alatom. Svako izdanje dolazi s kontrolnim sumama i potpisanim metapodacima.",
     "manual_cta": "Pregledaj preuzimanja"
   },
   "community": {
@@ -147,6 +147,8 @@
     "load_error_title": "Nije moguće učitati ploče",
     "load_error_subtitle": "Provjerite vezu i pokušajte ponovno",
     "retry": "Pokušaj ponovno",
+    "og_description": "Preuzmite Armbian za {board} od {vendor}. {tier} podrška, dostupno {count, plural, one {# slika} few {# slike} other {# slika}}.",
+    "og_description_with_distros": "Preuzmite Armbian za {board} od {vendor}. {tier} podrška, dostupno {count, plural, one {# slika} few {# slike} other {# slika}}, uključujući {distros}.",
     "images_count": "{count, plural, one {# slika} few {# slike} other {# slika}}",
     "view_board": "Pogledaj ploču",
     "all": "Sve",
@@ -182,7 +184,12 @@
     "torrent_download": "Torrent",
     "flash_guide": "Vodič za flashanje",
     "back_to_catalog": "Natrag u katalog",
-    "promoted_status": "Status"
+    "promoted_status": "Status",
+    "required_files": "Potrebne datoteke",
+    "files": "datoteka",
+    "flash_alongside_main": "Ispiši zajedno s glavnom slikom",
+    "display_panel": "Ploča zaslona",
+    "boot_for_display": "Pokretanje za {label}"
   },
   "support": {
     "platinum": "Platinasta",
@@ -211,7 +218,8 @@
     "extension": "Proširenje",
     "direct_download": "Izravno preuzimanje",
     "rolling_title": "Rolling Release",
-    "rolling_subtitle": "Razvojne verzije, kontinuirano ažurirane iz glavne grane."
+    "rolling_subtitle": "Razvojne verzije, kontinuirano ažurirane iz glavne grane.",
+    "type": "Vrsta"
   },
   "donation": {
     "title": "Podržite Armbian",

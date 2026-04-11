@@ -75,7 +75,7 @@
     "imager_cta": "Armbian Imagerをダウンロード",
     "manual_title": "手動ダウンロード",
     "manual_badge": "上級者向け",
-    "manual_description": "プロセスの完全な制御。カタログを閲覧し、圧縮された.img.xzファイルをダウンロードし、チェックサムを検証し、dd またはお好みのツールでフラッシュ。すべてのイメージにGPG署名が含まれています。",
+    "manual_description": "プロセスを完全に制御。カタログを閲覧し、ターゲットに合った形式（SDカード、QEMU、Hyper-V、rootfsアーカイブ)を選択し、GPG署名を検証してから適切なツールで書き込みまたはインポートします。各リリースにはチェックサムと署名付きメタデータが付属しています。",
     "manual_cta": "ダウンロードを閲覧"
   },
   "community": {
@@ -147,6 +147,8 @@
     "load_error_title": "ボードを読み込めませんでした",
     "load_error_subtitle": "接続を確認してもう一度お試しください",
     "retry": "再試行",
+    "og_description": "{vendor} の {board} 用 Armbian をダウンロード。{tier} サポート、{count, plural, other {# 個のイメージ}}が利用可能。",
+    "og_description_with_distros": "{vendor} の {board} 用 Armbian をダウンロード。{tier} サポート、{count, plural, other {# 個のイメージ}}が利用可能（{distros} を含む)。",
     "images_count": "{count, plural, one {#イメージ} other {#イメージ}}",
     "view_board": "ボードを見る",
     "all": "すべて",
@@ -182,7 +184,12 @@
     "torrent_download": "Torrent",
     "flash_guide": "フラッシュガイド",
     "back_to_catalog": "カタログに戻る",
-    "promoted_status": "ステータス"
+    "promoted_status": "ステータス",
+    "required_files": "必要なファイル",
+    "files": "ファイル",
+    "flash_alongside_main": "メインイメージと一緒に書き込む",
+    "display_panel": "ディスプレイパネル",
+    "boot_for_display": "{label} 用ブート"
   },
   "support": {
     "platinum": "プラチナ",
@@ -211,7 +218,8 @@
     "extension": "拡張",
     "direct_download": "直接ダウンロード",
     "rolling_title": "ローリングリリース",
-    "rolling_subtitle": "メインブランチから継続的に更新される開発ビルド。"
+    "rolling_subtitle": "メインブランチから継続的に更新される開発ビルド。",
+    "type": "タイプ"
   },
   "donation": {
     "title": "Armbianを支援",

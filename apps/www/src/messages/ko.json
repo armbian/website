@@ -75,7 +75,7 @@
     "imager_cta": "Armbian Imager 다운로드",
     "manual_title": "수동 다운로드",
     "manual_badge": "고급",
-    "manual_description": "프로세스의 완전한 제어. 카탈로그를 탐색하고, 압축된 .img.xz 파일을 다운로드하고, 체크섬을 검증하고, dd 또는 원하는 도구로 플래시하세요. 모든 이미지에 검증용 GPG 서명이 포함됩니다.",
+    "manual_description": "프로세스를 완벽하게 제어하세요. 카탈로그를 탐색하고 대상에 맞는 형식(SD 카드, QEMU, Hyper-V 또는 rootfs 아카이브)을 선택한 후, GPG 서명을 확인하고 적절한 도구로 플래싱하거나 가져옵니다. 모든 릴리스에는 체크섬과 서명된 메타데이터가 포함되어 있습니다.",
     "manual_cta": "다운로드 탐색"
   },
   "community": {
@@ -147,6 +147,8 @@
     "load_error_title": "보드를 불러올 수 없습니다",
     "load_error_subtitle": "연결을 확인하고 다시 시도하세요",
     "retry": "다시 시도",
+    "og_description": "{vendor}의 {board}용 Armbian을 다운로드하세요. {tier} 지원, {count, plural, other {# 개의 이미지}} 사용 가능.",
+    "og_description_with_distros": "{vendor}의 {board}용 Armbian을 다운로드하세요. {tier} 지원, {count, plural, other {# 개의 이미지}} 사용 가능 ({distros} 포함).",
     "images_count": "{count, plural, one {#개 이미지} other {#개 이미지}}",
     "view_board": "보드 보기",
     "all": "전체",
@@ -182,7 +184,12 @@
     "torrent_download": "Torrent",
     "flash_guide": "플래시 가이드",
     "back_to_catalog": "카탈로그로 돌아가기",
-    "promoted_status": "상태"
+    "promoted_status": "상태",
+    "required_files": "필수 파일",
+    "files": "파일",
+    "flash_alongside_main": "메인 이미지와 함께 플래시",
+    "display_panel": "디스플레이 패널",
+    "boot_for_display": "{label} 용 부트"
   },
   "support": {
     "platinum": "플래티넘",
@@ -211,7 +218,8 @@
     "extension": "확장",
     "direct_download": "직접 다운로드",
     "rolling_title": "롤링 릴리스",
-    "rolling_subtitle": "메인 브랜치에서 지속적으로 업데이트되는 개발 빌드."
+    "rolling_subtitle": "메인 브랜치에서 지속적으로 업데이트되는 개발 빌드.",
+    "type": "타입"
   },
   "donation": {
     "title": "Armbian 지원",

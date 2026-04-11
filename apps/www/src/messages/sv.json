@@ -75,7 +75,7 @@
     "imager_cta": "Ladda ner Armbian Imager",
     "manual_title": "Manuell nedladdning",
     "manual_badge": "Avancerat",
-    "manual_description": "För avancerade användare som föredrar full kontroll. Bläddra i kortkatalogen, ladda ner komprimerade img.xz-filer, verifiera kontrollsummor manuellt och flasha med dd eller valfritt verktyg. Alla avbildningar inkluderar GPG-signaturer för verifiering.",
+    "manual_description": "Full kontroll över processen. Bläddra i katalogen, välj det format som passar ditt mål — SD-kort, QEMU, Hyper-V eller rootfs-tarball — verifiera GPG-signaturen och skriv eller importera sedan med rätt verktyg. Varje utgåva levereras med checksummor och signerad metadata.",
     "manual_cta": "Bläddra bland nedladdningar"
   },
   "community": {
@@ -147,6 +147,8 @@
     "load_error_title": "Kunde inte läsa in kort",
     "load_error_subtitle": "Kontrollera din anslutning och försök igen",
     "retry": "Försök igen",
+    "og_description": "Ladda ner Armbian för {board} från {vendor}. {tier} support, {count, plural, one {# bild tillgänglig} other {# bilder tillgängliga}}.",
+    "og_description_with_distros": "Ladda ner Armbian för {board} från {vendor}. {tier} support, {count, plural, one {# bild tillgänglig} other {# bilder tillgängliga}} inklusive {distros}.",
     "images_count": "{count, plural, one {# avbildning} other {# avbildningar}}",
     "view_board": "Visa kort",
     "all": "Alla",
@@ -182,7 +184,12 @@
     "torrent_download": "Torrent",
     "flash_guide": "Flashguide",
     "back_to_catalog": "Tillbaka till katalogen",
-    "promoted_status": "Status"
+    "promoted_status": "Status",
+    "required_files": "Nödvändiga filer",
+    "files": "filer",
+    "flash_alongside_main": "Flasha tillsammans med huvudbilden",
+    "display_panel": "Bildskärmspanel",
+    "boot_for_display": "Boot för {label}"
   },
   "support": {
     "platinum": "Platina",
@@ -211,7 +218,8 @@
     "extension": "Tillägg",
     "direct_download": "Direktnedladdning",
     "rolling_title": "Rullande utgåva",
-    "rolling_subtitle": "Utvecklingsbyggen, löpande uppdaterade från huvudgrenen."
+    "rolling_subtitle": "Utvecklingsbyggen, löpande uppdaterade från huvudgrenen.",
+    "type": "Typ"
   },
   "donation": {
     "title": "Stöd Armbian",

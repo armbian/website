@@ -75,7 +75,7 @@
     "imager_cta": "Pobierz Armbian Imager",
     "manual_title": "Reczne pobieranie",
     "manual_badge": "Zaawansowane",
-    "manual_description": "Dla zaawansowanych uzytkownikow preferujacych pelna kontrole. Przegladaj katalog plyt, pobieraj skompresowane pliki .img.xz, recznie weryfikuj sumy kontrolne i flashuj za pomoca dd lub dowolnego preferowanego narzedzia. Wszystkie obrazy zawieraja podpisy GPG do weryfikacji.",
+    "manual_description": "Pełna kontrola nad procesem. Przeglądaj katalog, wybierz format odpowiedni dla swojego celu — karta SD, QEMU, Hyper-V lub rootfs tarball — zweryfikuj podpis GPG, a następnie wgraj lub zaimportuj odpowiednim narzędziem. Każde wydanie zawiera sumy kontrolne i podpisane metadane.",
     "manual_cta": "Przegladaj pobierania"
   },
   "community": {
@@ -147,6 +147,8 @@
     "load_error_title": "Nie udało się załadować płyt",
     "load_error_subtitle": "Sprawdź połączenie i spróbuj ponownie",
     "retry": "Spróbuj ponownie",
+    "og_description": "Pobierz Armbian dla {board} od {vendor}. Wsparcie {tier}, dostępne {count, plural, one {# obraz} few {# obrazy} other {# obrazów}}.",
+    "og_description_with_distros": "Pobierz Armbian dla {board} od {vendor}. Wsparcie {tier}, dostępne {count, plural, one {# obraz} few {# obrazy} other {# obrazów}}, w tym {distros}.",
     "images_count": "{count, plural, one {# obraz} few {# obrazy} many {# obrazów} other {# obrazów}}",
     "view_board": "Zobacz plyte",
     "all": "Wszystkie",
@@ -182,7 +184,12 @@
     "torrent_download": "Torrent",
     "flash_guide": "Instrukcja flashowania",
     "back_to_catalog": "Powrót do katalogu",
-    "promoted_status": "Status"
+    "promoted_status": "Status",
+    "required_files": "Wymagane pliki",
+    "files": "plików",
+    "flash_alongside_main": "Wgraj razem z obrazem głównym",
+    "display_panel": "Panel wyświetlacza",
+    "boot_for_display": "Rozruch dla {label}"
   },
   "support": {
     "platinum": "Platynowe",
@@ -211,7 +218,8 @@
     "extension": "Rozszerzenie",
     "direct_download": "Bezpośrednie pobieranie",
     "rolling_title": "Rolling Release",
-    "rolling_subtitle": "Kompilacje deweloperskie, stale aktualizowane z głównej gałęzi."
+    "rolling_subtitle": "Kompilacje deweloperskie, stale aktualizowane z głównej gałęzi.",
+    "type": "Typ"
   },
   "donation": {
     "title": "Wesprzyj Armbian",

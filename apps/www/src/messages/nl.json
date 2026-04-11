@@ -75,7 +75,7 @@
     "imager_cta": "Armbian Imager downloaden",
     "manual_title": "Handmatige download",
     "manual_badge": "Geavanceerd",
-    "manual_description": "Volledige controle over het proces. Blader door de catalogus, download gecomprimeerde .img.xz-bestanden, verifieer checksums en flash met dd of een andere tool. Elke image bevat een GPG-handtekening voor verificatie.",
+    "manual_description": "Volledige controle over het proces. Blader door de catalogus, kies het formaat dat bij je doel past — SD-kaart, QEMU, Hyper-V of rootfs-tarball — verifieer de GPG-handtekening en flash of importeer vervolgens met de juiste tool. Elke release wordt geleverd met checksums en ondertekende metadata.",
     "manual_cta": "Downloads bekijken"
   },
   "community": {
@@ -147,6 +147,8 @@
     "load_error_title": "Boards konden niet worden geladen",
     "load_error_subtitle": "Controleer je verbinding en probeer het opnieuw",
     "retry": "Opnieuw proberen",
+    "og_description": "Download Armbian voor {board} van {vendor}. {tier} ondersteuning, {count, plural, one {# image beschikbaar} other {# images beschikbaar}}.",
+    "og_description_with_distros": "Download Armbian voor {board} van {vendor}. {tier} ondersteuning, {count, plural, one {# image beschikbaar} other {# images beschikbaar}} inclusief {distros}.",
     "images_count": "{count, plural, one {# image} other {# images}}",
     "view_board": "Board bekijken",
     "all": "Alle",
@@ -182,7 +184,12 @@
     "torrent_download": "Torrent",
     "flash_guide": "Flashhandleiding",
     "back_to_catalog": "Terug naar catalogus",
-    "promoted_status": "Status"
+    "promoted_status": "Status",
+    "required_files": "Vereiste bestanden",
+    "files": "bestanden",
+    "flash_alongside_main": "Samen met het hoofdimage flashen",
+    "display_panel": "Displaypaneel",
+    "boot_for_display": "Boot voor {label}"
   },
   "support": {
     "platinum": "Platina",
@@ -211,7 +218,8 @@
     "extension": "Extensie",
     "direct_download": "Directe download",
     "rolling_title": "Rolling Release",
-    "rolling_subtitle": "Ontwikkelingsbuilds, continu bijgewerkt vanuit de hoofdbranch."
+    "rolling_subtitle": "Ontwikkelingsbuilds, continu bijgewerkt vanuit de hoofdbranch.",
+    "type": "Type"
   },
   "donation": {
     "title": "Steun Armbian",

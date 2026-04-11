@@ -75,7 +75,7 @@
     "imager_cta": "Prenesi Armbian Imager",
     "manual_title": "Ročni prenos",
     "manual_badge": "Napredno",
-    "manual_description": "Za napredne uporabnike, ki želijo popoln nadzor. Preglejte katalog plošč, prenesite stisnjene img.xz datoteke, ročno preverite kontrolne vsote in zapišite z dd ali katerimkoli orodjem. Vse slike vključujejo GPG podpise za preverjanje.",
+    "manual_description": "Popoln nadzor nad postopkom. Brskajte po katalogu, izberite format, ki ustreza vašemu cilju — SD-kartica, QEMU, Hyper-V ali rootfs tarball — preverite GPG-podpis, nato zapišite ali uvozite z ustreznim orodjem. Vsaka izdaja vključuje kontrolne vsote in podpisane metapodatke.",
     "manual_cta": "Prebrskaj prenose"
   },
   "community": {
@@ -147,6 +147,8 @@
     "load_error_title": "Plošč ni bilo mogoče naložiti",
     "load_error_subtitle": "Preverite povezavo in poskusite znova",
     "retry": "Poskusi znova",
+    "og_description": "Prenesite Armbian za {board} proizvajalca {vendor}. Podpora {tier}, na voljo {count, plural, one {# slika} two {# sliki} few {# slike} other {# slik}}.",
+    "og_description_with_distros": "Prenesite Armbian za {board} proizvajalca {vendor}. Podpora {tier}, na voljo {count, plural, one {# slika} two {# sliki} few {# slike} other {# slik}}, vključno z {distros}.",
     "images_count": "{count, plural, one {# slika} two {# sliki} few {# slike} other {# slik}}",
     "view_board": "Poglej ploščo",
     "all": "Vse",
@@ -182,7 +184,12 @@
     "torrent_download": "Torrent",
     "flash_guide": "Navodila za namestitev",
     "back_to_catalog": "Nazaj v katalog",
-    "promoted_status": "Status"
+    "promoted_status": "Status",
+    "required_files": "Zahtevane datoteke",
+    "files": "datotek",
+    "flash_alongside_main": "Zapiši skupaj z glavno sliko",
+    "display_panel": "Zaslonska plošča",
+    "boot_for_display": "Zagon za {label}"
   },
   "support": {
     "platinum": "Platinasta",
@@ -211,7 +218,8 @@
     "extension": "Razširitev",
     "direct_download": "Neposreden prenos",
     "rolling_title": "Rolling Release",
-    "rolling_subtitle": "Razvojne gradnje, neprekinjeno posodobljene iz glavne veje."
+    "rolling_subtitle": "Razvojne gradnje, neprekinjeno posodobljene iz glavne veje.",
+    "type": "Vrsta"
   },
   "donation": {
     "title": "Podprite Armbian",

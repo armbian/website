@@ -85,7 +85,7 @@
     "imager_cta": "Scarica Armbian Imager",
     "manual_title": "Download manuale",
     "manual_badge": "Avanzato",
-    "manual_description": "Per chi vuole il controllo totale. Sfoglia il catalogo, scarica i file .img.xz, verifica i checksum e scrivi con dd o il tool che preferisci. Ogni immagine include una firma GPG.",
+    "manual_description": "Controllo totale sul processo. Sfoglia il catalogo, scegli il formato che fa per te — scheda SD, QEMU, Hyper-V o rootfs tarball — verifica la firma GPG, poi flasha o importa con lo strumento giusto. Ogni release include checksum e metadati firmati.",
     "manual_cta": "Vai ai download"
   },
   "community": {
@@ -158,6 +158,8 @@
     "load_error_title": "Caricamento board non riuscito",
     "load_error_subtitle": "Controlla la connessione e riprova",
     "retry": "Riprova",
+    "og_description": "Scarica Armbian per {board} di {vendor}. Supporto {tier}, {count, plural, one {# immagine disponibile} other {# immagini disponibili}}.",
+    "og_description_with_distros": "Scarica Armbian per {board} di {vendor}. Supporto {tier}, {count, plural, one {# immagine disponibile} other {# immagini disponibili}} con {distros}.",
     "images_count": "{count, plural, one {# immagine} other {# immagini}}",
     "view_board": "Vedi board",
     "all": "Tutte",
@@ -192,7 +194,12 @@
     "promoted_status": "Stato",
     "direct_download": "Download diretto",
     "torrent_download": "Torrent",
-    "flash_guide": "Come flashare"
+    "flash_guide": "Come flashare",
+    "required_files": "File richiesti",
+    "files": "file",
+    "flash_alongside_main": "Da flashare insieme all'immagine principale",
+    "display_panel": "Pannello del display",
+    "boot_for_display": "Avvio per {label}"
   },
   "support": {
     "platinum": "Platino",
@@ -221,7 +228,8 @@
     "direct_download": "Download diretto",
     "images_count": "{count, plural, one {# immagine} other {# immagini}}",
     "rolling_title": "Rolling Release",
-    "rolling_subtitle": "Build di sviluppo, aggiornate di continuo dal branch principale."
+    "rolling_subtitle": "Build di sviluppo, aggiornate di continuo dal branch principale.",
+    "type": "Tipo"
   },
   "donation": {
     "title": "Sostieni Armbian",

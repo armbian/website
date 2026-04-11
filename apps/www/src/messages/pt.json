@@ -75,7 +75,7 @@
     "imager_cta": "Baixar Armbian Imager",
     "manual_title": "Download manual",
     "manual_badge": "Avançado",
-    "manual_description": "Controle total do processo. Navegue pelo catálogo, baixe arquivos .img.xz compactados, verifique checksums e grave com dd ou qualquer ferramenta de sua preferência. Cada imagem inclui assinatura GPG para verificação.",
+    "manual_description": "Controle total sobre o processo. Navegue pelo catálogo, escolha o formato adequado ao seu destino — cartão SD, QEMU, Hyper-V ou tarball rootfs — verifique a assinatura GPG e grave ou importe com a ferramenta certa. Cada release vem com checksums e metadados assinados.",
     "manual_cta": "Explorar downloads"
   },
   "community": {
@@ -147,6 +147,8 @@
     "load_error_title": "Não foi possível carregar as placas",
     "load_error_subtitle": "Verifique sua conexão e tente novamente",
     "retry": "Tentar novamente",
+    "og_description": "Baixe Armbian para {board} por {vendor}. Suporte {tier}, {count, plural, one {# imagem disponível} other {# imagens disponíveis}}.",
+    "og_description_with_distros": "Baixe Armbian para {board} por {vendor}. Suporte {tier}, {count, plural, one {# imagem disponível} other {# imagens disponíveis}} incluindo {distros}.",
     "images_count": "{count, plural, one {# imagem} other {# imagens}}",
     "view_board": "Ver placa",
     "all": "Todas",
@@ -182,7 +184,12 @@
     "torrent_download": "Torrent",
     "flash_guide": "Guia de flash",
     "back_to_catalog": "Voltar ao catálogo",
-    "promoted_status": "Estado"
+    "promoted_status": "Estado",
+    "required_files": "Arquivos necessários",
+    "files": "arquivos",
+    "flash_alongside_main": "Gravar junto com a imagem principal",
+    "display_panel": "Painel de exibição",
+    "boot_for_display": "Boot para {label}"
   },
   "support": {
     "platinum": "Platina",
@@ -211,7 +218,8 @@
     "extension": "Extensão",
     "direct_download": "Download direto",
     "rolling_title": "Rolling Release",
-    "rolling_subtitle": "Builds atualizados continuamente a partir do branch principal."
+    "rolling_subtitle": "Builds atualizados continuamente a partir do branch principal.",
+    "type": "Tipo"
   },
   "donation": {
     "title": "Apoie o Armbian",
