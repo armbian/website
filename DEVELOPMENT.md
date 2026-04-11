@@ -33,6 +33,7 @@ Paste them into `.env`, then start:
 ```
 
 Once healthy:
+
 - **Website**: http://localhost
 - **CMS Admin**: http://localhost/admin
 - **API (external)**: http://localhost:8080/api/v1/
@@ -122,9 +123,9 @@ Browser → /api/v1/images/boards/480/slug.png → Next.js rewrite → API → C
 URL helpers in `@armbian/config`:
 
 ```typescript
-boardImageUrl('nanopi-r6s')     // → /api/v1/images/boards/480/nanopi-r6s.png
-vendorLogoUrl('radxa')          // → /api/v1/images/vendors/480/radxa.png
-partnerLogoUrl('spacemit')      // → /api/v1/images/partners/spacemit.png
+boardImageUrl('nanopi-r6s'); // → /api/v1/images/boards/480/nanopi-r6s.png
+vendorLogoUrl('radxa'); // → /api/v1/images/vendors/480/radxa.png
+partnerLogoUrl('spacemit'); // → /api/v1/images/partners/spacemit.png
 ```
 
 Images are fetched from the CDN on first request and cached on disk. Subsequent requests serve from cache.
@@ -243,14 +244,14 @@ Tailwind 4 with `@tailwindcss/typography`. Class-based dark mode.
 
 ### Key Classes
 
-| Class | Purpose |
-|-------|---------|
-| `hw-card` | Board cards with hover transform + glow |
-| `hw-img` | Image zoom on card hover |
-| `bento-card` | Glassmorphism panels |
-| `terminal-glass` | Code block styling |
-| `badge-platinum` | Shiny tier badge |
-| `divider-glow` | Glowing horizontal divider |
+| Class            | Purpose                                 |
+| ---------------- | --------------------------------------- |
+| `hw-card`        | Board cards with hover transform + glow |
+| `hw-img`         | Image zoom on card hover                |
+| `bento-card`     | Glassmorphism panels                    |
+| `terminal-glass` | Code block styling                      |
+| `badge-platinum` | Shiny tier badge                        |
+| `divider-glow`   | Glowing horizontal divider              |
 
 Defined in `apps/www/src/app/(frontend)/globals.css`.
 
@@ -260,17 +261,17 @@ Defined in `apps/www/src/app/(frontend)/globals.css`.
 
 Copy `.env.example` to `.env`. All variables:
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `POSTGRES_PASSWORD` | **Yes** | — | Database password |
-| `PAYLOAD_SECRET` | **Yes** | — | 64-char hex for Payload auth |
-| `DATA_SYNC_INTERVAL_MS` | No | `14400000` | Sync interval (4h) |
-| `CORS_ORIGINS` | No | `http://localhost:3000` | Extra CORS origins |
-| `LOG_LEVEL` | No | `info` | API log level |
-| `OIDC_CLIENT_ID` | No | — | Authentik OAuth2 client ID |
-| `OIDC_CLIENT_SECRET` | No | — | Authentik OAuth2 secret |
-| `OIDC_ISSUER_URL` | No | — | Authentik issuer URL |
-| `OIDC_ALLOWED_DOMAINS` | No | — | Restrict OIDC to email domains |
+| Variable                | Required | Default                 | Description                    |
+| ----------------------- | -------- | ----------------------- | ------------------------------ |
+| `POSTGRES_PASSWORD`     | **Yes**  | —                       | Database password              |
+| `PAYLOAD_SECRET`        | **Yes**  | —                       | 64-char hex for Payload auth   |
+| `DATA_SYNC_INTERVAL_MS` | No       | `14400000`              | Sync interval (4h)             |
+| `CORS_ORIGINS`          | No       | `http://localhost:3000` | Extra CORS origins             |
+| `LOG_LEVEL`             | No       | `info`                  | API log level                  |
+| `OIDC_CLIENT_ID`        | No       | —                       | Authentik OAuth2 client ID     |
+| `OIDC_CLIENT_SECRET`    | No       | —                       | Authentik OAuth2 secret        |
+| `OIDC_ISSUER_URL`       | No       | —                       | Authentik issuer URL           |
+| `OIDC_ALLOWED_DOMAINS`  | No       | —                       | Restrict OIDC to email domains |
 
 Without `POSTGRES_PASSWORD` and `PAYLOAD_SECRET`, the stack won't start.
 
@@ -278,12 +279,12 @@ Without `POSTGRES_PASSWORD` and `PAYLOAD_SECRET`, the stack won't start.
 
 Leave `OIDC_*` variables empty for local email/password login. When set, Authentik groups map to Payload roles:
 
-| Authentik Group | Payload Role |
-|---|---|
-| `armbian-admin` | admin |
-| `armbian-maintainer` | maintainer |
-| `armbian-editor` | editor |
-| *(no match)* | editor |
+| Authentik Group      | Payload Role |
+| -------------------- | ------------ |
+| `armbian-admin`      | admin        |
+| `armbian-maintainer` | maintainer   |
+| `armbian-editor`     | editor       |
+| _(no match)_         | editor       |
 
 Roles sync on every login. First login auto-creates the user.
 

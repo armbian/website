@@ -11,7 +11,9 @@ type AuthStrategy = {
 const OIDC_CLIENT_ID = process.env.OIDC_CLIENT_ID ?? '';
 const OIDC_CLIENT_SECRET = process.env.OIDC_CLIENT_SECRET ?? '';
 const OIDC_ISSUER_URL = process.env.OIDC_ISSUER_URL ?? '';
-const JWKS_URL = OIDC_ISSUER_URL ? new URL(`${OIDC_ISSUER_URL}/protocol/openid-connect/certs`) : null;
+const JWKS_URL = OIDC_ISSUER_URL
+  ? new URL(`${OIDC_ISSUER_URL}/protocol/openid-connect/certs`)
+  : null;
 const JWKS = JWKS_URL ? createRemoteJWKSet(JWKS_URL) : null;
 const OIDC_ALLOWED_DOMAINS = (process.env.OIDC_ALLOWED_DOMAINS ?? '').split(',').filter(Boolean);
 
@@ -40,7 +42,7 @@ export const isOidcEnabled = Boolean(OIDC_CLIENT_ID && OIDC_CLIENT_SECRET && OID
 if (isOidcEnabled && OIDC_ALLOWED_DOMAINS.length === 0) {
   console.warn(
     '[oidc] OIDC_ALLOWED_DOMAINS is not set — any authenticated OIDC user can be auto-created. ' +
-    'Set OIDC_ALLOWED_DOMAINS to restrict sign-ups to specific email domains.',
+      'Set OIDC_ALLOWED_DOMAINS to restrict sign-ups to specific email domains.',
   );
 }
 
@@ -65,7 +67,7 @@ async function resolveTokenClaims(token: string): Promise<{
         email: claims.email as string | undefined,
         preferred_username: claims.preferred_username as string | undefined,
         name: claims.name as string | undefined,
-        groups: Array.isArray(claims.groups) ? claims.groups as string[] : [],
+        groups: Array.isArray(claims.groups) ? (claims.groups as string[]) : [],
       };
     } catch {
       // JWT verification failed — do not fall back, reject the token
@@ -88,7 +90,12 @@ async function resolveTokenClaims(token: string): Promise<{
     groups?: string[];
   };
 
-  if (typeof userinfo !== 'object' || userinfo === null || typeof userinfo.sub !== 'string' || userinfo.sub.length === 0) {
+  if (
+    typeof userinfo !== 'object' ||
+    userinfo === null ||
+    typeof userinfo.sub !== 'string' ||
+    userinfo.sub.length === 0
+  ) {
     return null;
   }
   return userinfo;

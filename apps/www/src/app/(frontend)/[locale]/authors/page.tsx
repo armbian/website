@@ -5,7 +5,6 @@ import { ScrollReveal } from '@/components/scroll-reveal';
 import { TeamCatalog } from '@/components/team/team-catalog';
 import type { Metadata } from 'next';
 
-
 export const dynamic = 'force-dynamic';
 
 interface Props {
@@ -30,13 +29,12 @@ export default async function AuthorsPage({ params }: Props) {
   let maintainers: Awaited<ReturnType<typeof api.getMaintainers>>['data'] = [];
   let boards: Awaited<ReturnType<typeof api.getBoards>>['data'] = [];
   try {
-    const [mRes, bRes] = await Promise.all([
-      api.getMaintainers(),
-      api.getBoards({ limit: 500 }),
-    ]);
+    const [mRes, bRes] = await Promise.all([api.getMaintainers(), api.getBoards({ limit: 500 })]);
     maintainers = mRes.data;
     boards = bRes.data;
-  } catch { /* graceful */ }
+  } catch {
+    /* graceful */
+  }
 
   const boardNames: Record<string, string> = {};
   for (const b of boards) boardNames[b.slug] = b.name;
@@ -46,9 +44,7 @@ export default async function AuthorsPage({ params }: Props) {
       <PageHero className="!pb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <ScrollReveal>
-            <h1 className="text-fluid-3xl font-black tracking-tight mb-4">
-              {t('hero_title')}
-            </h1>
+            <h1 className="text-fluid-3xl font-black tracking-tight mb-4">{t('hero_title')}</h1>
             <p className="text-fluid-base text-[rgb(var(--fg-2))] leading-relaxed max-w-2xl mx-auto">
               {t('hero_subtitle')}
             </p>

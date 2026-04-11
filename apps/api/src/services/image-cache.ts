@@ -19,7 +19,13 @@ const PROXY_ALLOWED_HOSTS = [
 /** Block requests to private/internal IP ranges */
 function isPrivateHost(hostname: string): boolean {
   // Block localhost variants
-  if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1' || hostname === '[::1]') return true;
+  if (
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1' ||
+    hostname === '::1' ||
+    hostname === '[::1]'
+  )
+    return true;
   // Block common private/cloud metadata ranges
   if (/^(10|192\.168|172\.(1[6-9]|2\d|3[01]))\./.test(hostname)) return true;
   // Block link-local / cloud metadata
@@ -71,7 +77,11 @@ export class ImageCache {
   }
 
   /** Get cached image or fetch from CDN and cache it */
-  async getImage(type: 'board' | 'vendor', slug: string, size: string): Promise<{ data: Buffer; contentType: string } | null> {
+  async getImage(
+    type: 'board' | 'vendor',
+    slug: string,
+    size: string,
+  ): Promise<{ data: Buffer; contentType: string } | null> {
     if (!SAFE_SLUG_RE.test(slug) || !SAFE_SLUG_RE.test(size)) return null;
     const subDir = join(this.cacheDir, type, size);
     const filePath = join(subDir, `${slug}.png`);
@@ -84,9 +94,10 @@ export class ImageCache {
       // Not cached — fetch from CDN
     }
 
-    const url = type === 'board'
-      ? boardImageUrl(slug, size, { cdn: true })
-      : vendorLogoUrl(slug, size, { cdn: true });
+    const url =
+      type === 'board'
+        ? boardImageUrl(slug, size, { cdn: true })
+        : vendorLogoUrl(slug, size, { cdn: true });
 
     try {
       const controller = new AbortController();
@@ -154,7 +165,10 @@ export class ImageCache {
   }
 
   /** Get cached partner logo or fetch from source URL and cache it by slug */
-  async getPartnerImage(slug: string, sourceUrl: string): Promise<{ data: Buffer; contentType: string } | null> {
+  async getPartnerImage(
+    slug: string,
+    sourceUrl: string,
+  ): Promise<{ data: Buffer; contentType: string } | null> {
     if (!SAFE_SLUG_RE.test(slug)) return null;
     const subDir = join(this.cacheDir, 'partner');
     const filePath = join(subDir, `${slug}.png`);
@@ -212,7 +226,7 @@ export class ImageCache {
             return 'cached' as const;
           } catch {
             const result = await this.getImage(type, slug, size);
-            return result ? 'fetched' as const : 'failed' as const;
+            return result ? ('fetched' as const) : ('failed' as const);
           }
         }),
       );

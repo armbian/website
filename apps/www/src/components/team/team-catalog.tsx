@@ -59,8 +59,20 @@ export function TeamCatalog({ maintainers, boardNames }: TeamCatalogProps) {
   }, [sorted, activeTeam, t]);
 
   // Split active vs inactive
-  const active = useMemo(() => filtered.filter((m) => m.days_since_last_activity < INACTIVE_THRESHOLD && m.days_since_last_activity >= 0), [filtered]);
-  const inactive = useMemo(() => filtered.filter((m) => m.days_since_last_activity >= INACTIVE_THRESHOLD || m.days_since_last_activity < 0), [filtered]);
+  const active = useMemo(
+    () =>
+      filtered.filter(
+        (m) => m.days_since_last_activity < INACTIVE_THRESHOLD && m.days_since_last_activity >= 0,
+      ),
+    [filtered],
+  );
+  const inactive = useMemo(
+    () =>
+      filtered.filter(
+        (m) => m.days_since_last_activity >= INACTIVE_THRESHOLD || m.days_since_last_activity < 0,
+      ),
+    [filtered],
+  );
 
   return (
     <div>
@@ -70,7 +82,11 @@ export function TeamCatalog({ maintainers, boardNames }: TeamCatalogProps) {
           {t('all')} ({maintainers.length})
         </Pill>
         {teams.map(([team, count]) => (
-          <Pill key={team} active={activeTeam === team} onClick={() => setActiveTeam(activeTeam === team ? '' : team)}>
+          <Pill
+            key={team}
+            active={activeTeam === team}
+            onClick={() => setActiveTeam(activeTeam === team ? '' : team)}
+          >
             {team} ({count})
           </Pill>
         ))}
@@ -90,7 +106,9 @@ export function TeamCatalog({ maintainers, boardNames }: TeamCatalogProps) {
               member={m}
               boardNames={boardNames}
               validBoards={validBoards}
-              maintainsLabel={t('maintains_boards', { count: m.boards_maintained.filter((s) => validBoards.has(s)).length })}
+              maintainsLabel={t('maintains_boards', {
+                count: m.boards_maintained.filter((s) => validBoards.has(s)).length,
+              })}
               t={t}
             />
           ))}
@@ -119,7 +137,9 @@ export function TeamCatalog({ maintainers, boardNames }: TeamCatalogProps) {
                 member={m}
                 boardNames={boardNames}
                 validBoards={validBoards}
-                maintainsLabel={t('maintains_boards', { count: m.boards_maintained.filter((s) => validBoards.has(s)).length })}
+                maintainsLabel={t('maintains_boards', {
+                  count: m.boards_maintained.filter((s) => validBoards.has(s)).length,
+                })}
                 t={t}
               />
             ))}
@@ -130,7 +150,13 @@ export function TeamCatalog({ maintainers, boardNames }: TeamCatalogProps) {
   );
 }
 
-function MemberCard({ member: m, boardNames, validBoards, maintainsLabel, t }: {
+function MemberCard({
+  member: m,
+  boardNames,
+  validBoards,
+  maintainsLabel,
+  t,
+}: {
   member: Maintainer;
   boardNames: Record<string, string>;
   validBoards: Set<string>;
@@ -147,8 +173,13 @@ function MemberCard({ member: m, boardNames, validBoards, maintainsLabel, t }: {
       {/* Avatar */}
       <div className="mx-auto mb-3">
         {m.avatar?.startsWith('http') ? (
-          <img src={m.avatar} alt={m.name} width={72} height={72}
-            className="w-[72px] h-[72px] rounded-full mx-auto ring-2 ring-[rgb(var(--border)/0.3)] group-hover:ring-[rgb(var(--brand)/0.4)] transition-all" />
+          <img
+            src={m.avatar}
+            alt={m.name}
+            width={72}
+            height={72}
+            className="w-[72px] h-[72px] rounded-full mx-auto ring-2 ring-[rgb(var(--border)/0.3)] group-hover:ring-[rgb(var(--brand)/0.4)] transition-all"
+          />
         ) : (
           <div className="w-[72px] h-[72px] rounded-full bg-[rgb(var(--bg-sub))] flex items-center justify-center text-xl font-bold text-[rgb(var(--fg-3))] mx-auto ring-2 ring-[rgb(var(--border)/0.3)]">
             {m.name.charAt(0)}
@@ -158,15 +189,24 @@ function MemberCard({ member: m, boardNames, validBoards, maintainsLabel, t }: {
 
       {/* Name + activity dot */}
       <div className="flex items-center justify-center gap-1.5">
-        <p className="text-sm font-bold group-hover:text-[rgb(var(--brand))] transition-colors">{m.name}</p>
+        <p className="text-sm font-bold group-hover:text-[rgb(var(--brand))] transition-colors">
+          {m.name}
+        </p>
         {m.days_since_last_activity >= 0 && (
           <div
             className="w-2 h-2 rounded-full shrink-0"
-            title={m.days_since_last_activity === 0 ? t('active_today') : t('last_active_days', { days: m.days_since_last_activity })}
+            title={
+              m.days_since_last_activity === 0
+                ? t('active_today')
+                : t('last_active_days', { days: m.days_since_last_activity })
+            }
             style={{
-              backgroundColor: m.days_since_last_activity <= 30 ? '#10b981'
-                : m.days_since_last_activity <= 180 ? '#f59e0b'
-                : '#ef4444',
+              backgroundColor:
+                m.days_since_last_activity <= 30
+                  ? '#10b981'
+                  : m.days_since_last_activity <= 180
+                    ? '#f59e0b'
+                    : '#ef4444',
             }}
           />
         )}
@@ -174,8 +214,12 @@ function MemberCard({ member: m, boardNames, validBoards, maintainsLabel, t }: {
 
       {/* GitHub */}
       {m.github && (
-        <a href={m.github} target="_blank" rel="noopener noreferrer"
-          className="text-[11px] text-[rgb(var(--fg-3))] hover:text-[rgb(var(--brand))] transition-colors inline-flex items-center gap-1 mt-0.5">
+        <a
+          href={m.github}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[11px] text-[rgb(var(--fg-3))] hover:text-[rgb(var(--brand))] transition-colors inline-flex items-center gap-1 mt-0.5"
+        >
           <SiGithub size={12} className="opacity-50" />
           {t('github')}
         </a>
@@ -185,7 +229,10 @@ function MemberCard({ member: m, boardNames, validBoards, maintainsLabel, t }: {
       {m.teams.length > 0 && (
         <div className="flex flex-wrap justify-center gap-1 mt-2">
           {m.teams.map((team) => (
-            <span key={team} className="rounded-full bg-[rgb(var(--brand)/0.1)] text-[rgb(var(--brand))] px-2 py-0.5 text-[10px] font-semibold">
+            <span
+              key={team}
+              className="rounded-full bg-[rgb(var(--brand)/0.1)] text-[rgb(var(--brand))] px-2 py-0.5 text-[10px] font-semibold"
+            >
               {team}
             </span>
           ))}
@@ -196,7 +243,10 @@ function MemberCard({ member: m, boardNames, validBoards, maintainsLabel, t }: {
       {m.competences.length > 0 && (
         <div className="flex flex-wrap justify-center gap-1 mt-2">
           {m.competences.map((c) => (
-            <span key={c} className="rounded-full border border-[rgb(var(--border)/0.5)] px-2 py-0.5 text-[9px] text-[rgb(var(--fg-3))]">
+            <span
+              key={c}
+              className="rounded-full border border-[rgb(var(--border)/0.5)] px-2 py-0.5 text-[9px] text-[rgb(var(--fg-3))]"
+            >
               {c}
             </span>
           ))}
@@ -210,13 +260,10 @@ function MemberCard({ member: m, boardNames, validBoards, maintainsLabel, t }: {
           <div className="text-[10px] text-center leading-relaxed">
             {visibleBoards.map((slug, idx, arr) => (
               <span key={slug}>
-                <Link href={`/boards/${slug}`}
-                  className="text-[rgb(var(--brand))] hover:underline">
+                <Link href={`/boards/${slug}`} className="text-[rgb(var(--brand))] hover:underline">
                   {boardNames[slug]}
                 </Link>
-                {idx < arr.length - 1 && (
-                  <span className="text-[rgb(var(--fg-3))]">, </span>
-                )}
+                {idx < arr.length - 1 && <span className="text-[rgb(var(--fg-3))]">, </span>}
               </span>
             ))}
             {hasMore && (

@@ -53,9 +53,7 @@ export function DonationBanner() {
       <div className="flex items-start gap-3">
         <div className="flex-1">
           <p className="text-sm font-semibold">{t('title')}</p>
-          <p className="mt-1 text-xs text-[rgb(var(--fg-2))]">
-            {t('message')}
-          </p>
+          <p className="mt-1 text-xs text-[rgb(var(--fg-2))]">{t('message')}</p>
           <div className="mt-3 flex gap-2">
             <a
               href={ARMBIAN_URLS.DONATE}

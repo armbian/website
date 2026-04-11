@@ -1,5 +1,23 @@
 /** All supported locales — single source of truth */
-export const LOCALES = ['en', 'de', 'zh', 'fr', 'es', 'it', 'ru', 'pt', 'ja', 'ko', 'nl', 'pl', 'tr', 'uk', 'hr', 'sl', 'sv'] as const;
+export const LOCALES = [
+  'en',
+  'de',
+  'zh',
+  'fr',
+  'es',
+  'it',
+  'ru',
+  'pt',
+  'ja',
+  'ko',
+  'nl',
+  'pl',
+  'tr',
+  'uk',
+  'hr',
+  'sl',
+  'sv',
+] as const;
 
 export type Locale = (typeof LOCALES)[number];
 

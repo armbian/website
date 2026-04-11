@@ -4,9 +4,8 @@ import { useEffect, useState } from 'react';
 import { SelectInput, useField, FieldLabel } from '@payloadcms/ui';
 import type { TextFieldClientComponent } from 'payload';
 
-const API_URL = typeof window !== 'undefined'
-  ? `${window.location.origin}/api/boards?limit=500&sort=name`
-  : '';
+const API_URL =
+  typeof window !== 'undefined' ? `${window.location.origin}/api/boards?limit=500&sort=name` : '';
 
 interface Board {
   slug: string;
@@ -38,17 +37,17 @@ export const BoardSlugSelect: TextFieldClientComponent = ({ field, path }) => {
 
   return (
     <div style={{ marginBottom: '1.5rem' }}>
-      <FieldLabel label={field.label || field.name} required={field.required} path={path ?? field.name} />
+      <FieldLabel
+        label={field.label || field.name}
+        required={field.required}
+        path={path ?? field.name}
+      />
       <SelectInput
         path={path ?? field.name}
         name={field.name}
         value={value}
-        onChange={(opt: any) => setValue(typeof opt === 'string' ? opt : opt?.value ?? '')}
-        options={
-          loading
-            ? [{ label: 'Loading boards...', value: '' }]
-            : options
-        }
+        onChange={(opt: any) => setValue(typeof opt === 'string' ? opt : (opt?.value ?? ''))}
+        options={loading ? [{ label: 'Loading boards...', value: '' }] : options}
         isClearable={false}
       />
     </div>

@@ -38,30 +38,25 @@ export function BoardSelector() {
   }, [loadVendors]);
 
   // Load boards when vendor changes
-  const loadBoards = useCallback(
-    async (vendorSlug: string) => {
-      if (!vendorSlug) {
-        setBoards([]);
-        return;
-      }
-      setLoadingBoards(true);
-      setLoadError(false);
-      setSelectedBoard('');
-      try {
-        const res = await fetch(
-          `/api/boards?vendor=${encodeURIComponent(vendorSlug)}&limit=100`,
-        );
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const json = (await res.json()) as { data: BoardSummary[] };
-        setBoards(json.data);
-      } catch {
-        setLoadError(true);
-      } finally {
-        setLoadingBoards(false);
-      }
-    },
-    [],
-  );
+  const loadBoards = useCallback(async (vendorSlug: string) => {
+    if (!vendorSlug) {
+      setBoards([]);
+      return;
+    }
+    setLoadingBoards(true);
+    setLoadError(false);
+    setSelectedBoard('');
+    try {
+      const res = await fetch(`/api/boards?vendor=${encodeURIComponent(vendorSlug)}&limit=100`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = (await res.json()) as { data: BoardSummary[] };
+      setBoards(json.data);
+    } catch {
+      setLoadError(true);
+    } finally {
+      setLoadingBoards(false);
+    }
+  }, []);
 
   useEffect(() => {
     if (selectedVendor) {

@@ -37,7 +37,6 @@ const CORS_ALLOWED_ORIGINS = [
   ARMBIAN_URLS.IMAGER,
 ];
 
-
 async function main(): Promise<void> {
   const server = Fastify({
     logger: {
@@ -113,7 +112,6 @@ async function main(): Promise<void> {
     credentials: false,
   });
 
-
   await server.register(underPressure, {
     maxEventLoopDelay: 1000,
     maxHeapUsedBytes: 500_000_000,
@@ -179,11 +177,11 @@ async function main(): Promise<void> {
   sync.startCron(SYNC_INTERVAL_MS);
 
   // Warm up image cache in background (don't block startup)
-  const boardSlugs = store.getBoards({ sort: 'popularity' }).boards.map(b => b.slug);
-  const vendorSlugs = store.getVendors().map(v => v.slug);
-  imageCache.warmup(boardSlugs, vendorSlugs).catch((err) =>
-    server.log.warn({ err }, 'Image warmup failed'),
-  );
+  const boardSlugs = store.getBoards({ sort: 'popularity' }).boards.map((b) => b.slug);
+  const vendorSlugs = store.getVendors().map((v) => v.slug);
+  imageCache
+    .warmup(boardSlugs, vendorSlugs)
+    .catch((err) => server.log.warn({ err }, 'Image warmup failed'));
 
   // Decorate Fastify with store and image cache
   server.decorate('store', store);

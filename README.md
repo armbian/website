@@ -28,14 +28,14 @@ The site is available at `http://localhost`. The CMS admin panel is at `http://l
 
 ## Architecture
 
-| Component | Tech | Purpose |
-|-----------|------|---------|
-| `apps/www` | Next.js 16, React 19, Payload CMS 3, Tailwind 4 | Public website — SSR, 17 locales, CMS admin |
-| `apps/api` | Fastify 5, Node 22 | REST API — boards, images, vendors, partners, search |
-| `packages/schemas` | Zod | Shared type definitions and validation |
-| `packages/config` | TypeScript | URLs, constants, support tiers, locale config |
-| `packages/api-client` | TypeScript | Typed HTTP client for the API |
-| `packages/theme` | CSS / Tailwind | Design tokens and Tailwind preset |
+| Component             | Tech                                            | Purpose                                              |
+| --------------------- | ----------------------------------------------- | ---------------------------------------------------- |
+| `apps/www`            | Next.js 16, React 19, Payload CMS 3, Tailwind 4 | Public website — SSR, 17 locales, CMS admin          |
+| `apps/api`            | Fastify 5, Node 22                              | REST API — boards, images, vendors, partners, search |
+| `packages/schemas`    | Zod                                             | Shared type definitions and validation               |
+| `packages/config`     | TypeScript                                      | URLs, constants, support tiers, locale config        |
+| `packages/api-client` | TypeScript                                      | Typed HTTP client for the API                        |
+| `packages/theme`      | CSS / Tailwind                                  | Design tokens and Tailwind preset                    |
 
 ### How Data Flows
 
@@ -55,17 +55,17 @@ github.armbian.com (upstream JSON)
 
 All operations go through `manage.sh`:
 
-| Command | Description |
-|---------|-------------|
-| `./manage.sh up` | Build, start, and wait for health checks |
-| `./manage.sh down` | Stop all services (data preserved) |
-| `./manage.sh rebuild [service]` | Rebuild one or all services |
-| `./manage.sh reset` | Stop, wipe volumes, rebuild from scratch |
-| `./manage.sh status` | Container health and endpoint checks |
-| `./manage.sh logs [service]` | Follow logs |
-| `./manage.sh db:backup` | Dump database to `backups/` |
-| `./manage.sh db:restore <file>` | Restore a backup |
-| `./manage.sh shell [service]` | Open a shell in a container |
+| Command                         | Description                              |
+| ------------------------------- | ---------------------------------------- |
+| `./manage.sh up`                | Build, start, and wait for health checks |
+| `./manage.sh down`              | Stop all services (data preserved)       |
+| `./manage.sh rebuild [service]` | Rebuild one or all services              |
+| `./manage.sh reset`             | Stop, wipe volumes, rebuild from scratch |
+| `./manage.sh status`            | Container health and endpoint checks     |
+| `./manage.sh logs [service]`    | Follow logs                              |
+| `./manage.sh db:backup`         | Dump database to `backups/`              |
+| `./manage.sh db:restore <file>` | Restore a backup                         |
+| `./manage.sh shell [service]`   | Open a shell in a container              |
 
 Run `./manage.sh help` for the full list.
 
@@ -73,12 +73,12 @@ Run `./manage.sh help` for the full list.
 
 Four Docker Compose services:
 
-| Service | Port | Notes |
-|---------|------|-------|
-| `caddy` | `80`, `443`, `8080` | Reverse proxy — automatic HTTPS when real domains are set |
-| `www` | Internal only | Next.js app reached through Caddy |
-| `api` | Internal only | Fastify API reached through Caddy (port 8080 for external clients) |
-| `postgres` | Internal only | Data persisted in Docker volume |
+| Service    | Port                | Notes                                                              |
+| ---------- | ------------------- | ------------------------------------------------------------------ |
+| `caddy`    | `80`, `443`, `8080` | Reverse proxy — automatic HTTPS when real domains are set          |
+| `www`      | Internal only       | Next.js app reached through Caddy                                  |
+| `api`      | Internal only       | Fastify API reached through Caddy (port 8080 for external clients) |
+| `postgres` | Internal only       | Data persisted in Docker volume                                    |
 
 Required environment variables: `POSTGRES_PASSWORD`, `PAYLOAD_SECRET`. For production, set `WWW_HOSTNAME`, `API_HOSTNAME`, and `CADDY_EMAIL` to enable automatic TLS. See `.env.example` for all options.
 
@@ -104,9 +104,11 @@ See [DEVELOPMENT.md](DEVELOPMENT.md) for the full developer guide — architectu
 ## Support
 
 ### Community
+
 Get help on the [Armbian Forums](https://forum.armbian.com) or join [Discord](https://discord.armbian.com).
 
 ### Commercial
+
 For partnerships, integrations, or paid support — [contact us](https://www.armbian.com/contact).
 
 ## Armbian Partners

@@ -26,7 +26,9 @@ export function BoardJsonLd({ board }: { board: BoardDetail }) {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll('</script>', '<\\/script>') }}
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(jsonLd).replaceAll('</script>', '<\\/script>'),
+      }}
     />
   );
 }

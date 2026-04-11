@@ -55,10 +55,7 @@ export const SUPPORT_TIERS: Record<SupportTier, SupportTierConfig> = {
 };
 
 /** Compute support tier from raw source fields */
-export function computeSupportTier(
-  boardSupport: string,
-  platinum: string,
-): SupportTier {
+export function computeSupportTier(boardSupport: string, platinum: string): SupportTier {
   if (platinum === 'true') return 'platinum';
   if (boardSupport === 'conf') return 'standard';
   if (boardSupport === 'csc') return 'community';

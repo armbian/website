@@ -86,7 +86,12 @@ export class SyncService {
         z.array(BoardEnrichmentSchema),
       );
       const normalized = this.normalizer.normalize(
-        { images: this.cachedImages, partners: this.cachedPartners, maintainers: this.cachedMaintainers, kernelDescriptions: this.cachedKernels },
+        {
+          images: this.cachedImages,
+          partners: this.cachedPartners,
+          maintainers: this.cachedMaintainers,
+          kernelDescriptions: this.cachedKernels,
+        },
         { redirects: redirects ?? [], enrichments: enrichments ?? [] },
       );
       this.store.load(normalized);
@@ -364,10 +369,10 @@ export class SyncService {
 
   private async fetchBoardConfigSlugs(): Promise<Set<string>> {
     try {
-      const res = await fetch(
-        'https://api.github.com/repos/armbian/build/contents/config/boards',
-        { headers: { 'User-Agent': 'armbian-api' }, signal: AbortSignal.timeout(15_000) },
-      );
+      const res = await fetch('https://api.github.com/repos/armbian/build/contents/config/boards', {
+        headers: { 'User-Agent': 'armbian-api' },
+        signal: AbortSignal.timeout(15_000),
+      });
       if (!res.ok) return new Set();
       const files = (await res.json()) as { name: string }[];
       const slugs = new Set<string>();
@@ -410,10 +415,7 @@ export class SyncService {
     }
   }
 
-  private async loadLocalJson<T>(
-    path: string,
-    schema: z.ZodType<T>,
-  ): Promise<T | null> {
+  private async loadLocalJson<T>(path: string, schema: z.ZodType<T>): Promise<T | null> {
     try {
       const content = await readFile(path, 'utf-8');
       const json: unknown = JSON.parse(content);

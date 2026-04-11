@@ -60,7 +60,9 @@ export default buildConfig({
           role: 'admin',
         },
       });
-      payload.logger.info(`Default admin user created — email: admin@armbian.com  password: ${password}`);
+      payload.logger.info(
+        `Default admin user created — email: admin@armbian.com  password: ${password}`,
+      );
     }
   },
 

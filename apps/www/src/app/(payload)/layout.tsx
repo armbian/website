@@ -19,7 +19,6 @@ const serverFunction: ServerFunctionClient = async (args) => {
   });
 };
 
-const Layout = ({ children }: Args) =>
-  RootLayout({ children, config, importMap, serverFunction });
+const Layout = ({ children }: Args) => RootLayout({ children, config, importMap, serverFunction });
 
 export default Layout;

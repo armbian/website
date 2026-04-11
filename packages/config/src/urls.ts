@@ -46,7 +46,11 @@ export const ARMBIAN_URLS = {
  * Default: serves via the API image proxy (relative path, works with Next.js rewrite).
  * Pass `cdn: true` to use the CDN directly (e.g. for external consumers).
  */
-export function boardImageUrl(slug: string, size: string = IMAGE_SIZES.BOARD, options?: { cdn?: boolean }): string {
+export function boardImageUrl(
+  slug: string,
+  size: string = IMAGE_SIZES.BOARD,
+  options?: { cdn?: boolean },
+): string {
   if (options?.cdn) return `https://cache.armbian.com/images/${size}/${slug}.png`;
   return `/api/v1/images/boards/${size}/${slug}.png`;
 }
@@ -56,7 +60,11 @@ export function boardImageUrl(slug: string, size: string = IMAGE_SIZES.BOARD, op
  * Default: serves via the API image proxy (relative path, works with Next.js rewrite).
  * Pass `cdn: true` to use the CDN directly (e.g. for external consumers).
  */
-export function vendorLogoUrl(vendor: string, size: string = IMAGE_SIZES.VENDOR, options?: { cdn?: boolean }): string {
+export function vendorLogoUrl(
+  vendor: string,
+  size: string = IMAGE_SIZES.VENDOR,
+  options?: { cdn?: boolean },
+): string {
   if (options?.cdn) return `https://cache.armbian.com/images/vendors/${size}/${vendor}.png`;
   return `/api/v1/images/vendors/${size}/${vendor}.png`;
 }

@@ -22,11 +22,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const api = await getApiClient();
     const res = await api.getVendor(slug);
     return {
-      title: `${res.data.name} — Armbian ${t('title')}`,
+      title: `${res.data.name} ${t('title')}`,
       description: t('boards_count', { count: res.data.board_count }),
     };
   } catch {
-    return { title: 'Vendor — Armbian' };
+    return { title: 'Vendor' };
   }
 }
 
@@ -50,14 +50,23 @@ export default async function VendorPage({ params }: Props) {
       <PageHero>
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <ScrollReveal>
-            <Link href="/vendors" className="inline-flex items-center gap-1.5 text-xs text-[rgb(var(--fg-3))] hover:text-[rgb(var(--fg))] transition-colors mb-6">
+            <Link
+              href="/vendors"
+              className="inline-flex items-center gap-1.5 text-xs text-[rgb(var(--fg-3))] hover:text-[rgb(var(--fg))] transition-colors mb-6"
+            >
               <ArrowLeft size={12} strokeWidth={2} />
               {t('title')}
             </Link>
             <div className="flex items-center gap-5">
               {vendor.logo_url ? (
                 <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center shrink-0 overflow-hidden shadow-md">
-                  <img src={vendor.logo_url} alt={vendor.name} width={56} height={56} className="w-12 h-12 object-contain" />
+                  <img
+                    src={vendor.logo_url}
+                    alt={vendor.name}
+                    width={56}
+                    height={56}
+                    className="w-12 h-12 object-contain"
+                  />
                 </div>
               ) : (
                 <div className="w-16 h-16 rounded-2xl bg-[rgb(var(--bg-sub))] flex items-center justify-center shrink-0 text-2xl font-black text-[rgb(var(--fg-3))]">
@@ -77,8 +86,12 @@ export default async function VendorPage({ params }: Props) {
                   )}
                 </div>
                 {vendor.website && (
-                  <a href={vendor.website} target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs text-[rgb(var(--brand))] hover:underline mt-2">
+                  <a
+                    href={vendor.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs text-[rgb(var(--brand))] hover:underline mt-2"
+                  >
                     {vendor.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}
                     <ExternalLink size={10} strokeWidth={2} />
                   </a>
@@ -86,7 +99,9 @@ export default async function VendorPage({ params }: Props) {
               </div>
             </div>
             {vendor.description && (
-              <p className="mt-4 text-sm text-[rgb(var(--fg-2))] max-w-2xl leading-relaxed">{vendor.description}</p>
+              <p className="mt-4 text-sm text-[rgb(var(--fg-2))] max-w-2xl leading-relaxed">
+                {vendor.description}
+              </p>
             )}
           </ScrollReveal>
         </div>
@@ -96,7 +111,14 @@ export default async function VendorPage({ params }: Props) {
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {[...vendor.boards]
             .sort((a, b) => {
-              const tierOrder: Record<string, number> = { platinum: 0, standard: 1, community: 2, wip: 3, eos: 4, tvb: 5 };
+              const tierOrder: Record<string, number> = {
+                platinum: 0,
+                standard: 1,
+                community: 2,
+                wip: 3,
+                eos: 4,
+                tvb: 5,
+              };
               return (tierOrder[a.support_tier] ?? 99) - (tierOrder[b.support_tier] ?? 99);
             })
             .map((board, i) => (

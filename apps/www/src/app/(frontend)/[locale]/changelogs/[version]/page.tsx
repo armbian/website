@@ -18,7 +18,7 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { version } = await params;
   const decoded = decodeURIComponent(version);
-  return { title: `${decoded} — Armbian Changelog` };
+  return { title: `${decoded} Changelog` };
 }
 
 export default async function ChangelogDetailPage({ params }: Props) {
@@ -33,10 +33,7 @@ export default async function ChangelogDetailPage({ params }: Props) {
     const result = await payload.find({
       collection: 'changelogs',
       where: {
-        and: [
-          { version: { equals: decoded } },
-          { status: { equals: 'published' } },
-        ],
+        and: [{ version: { equals: decoded } }, { status: { equals: 'published' } }],
       },
       limit: 1,
     });
@@ -52,18 +49,28 @@ export default async function ChangelogDetailPage({ params }: Props) {
     const { convertLexicalToHTMLAsync, defaultHTMLConvertersAsync } =
       await import('@payloadcms/richtext-lexical/html-async');
     htmlContent = sanitizeCmsHtml(
-      await convertLexicalToHTMLAsync({ converters: defaultHTMLConvertersAsync, data: entry.content as any }),
+      await convertLexicalToHTMLAsync({
+        converters: defaultHTMLConvertersAsync,
+        data: entry.content as any,
+      }),
     );
   }
 
-  const date = new Date(entry.releaseDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  const date = new Date(entry.releaseDate).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 
   return (
     <div>
       <PageHero>
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
           <ScrollReveal>
-            <Link href="/changelogs" className="inline-flex items-center gap-1.5 text-xs text-[rgb(var(--fg-3))] hover:text-[rgb(var(--fg))] transition-colors mb-6">
+            <Link
+              href="/changelogs"
+              className="inline-flex items-center gap-1.5 text-xs text-[rgb(var(--fg-3))] hover:text-[rgb(var(--fg))] transition-colors mb-6"
+            >
               <ArrowLeft size={12} strokeWidth={2} />
               {t('back')}
             </Link>
@@ -79,15 +86,23 @@ export default async function ChangelogDetailPage({ params }: Props) {
             {(entry.downloadUrl || entry.githubUrl) && (
               <div className="flex items-center gap-3 mt-4">
                 {entry.downloadUrl && (
-                  <a href={entry.downloadUrl} target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-lg bg-[rgb(var(--brand))] px-4 py-2 text-xs font-bold text-white hover:bg-[rgb(var(--brand-hover))] transition-colors">
+                  <a
+                    href={entry.downloadUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-lg bg-[rgb(var(--brand))] px-4 py-2 text-xs font-bold text-white hover:bg-[rgb(var(--brand-hover))] transition-colors"
+                  >
                     <Download size={12} strokeWidth={2.5} />
                     {t('download')}
                   </a>
                 )}
                 {entry.githubUrl && (
-                  <a href={entry.githubUrl} target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-lg border border-[rgb(var(--border))] px-4 py-2 text-xs font-bold text-[rgb(var(--fg-2))] hover:bg-[rgb(var(--bg-sub))] transition-colors">
+                  <a
+                    href={entry.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-lg border border-[rgb(var(--border))] px-4 py-2 text-xs font-bold text-[rgb(var(--fg-2))] hover:bg-[rgb(var(--bg-sub))] transition-colors"
+                  >
                     <ExternalLink size={12} strokeWidth={2} />
                     {t('github_release')}
                   </a>

@@ -16,31 +16,28 @@ export function BoardSearch() {
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const search = useCallback(
-    async (q: string) => {
-      if (q.length < 2) {
-        setResults([]);
-        setIsOpen(false);
-        setLoadError(false);
-        return;
-      }
-      setLoading(true);
+  const search = useCallback(async (q: string) => {
+    if (q.length < 2) {
+      setResults([]);
+      setIsOpen(false);
       setLoadError(false);
-      try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const json = (await res.json()) as { data: BoardSummary[] };
-        setResults(json.data.slice(0, 8));
-      } catch {
-        setResults([]);
-        setLoadError(true);
-      } finally {
-        setLoading(false);
-        setIsOpen(true);
-      }
-    },
-    [],
-  );
+      return;
+    }
+    setLoading(true);
+    setLoadError(false);
+    try {
+      const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = (await res.json()) as { data: BoardSummary[] };
+      setResults(json.data.slice(0, 8));
+    } catch {
+      setResults([]);
+      setLoadError(true);
+    } finally {
+      setLoading(false);
+      setIsOpen(true);
+    }
+  }, []);
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -114,9 +111,7 @@ export function BoardSearch() {
                   >
                     <div className="flex-1">
                       <p className="font-medium">{board.name}</p>
-                      <p className="text-xs text-[rgb(var(--fg-3))]">
-                        {board.vendor_name}
-                      </p>
+                      <p className="text-xs text-[rgb(var(--fg-3))]">{board.vendor_name}</p>
                     </div>
                     <span className="shrink-0 text-xs text-[rgb(var(--fg-3))]">
                       {t('images_short', { count: board.image_count })}

@@ -1,56 +1,56 @@
 /** Known vendor slug to clean display name mapping */
 export const VENDOR_DISPLAY_NAMES: Record<string, string> = {
-  'friendlyelec': 'FriendlyElec',
-  'friendlyarm': 'FriendlyElec',
-  'hardkernel': 'Hardkernel / Odroid',
-  'xunlong': 'Orange Pi',
-  'radxa': 'Radxa',
-  'pine64': 'Pine64',
-  'olimex': 'Olimex',
-  'sinovoip': 'Banana Pi',
-  'khadas': 'Khadas',
+  friendlyelec: 'FriendlyElec',
+  friendlyarm: 'FriendlyElec',
+  hardkernel: 'Hardkernel / Odroid',
+  xunlong: 'Orange Pi',
+  radxa: 'Radxa',
+  pine64: 'Pine64',
+  olimex: 'Olimex',
+  sinovoip: 'Banana Pi',
+  khadas: 'Khadas',
   'libre-computer': 'Libre Computer',
-  'rockchip': 'Rockchip',
-  'amlogic': 'Amlogic',
-  'allwinner': 'Allwinner',
-  'nvidia': 'NVIDIA',
-  'asus': 'ASUS',
-  'beagleboard': 'BeagleBoard',
-  'inovato': 'Inovato',
-  'bigtreetech': 'Bigtreetech',
-  'bananapi': 'Banana Pi',
-  'orangepi': 'Orange Pi',
-  'cubieboard': 'Cubieboard',
-  'cubietech': 'Cubieboard',
-  'ugoos': 'Ugoos',
-  'wetek': 'WeTek',
-  'globalscale': 'Globalscale',
-  'solidrun': 'SolidRun',
-  'jethome': 'JetHome',
-  'kobol': 'Kobol',
-  'helios': 'Kobol',
-  'raspberrypi': 'RPi Foundation',
-  'arm': 'ARM',
+  rockchip: 'Rockchip',
+  amlogic: 'Amlogic',
+  allwinner: 'Allwinner',
+  nvidia: 'NVIDIA',
+  asus: 'ASUS',
+  beagleboard: 'BeagleBoard',
+  inovato: 'Inovato',
+  bigtreetech: 'Bigtreetech',
+  bananapi: 'Banana Pi',
+  orangepi: 'Orange Pi',
+  cubieboard: 'Cubieboard',
+  cubietech: 'Cubieboard',
+  ugoos: 'Ugoos',
+  wetek: 'WeTek',
+  globalscale: 'Globalscale',
+  solidrun: 'SolidRun',
+  jethome: 'JetHome',
+  kobol: 'Kobol',
+  helios: 'Kobol',
+  raspberrypi: 'RPi Foundation',
+  arm: 'ARM',
   'texas-instruments': 'Texas Instruments',
   'rpi-foundation': 'Raspberry Pi',
-  'intel': 'Intel / AMD',
-  'spacemit': 'SpaceMit',
+  intel: 'Intel / AMD',
+  spacemit: 'SpaceMit',
   'tq-group': 'TQ Group',
-  'phytium': 'Phytium',
+  phytium: 'Phytium',
   'orangepi-rk': 'Orange Pi',
-  'makerbase': 'Makerbase',
-  'oneplus': 'OnePlus',
-  'xiaomi': 'Xiaomi',
-  'btt': 'BTT',
-  'tqgroup': 'TQ Group',
+  makerbase: 'Makerbase',
+  oneplus: 'OnePlus',
+  xiaomi: 'Xiaomi',
+  btt: 'BTT',
+  tqgroup: 'TQ Group',
   'cool-pi': 'Cool Pi',
   'star-five': 'StarFive',
-  'mangopi': 'MangoPi',
-  'ti': 'Texas Instruments',
-  'armsom': 'ArmSoM',
-  'luckfox': 'Luckfox',
-  'mekotronics': 'Mekotronics',
-  'minisforum': 'Minisforum',
+  mangopi: 'MangoPi',
+  ti: 'Texas Instruments',
+  armsom: 'ArmSoM',
+  luckfox: 'Luckfox',
+  mekotronics: 'Mekotronics',
+  minisforum: 'Minisforum',
 };
 
 /**
@@ -81,9 +81,14 @@ export function cleanVendorName(slug: string, companyName?: string): string {
   }
 
   // Strip corporate suffixes
-  return companyName
-    .replace(/\s*\(.*?\)\s*/g, '')                    // Remove parenthetical
-    .replace(/,?\s*(Co\.|Corp|Inc|LLC|Ltd|Limited|GmbH|S\.?A\.?|Technology|Electronics?|Computer|Group|International)\.?\s*/gi, ' ')
-    .replace(/\s+/g, ' ')
-    .trim() || slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+  return (
+    companyName
+      .replace(/\s*\(.*?\)\s*/g, '') // Remove parenthetical
+      .replace(
+        /,?\s*(Co\.|Corp|Inc|LLC|Ltd|Limited|GmbH|S\.?A\.?|Technology|Electronics?|Computer|Group|International)\.?\s*/gi,
+        ' ',
+      )
+      .replace(/\s+/g, ' ')
+      .trim() || slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+  );
 }

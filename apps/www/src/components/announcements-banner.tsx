@@ -23,10 +23,7 @@ export async function AnnouncementsBanner({ readMoreLabel }: Props) {
     const result = await payload.find({
       collection: 'announcements',
       where: {
-        and: [
-          { active: { equals: true } },
-          { publishDate: { less_than_equal: now } },
-        ],
+        and: [{ active: { equals: true } }, { publishDate: { less_than_equal: now } }],
       },
       sort: '-pinned,-publishDate',
       limit: 1,
@@ -56,7 +53,10 @@ export async function AnnouncementsBanner({ readMoreLabel }: Props) {
   const Icon = style.icon;
 
   return (
-    <AnnouncementDismiss announcementId={String(announcement.id)} className={`fixed top-16 left-0 right-0 z-40 ${style.bg} ${style.text} shadow-lg`}>
+    <AnnouncementDismiss
+      announcementId={String(announcement.id)}
+      className={`fixed top-16 left-0 right-0 z-40 ${style.bg} ${style.text} shadow-lg`}
+    >
       <div className="max-w-7xl mx-auto px-4 pr-10 sm:px-6 sm:pr-12 py-2.5 sm:py-2 flex items-center justify-center gap-2 text-xs sm:text-sm">
         <Icon size={14} strokeWidth={2.5} className="shrink-0" />
         <span className="font-bold truncate">{announcement.title}</span>

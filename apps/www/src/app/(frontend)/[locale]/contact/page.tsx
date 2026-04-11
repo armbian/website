@@ -3,7 +3,17 @@ import { ARMBIAN_URLS } from '@armbian/config';
 import { PageHero } from '@/components/layout/page-hero';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { ContactForm } from '@/components/contact/contact-form';
-import { Calendar, Briefcase, Users, Hash, ArrowRight, Mail, Building2, ExternalLink, Zap } from 'lucide-react';
+import {
+  Calendar,
+  Briefcase,
+  Users,
+  Hash,
+  ArrowRight,
+  Mail,
+  Building2,
+  ExternalLink,
+  Zap,
+} from 'lucide-react';
 import { SiDiscord } from '@icons-pack/react-simple-icons';
 import { getPayload } from 'payload';
 import config from '@payload-config';
@@ -19,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'contact' });
   return {
-    title: `${t('hero_title')} — Armbian`,
+    title: t('hero_title'),
     description: t('hero_desc'),
   };
 }
@@ -52,7 +62,9 @@ export default async function ContactPage({ params }: Props) {
       const val = raw[key];
       if (typeof val === 'string' && val) (company as Record<string, string>)[key] = val;
     }
-  } catch { /* CMS unavailable, use fallbacks */ }
+  } catch {
+    /* CMS unavailable, use fallbacks */
+  }
 
   return (
     <div className="min-h-screen">
@@ -75,7 +87,6 @@ export default async function ContactPage({ params }: Props) {
       <section className="pt-8 pb-24 sm:pt-12 sm:pb-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-5 items-start">
-
             {/* ── Form ── */}
             <div className="lg:col-span-7 lg:row-span-3 self-stretch">
               <ScrollReveal className="h-full">
@@ -103,17 +114,29 @@ export default async function ContactPage({ params }: Props) {
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-[rgb(var(--brand)/0.12)] flex items-center justify-center">
-                          <Calendar size={18} strokeWidth={1.5} className="text-[rgb(var(--brand))]" />
+                          <Calendar
+                            size={18}
+                            strokeWidth={1.5}
+                            className="text-[rgb(var(--brand))]"
+                          />
                         </div>
                         <div>
                           <h3 className="font-bold text-sm">{t('office_hours_title')}</h3>
-                          <p className="text-[11px] text-[rgb(var(--fg-3))] font-mono">{t('office_hours_day')}</p>
+                          <p className="text-[11px] text-[rgb(var(--fg-3))] font-mono">
+                            {t('office_hours_day')}
+                          </p>
                         </div>
                       </div>
                     </div>
-                    <p className="text-xs text-[rgb(var(--fg-3))] mb-5 leading-relaxed">{t('office_hours_desc')}</p>
-                    <a href={company.calendlyOfficeHours} target="_blank" rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 rounded-lg bg-[rgb(var(--brand))] px-4 py-2 text-xs font-bold text-white hover:bg-[rgb(var(--brand-hover))] transition-all shadow-lg shadow-[rgb(var(--brand)/0.2)]">
+                    <p className="text-xs text-[rgb(var(--fg-3))] mb-5 leading-relaxed">
+                      {t('office_hours_desc')}
+                    </p>
+                    <a
+                      href={company.calendlyOfficeHours}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-lg bg-[rgb(var(--brand))] px-4 py-2 text-xs font-bold text-white hover:bg-[rgb(var(--brand-hover))] transition-all shadow-lg shadow-[rgb(var(--brand)/0.2)]"
+                    >
                       <Calendar size={12} strokeWidth={2.5} />
                       {t('office_hours_cta')}
                     </a>
@@ -135,13 +158,21 @@ export default async function ContactPage({ params }: Props) {
                         </div>
                         <div>
                           <h3 className="font-bold text-sm">{t('consultation_title')}</h3>
-                          <p className="text-[11px] text-amber-400 font-mono">{t('consultation_badge')}</p>
+                          <p className="text-[11px] text-amber-400 font-mono">
+                            {t('consultation_badge')}
+                          </p>
                         </div>
                       </div>
                     </div>
-                    <p className="text-xs text-[rgb(var(--fg-3))] mb-5 leading-relaxed">{t('consultation_desc')}</p>
-                    <a href={company.calendlyConsultation} target="_blank" rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-2 text-xs font-bold text-amber-400 hover:bg-amber-500/20 transition-colors">
+                    <p className="text-xs text-[rgb(var(--fg-3))] mb-5 leading-relaxed">
+                      {t('consultation_desc')}
+                    </p>
+                    <a
+                      href={company.calendlyConsultation}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-2 text-xs font-bold text-amber-400 hover:bg-amber-500/20 transition-colors"
+                    >
                       {t('consultation_cta')}
                       <ExternalLink size={11} strokeWidth={2} />
                     </a>
@@ -163,27 +194,62 @@ export default async function ContactPage({ params }: Props) {
                       <p className="text-[11px] text-emerald-400 font-mono">48h</p>
                     </div>
                   </div>
-                  <p className="text-xs text-[rgb(var(--fg-3))] mb-4 leading-relaxed">{t('quick_support_desc')}</p>
-                  <a href={ARMBIAN_URLS.SUBSCRIPTIONS} target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-[rgb(var(--brand))] hover:underline">
+                  <p className="text-xs text-[rgb(var(--fg-3))] mb-4 leading-relaxed">
+                    {t('quick_support_desc')}
+                  </p>
+                  <a
+                    href={ARMBIAN_URLS.SUBSCRIPTIONS}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-[rgb(var(--brand))] hover:underline"
+                  >
                     {t('quick_support_cta')} <ArrowRight size={11} strokeWidth={2.5} />
                   </a>
 
                   {/* Community mini-grid inside the card */}
                   <div className="mt-6 pt-5 border-t border-[rgba(255,255,255,0.05)]">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-[rgb(var(--fg-3))] mb-3">{t('community_title')}</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-[rgb(var(--fg-3))] mb-3">
+                      {t('community_title')}
+                    </p>
                     <div className="grid grid-cols-3 gap-2">
                       {[
-                        { title: t('forum_title'), href: ARMBIAN_URLS.FORUM, icon: <Users size={15} strokeWidth={1.5} />, color: 'text-blue-400', bg: 'bg-blue-500/10' },
-                        { title: t('discord_title'), href: ARMBIAN_URLS.DISCORD, icon: <SiDiscord size={14} />, color: 'text-indigo-400', bg: 'bg-indigo-500/10' },
-                        { title: t('irc_title'), href: ARMBIAN_URLS.IRC, icon: <Hash size={15} strokeWidth={1.5} />, color: 'text-green-400', bg: 'bg-green-500/10' },
+                        {
+                          title: t('forum_title'),
+                          href: ARMBIAN_URLS.FORUM,
+                          icon: <Users size={15} strokeWidth={1.5} />,
+                          color: 'text-blue-400',
+                          bg: 'bg-blue-500/10',
+                        },
+                        {
+                          title: t('discord_title'),
+                          href: ARMBIAN_URLS.DISCORD,
+                          icon: <SiDiscord size={14} />,
+                          color: 'text-indigo-400',
+                          bg: 'bg-indigo-500/10',
+                        },
+                        {
+                          title: t('irc_title'),
+                          href: ARMBIAN_URLS.IRC,
+                          icon: <Hash size={15} strokeWidth={1.5} />,
+                          color: 'text-green-400',
+                          bg: 'bg-green-500/10',
+                        },
                       ].map((ch) => (
-                        <a key={ch.title} href={ch.href} target="_blank" rel="noopener noreferrer"
-                          className="flex flex-col items-center gap-1.5 rounded-xl py-2.5 hover:bg-[rgba(255,255,255,0.03)] transition-colors group">
-                          <div className={`w-8 h-8 rounded-lg ${ch.bg} flex items-center justify-center ${ch.color} group-hover:scale-110 transition-transform`}>
+                        <a
+                          key={ch.title}
+                          href={ch.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex flex-col items-center gap-1.5 rounded-xl py-2.5 hover:bg-[rgba(255,255,255,0.03)] transition-colors group"
+                        >
+                          <div
+                            className={`w-8 h-8 rounded-lg ${ch.bg} flex items-center justify-center ${ch.color} group-hover:scale-110 transition-transform`}
+                          >
                             {ch.icon}
                           </div>
-                          <span className="text-[10px] font-semibold text-[rgb(var(--fg-3))] group-hover:text-[rgb(var(--fg))] transition-colors">{ch.title}</span>
+                          <span className="text-[10px] font-semibold text-[rgb(var(--fg-3))] group-hover:text-[rgb(var(--fg))] transition-colors">
+                            {ch.title}
+                          </span>
                         </a>
                       ))}
                     </div>
@@ -200,32 +266,57 @@ export default async function ContactPage({ params }: Props) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
             <div className="bento-card rounded-2xl p-6 sm:p-8">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-[rgb(var(--fg-3))] mb-4">{t('company_title')}</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-[rgb(var(--fg-3))] mb-4">
+                {t('company_title')}
+              </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 text-sm">
                 <div className="flex items-start gap-3">
-                  <Building2 size={16} strokeWidth={1.5} className="text-[rgb(var(--fg-3))] mt-0.5 shrink-0" />
+                  <Building2
+                    size={16}
+                    strokeWidth={1.5}
+                    className="text-[rgb(var(--fg-3))] mt-0.5 shrink-0"
+                  />
                   <div>
                     <p className="font-semibold text-xs">{company.companyName}</p>
                     <p className="text-[11px] text-[rgb(var(--fg-3))]">{company.street}</p>
-                    <p className="text-[11px] text-[rgb(var(--fg-3))]">{company.city}, {company.country}</p>
+                    <p className="text-[11px] text-[rgb(var(--fg-3))]">
+                      {company.city}, {company.country}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <Hash size={16} strokeWidth={1.5} className="text-[rgb(var(--fg-3))] mt-0.5 shrink-0" />
+                  <Hash
+                    size={16}
+                    strokeWidth={1.5}
+                    className="text-[rgb(var(--fg-3))] mt-0.5 shrink-0"
+                  />
                   <div>
                     <p className="text-xs">VAT ID: {company.vatId}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <Building2 size={16} strokeWidth={1.5} className="text-[rgb(var(--fg-3))] mt-0.5 shrink-0" />
+                  <Building2
+                    size={16}
+                    strokeWidth={1.5}
+                    className="text-[rgb(var(--fg-3))] mt-0.5 shrink-0"
+                  />
                   <div>
                     <p className="text-xs font-mono">IBAN: {company.iban}</p>
-                    <p className="text-[11px] text-[rgb(var(--fg-3))] font-mono">SWIFT/BIC: {company.swift}</p>
+                    <p className="text-[11px] text-[rgb(var(--fg-3))] font-mono">
+                      SWIFT/BIC: {company.swift}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <Mail size={16} strokeWidth={1.5} className="text-[rgb(var(--fg-3))] mt-0.5 shrink-0" />
-                  <a href={`mailto:${company.email}`} className="text-xs text-[rgb(var(--brand))] hover:underline">
+                  <Mail
+                    size={16}
+                    strokeWidth={1.5}
+                    className="text-[rgb(var(--fg-3))] mt-0.5 shrink-0"
+                  />
+                  <a
+                    href={`mailto:${company.email}`}
+                    className="text-xs text-[rgb(var(--brand))] hover:underline"
+                  >
                     {company.email}
                   </a>
                 </div>

@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+cache/
+
+# Build outputs
+dist/
+.next/
+.turbo/
+*.tsbuildinfo
+
+# Payload CMS generated files
+apps/www/src/payload-types.ts
+apps/www/src/migrations/*.json
+apps/www/src/migrations/*.ts
+
+# Lockfiles
+pnpm-lock.yaml
+
+# Docker data
+backups/
+apps/www/media/
+apps/api/data/.cache/

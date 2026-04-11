@@ -28,7 +28,9 @@ export default async function VendorsPage({ params }: Props) {
   try {
     const res = await api.getVendors();
     vendors = res.data;
-  } catch { /* graceful */ }
+  } catch {
+    /* graceful */
+  }
 
   const sorted = [...vendors].sort((a, b) => b.board_count - a.board_count);
 
@@ -54,7 +56,6 @@ export default async function VendorsPage({ params }: Props) {
       </PageHero>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-24">
-
         {/* ── Platinum Partners — featured spotlight ── */}
         {platinum.length > 0 && (
           <section className="mb-20">
@@ -78,18 +79,34 @@ export default async function VendorsPage({ params }: Props) {
                     <div className="relative p-6 flex items-center gap-5">
                       <div className="w-16 h-16 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-sm">
                         {vendor.logo_url ? (
-                          <img src={vendor.logo_url} alt={vendor.name} width={48} height={48} className="w-10 h-10 object-contain" />
+                          <img
+                            src={vendor.logo_url}
+                            alt={vendor.name}
+                            width={48}
+                            height={48}
+                            className="w-10 h-10 object-contain"
+                          />
                         ) : (
-                          <span className="text-xl font-black text-gray-400">{vendor.name.charAt(0)}</span>
+                          <span className="text-xl font-black text-gray-400">
+                            {vendor.name.charAt(0)}
+                          </span>
                         )}
                       </div>
 
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-bold text-base truncate group-hover:text-amber-400 transition-colors duration-300">{vendor.name}</h3>
-                          <ArrowUpRight size={14} strokeWidth={2} className="opacity-0 group-hover:opacity-60 transition-all duration-300 -translate-x-1 group-hover:translate-x-0 shrink-0" />
+                          <h3 className="font-bold text-base truncate group-hover:text-amber-400 transition-colors duration-300">
+                            {vendor.name}
+                          </h3>
+                          <ArrowUpRight
+                            size={14}
+                            strokeWidth={2}
+                            className="opacity-0 group-hover:opacity-60 transition-all duration-300 -translate-x-1 group-hover:translate-x-0 shrink-0"
+                          />
                         </div>
-                        <p className="text-xs text-[rgb(var(--fg-3))]">{t('boards_count', { count: vendor.board_count })}</p>
+                        <p className="text-xs text-[rgb(var(--fg-3))]">
+                          {t('boards_count', { count: vendor.board_count })}
+                        </p>
                         <span className="inline-block mt-2 text-[8px] font-bold uppercase tracking-[0.15em] text-amber-400/80 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/10">
                           Platinum
                         </span>
@@ -123,17 +140,33 @@ export default async function VendorsPage({ params }: Props) {
                     <div className="relative p-6 flex items-center gap-5">
                       <div className="w-16 h-16 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-sm">
                         {vendor.logo_url ? (
-                          <img src={vendor.logo_url} alt={vendor.name} width={48} height={48} className="w-10 h-10 object-contain" />
+                          <img
+                            src={vendor.logo_url}
+                            alt={vendor.name}
+                            width={48}
+                            height={48}
+                            className="w-10 h-10 object-contain"
+                          />
                         ) : (
-                          <span className="text-xl font-black text-gray-400">{vendor.name.charAt(0)}</span>
+                          <span className="text-xl font-black text-gray-400">
+                            {vendor.name.charAt(0)}
+                          </span>
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-bold text-base truncate group-hover:text-[rgb(var(--fg))] transition-colors duration-300">{vendor.name}</h3>
-                          <ArrowUpRight size={14} strokeWidth={2} className="opacity-0 group-hover:opacity-60 transition-all duration-300 -translate-x-1 group-hover:translate-x-0 shrink-0" />
+                          <h3 className="font-bold text-base truncate group-hover:text-[rgb(var(--fg))] transition-colors duration-300">
+                            {vendor.name}
+                          </h3>
+                          <ArrowUpRight
+                            size={14}
+                            strokeWidth={2}
+                            className="opacity-0 group-hover:opacity-60 transition-all duration-300 -translate-x-1 group-hover:translate-x-0 shrink-0"
+                          />
                         </div>
-                        <p className="text-xs text-[rgb(var(--fg-3))]">{t('boards_count', { count: vendor.board_count })}</p>
+                        <p className="text-xs text-[rgb(var(--fg-3))]">
+                          {t('boards_count', { count: vendor.board_count })}
+                        </p>
                         <span className="inline-block mt-2 text-[8px] font-bold uppercase tracking-[0.15em] text-gray-400 bg-gray-500/10 px-2 py-0.5 rounded-full border border-gray-500/10">
                           Silver
                         </span>
@@ -166,13 +199,25 @@ export default async function VendorsPage({ params }: Props) {
                 >
                   <div className="w-12 h-12 rounded-lg bg-white flex items-center justify-center mb-3 shadow-sm group-hover:shadow-md transition-shadow duration-300">
                     {vendor.logo_url ? (
-                      <img src={vendor.logo_url} alt={vendor.name} width={36} height={36} className="w-8 h-8 object-contain" />
+                      <img
+                        src={vendor.logo_url}
+                        alt={vendor.name}
+                        width={36}
+                        height={36}
+                        className="w-8 h-8 object-contain"
+                      />
                     ) : (
-                      <span className="text-sm font-bold text-gray-400">{vendor.name.charAt(0)}</span>
+                      <span className="text-sm font-bold text-gray-400">
+                        {vendor.name.charAt(0)}
+                      </span>
                     )}
                   </div>
-                  <h3 className="text-xs font-bold truncate w-full group-hover:text-[rgb(var(--brand))] transition-colors duration-300">{vendor.name}</h3>
-                  <p className="text-[10px] text-[rgb(var(--fg-3))] mt-0.5">{t('boards_count', { count: vendor.board_count })}</p>
+                  <h3 className="text-xs font-bold truncate w-full group-hover:text-[rgb(var(--brand))] transition-colors duration-300">
+                    {vendor.name}
+                  </h3>
+                  <p className="text-[10px] text-[rgb(var(--fg-3))] mt-0.5">
+                    {t('boards_count', { count: vendor.board_count })}
+                  </p>
                 </Link>
               </ScrollReveal>
             ))}

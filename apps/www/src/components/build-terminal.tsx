@@ -12,12 +12,26 @@ import { useState, useEffect, useRef } from 'react';
 
 interface Line {
   text: string;
-  type: 'cmd' | 'docker' | 'info' | 'ok' | 'compile' | 'dim' | 'blank' | 'header' | 'table' | 'driver' | 'patch';
+  type:
+    | 'cmd'
+    | 'docker'
+    | 'info'
+    | 'ok'
+    | 'compile'
+    | 'dim'
+    | 'blank'
+    | 'header'
+    | 'table'
+    | 'driver'
+    | 'patch';
 }
 
 const BUILD_LINES: Line[] = [
   // ── 1. Launch ──
-  { text: '$ ./compile.sh build BOARD=nanopi-r6s BRANCH=current BUILD_MINIMAL=yes RELEASE=trixie', type: 'cmd' },
+  {
+    text: '$ ./compile.sh build BOARD=nanopi-r6s BRANCH=current BUILD_MINIMAL=yes RELEASE=trixie',
+    type: 'cmd',
+  },
   { text: '', type: 'blank' },
 
   // ── 2. Docker container ──
@@ -35,15 +49,18 @@ const BUILD_LINES: Line[] = [
 
   // ── 4. Sourcing configs ──
   { text: '[🐳|🌱] Sourcing board configuration [ config/boards/nanopi-r6s.conf ]', type: 'info' },
-  { text: '[🐳|✅] BOARDFAMILY=\'rockchip-rk3588\'', type: 'ok' },
-  { text: '[🐳|✅] BOOTCONFIG=\'nanopi-r6s-rk3588s_defconfig\'', type: 'ok' },
-  { text: '[🐳|🌱] Sourcing family configuration [ config/sources/families/rockchip-rk3588.conf ]', type: 'info' },
+  { text: "[🐳|✅] BOARDFAMILY='rockchip-rk3588'", type: 'ok' },
+  { text: "[🐳|✅] BOOTCONFIG='nanopi-r6s-rk3588s_defconfig'", type: 'ok' },
+  {
+    text: '[🐳|🌱] Sourcing family configuration [ config/sources/families/rockchip-rk3588.conf ]',
+    type: 'info',
+  },
   { text: '[🐳|🌿] Enabling extension [ rkbin-tools ]', type: 'docker' },
-  { text: '[🐳|✅] KERNEL_MAJOR_MINOR=\'6.18\'', type: 'ok' },
-  { text: '[🐳|✅] LINUXFAMILY=\'rockchip64\'', type: 'ok' },
-  { text: '[🐳|✅] LINUXCONFIG=\'linux-rockchip64-current\'', type: 'ok' },
+  { text: "[🐳|✅] KERNEL_MAJOR_MINOR='6.18'", type: 'ok' },
+  { text: "[🐳|✅] LINUXFAMILY='rockchip64'", type: 'ok' },
+  { text: "[🐳|✅] LINUXCONFIG='linux-rockchip64-current'", type: 'ok' },
   { text: '[🐳|🌱] Sourcing arch configuration [ arm64.conf ]', type: 'info' },
-  { text: '[🐳|✅] KERNEL_COMPILER=\'aarch64-linux-gnu-\'', type: 'ok' },
+  { text: "[🐳|✅] KERNEL_COMPILER='aarch64-linux-gnu-'", type: 'ok' },
   { text: '', type: 'blank' },
 
   // ── 5. Extensions & networking ──
@@ -55,15 +72,18 @@ const BUILD_LINES: Line[] = [
 
   // ── 6. U-Boot resolution ──
   { text: '[🐳|🌱] nanopi-r6s [ Using mainline U-Boot / current ]', type: 'info' },
-  { text: '[🐳|✅] BOOTSOURCE=\'https://github.com/u-boot/u-boot.git\'', type: 'ok' },
-  { text: '[🐳|✅] BOOTBRANCH=\'tag:v2025.10\'', type: 'ok' },
-  { text: '[🐳|🌱] mainline-kernel [ Using KERNELBRANCH=\'branch:linux-6.18.y\' ]', type: 'info' },
-  { text: '[🐳|✅] KERNELSOURCE=\'https://git.kernel.org/.../stable/linux.git\'', type: 'ok' },
+  { text: "[🐳|✅] BOOTSOURCE='https://github.com/u-boot/u-boot.git'", type: 'ok' },
+  { text: "[🐳|✅] BOOTBRANCH='tag:v2025.10'", type: 'ok' },
+  { text: "[🐳|🌱] mainline-kernel [ Using KERNELBRANCH='branch:linux-6.18.y' ]", type: 'info' },
+  { text: "[🐳|✅] KERNELSOURCE='https://git.kernel.org/.../stable/linux.git'", type: 'ok' },
   { text: '', type: 'blank' },
 
   // ── 7. Configuration complete ──
   { text: '[🐳|🌱] Configuration prepared for BOARD build [ nanopi-r6s.conf ]', type: 'info' },
-  { text: '[🐳|✨] Repeat Build Options (early) [ ./compile.sh build BOARD=nanopi-r6s ... ]', type: 'header' },
+  {
+    text: '[🐳|✨] Repeat Build Options (early) [ ./compile.sh build BOARD=nanopi-r6s ... ]',
+    type: 'header',
+  },
   { text: '', type: 'blank' },
 
   // ── 8. Host preparation ──
@@ -80,20 +100,38 @@ const BUILD_LINES: Line[] = [
 
   // ── 10. U-Boot artifact (cached) ──
   { text: '[🐳|🌱] artifact [ uboot :: uboot() ]', type: 'info' },
-  { text: '[🐳|🌱] Artifact available in remote cache [ ghcr.io/armbian/os/uboot-nanopi-r6s-current ]', type: 'info' },
-  { text: '[🐳|🔨]   Pulled [registry] ghcr.io/armbian/os/uboot-nanopi-r6s-current:2025.10-Se50b...', type: 'dim' },
+  {
+    text: '[🐳|🌱] Artifact available in remote cache [ ghcr.io/armbian/os/uboot-nanopi-r6s-current ]',
+    type: 'info',
+  },
+  {
+    text: '[🐳|🔨]   Pulled [registry] ghcr.io/armbian/os/uboot-nanopi-r6s-current:2025.10-Se50b...',
+    type: 'dim',
+  },
   { text: '[🐳|🔨]   Digest: sha256:17b026d512df6f71c5232a680f79e420f61a8c6a...', type: 'dim' },
-  { text: '[🐳|💖] artifact [ obtained from remote cache: uboot-nanopi-r6s-current ]', type: 'header' },
-  { text: '[🐳|🌱] Reversioning package [ re-version to \'26.05.0-trunk\' ]', type: 'dim' },
+  {
+    text: '[🐳|💖] artifact [ obtained from remote cache: uboot-nanopi-r6s-current ]',
+    type: 'header',
+  },
+  { text: "[🐳|🌱] Reversioning package [ re-version to '26.05.0-trunk' ]", type: 'dim' },
   { text: '', type: 'blank' },
 
   // ── 11. Kernel artifact (NOT cached — build from source) ──
   { text: '[🐳|🌱] artifact [ kernel :: kernel() ]', type: 'info' },
   { text: '[🐳|🌱] Artifact is NOT available in remote cache', type: 'info' },
-  { text: '[🐳|🌱] Kernel build starting [ linux-kernel-worktree/6.18__rockchip64__arm64 ]', type: 'info' },
-  { text: '[🐳|💖] Kernel bare tree already exists [ /armbian/cache/git-bare/kernel ]', type: 'header' },
-  { text: '[🐳|🌿] Fetching updates from remote repository [ kernel:6.18 linux-6.18.y ]', type: 'docker' },
-  { text: '[🐳|🌿] Using Kernel git revision [ 44c944a679...  \'Linux 6.18.21\' ]', type: 'docker' },
+  {
+    text: '[🐳|🌱] Kernel build starting [ linux-kernel-worktree/6.18__rockchip64__arm64 ]',
+    type: 'info',
+  },
+  {
+    text: '[🐳|💖] Kernel bare tree already exists [ /armbian/cache/git-bare/kernel ]',
+    type: 'header',
+  },
+  {
+    text: '[🐳|🌿] Fetching updates from remote repository [ kernel:6.18 linux-6.18.y ]',
+    type: 'docker',
+  },
+  { text: "[🐳|🌿] Using Kernel git revision [ 44c944a679...  'Linux 6.18.21' ]", type: 'docker' },
   { text: '', type: 'blank' },
 
   // ── 12. Driver preparation ──
@@ -111,10 +149,16 @@ const BUILD_LINES: Line[] = [
 
   // ── 13. Kernel patching (206 patches) ──
   { text: '[🐳|🌱] Calling Python patching script for kernel', type: 'info' },
-  { text: '[🐳|🔨]   Applying 206 patches from 155 files (1 driver + 154 regular)...', type: 'info' },
+  {
+    text: '[🐳|🔨]   Applying 206 patches from 155 files (1 driver + 154 regular)...',
+    type: 'info',
+  },
   { text: '', type: 'blank' },
   { text: '[🐳|🔨]   → 001/206: kernel-drivers (rockchip64-current)', type: 'patch' },
-  { text: '[🐳|🔨]   → 002/206: add-board-helios64 (+654/-81) {rk3399-kobol-helios64.dts}', type: 'patch' },
+  {
+    text: '[🐳|🔨]   → 002/206: add-board-helios64 (+654/-81) {rk3399-kobol-helios64.dts}',
+    type: 'patch',
+  },
   { text: '[🐳|🔨]   → 006/206: board-nanopc-t4-add-typec-dp (+116/-0)', type: 'patch' },
   { text: '[🐳|🔨]   → 010/206: board-nanopi-r3s-fix-leds (+31/-10)', type: 'patch' },
   { text: '[🐳|🔨]   → 025/206: general-add-overlay-compilation-support (+91)', type: 'patch' },
@@ -127,7 +171,10 @@ const BUILD_LINES: Line[] = [
   { text: '', type: 'blank' },
 
   // ── 14. Kernel config ──
-  { text: '[🐳|🌱] Using kernel config [ config/kernel/linux-rockchip64-current.config ]', type: 'info' },
+  {
+    text: '[🐳|🌱] Using kernel config [ config/kernel/linux-rockchip64-current.config ]',
+    type: 'info',
+  },
   { text: '[🐳|🌱] Enabling eBPF and BTF info [ fully BTF & CO-RE enabled kernel ]', type: 'info' },
   { text: '', type: 'blank' },
 
@@ -223,11 +270,15 @@ export function BuildTerminal() {
     });
 
     // After animation completes, wait then restart if still visible
-    timersRef.current.push(setTimeout(() => {
-      if (visibleRef.current) setCycle((c) => c + 1);
-    }, elapsed + RESTART_DELAY));
+    timersRef.current.push(
+      setTimeout(() => {
+        if (visibleRef.current) setCycle((c) => c + 1);
+      }, elapsed + RESTART_DELAY),
+    );
 
-    return () => { timersRef.current.forEach(clearTimeout); };
+    return () => {
+      timersRef.current.forEach(clearTimeout);
+    };
   }, [cycle]);
 
   // Auto-scroll to bottom
@@ -238,7 +289,10 @@ export function BuildTerminal() {
   }, [visibleCount]);
 
   return (
-    <div ref={containerRef} className="terminal-glass rounded-xl overflow-hidden h-[300px] sm:h-[350px] md:h-auto md:aspect-[16/10]">
+    <div
+      ref={containerRef}
+      className="terminal-glass rounded-xl overflow-hidden h-[300px] sm:h-[350px] md:h-auto md:aspect-[16/10]"
+    >
       <style>{`.build-term::-webkit-scrollbar{display:none}`}</style>
 
       {/* Header bar */}

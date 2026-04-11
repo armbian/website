@@ -41,7 +41,15 @@ export class ArmbianApiClient {
   private clientId: string;
   private forwardedFor?: string;
 
-  constructor(baseUrl: string, options?: { timeout?: number; fetch?: typeof globalThis.fetch; clientId?: string; forwardedFor?: string }) {
+  constructor(
+    baseUrl: string,
+    options?: {
+      timeout?: number;
+      fetch?: typeof globalThis.fetch;
+      clientId?: string;
+      forwardedFor?: string;
+    },
+  ) {
     this.baseUrl = baseUrl.replace(/\/$/, '');
     this.timeout = options?.timeout ?? 10_000;
     this.fetchImpl = options?.fetch ?? globalThis.fetch;
@@ -60,10 +68,7 @@ export class ArmbianApiClient {
     return this.fetch(`/api/v1/boards/${encodeURIComponent(slug)}`);
   }
 
-  async getBoardImages(
-    slug: string,
-    params?: ImageFilterParams,
-  ): Promise<ApiResponse<Image[]>> {
+  async getBoardImages(slug: string, params?: ImageFilterParams): Promise<ApiResponse<Image[]>> {
     const query = buildQuery(params);
     return this.fetch(`/api/v1/boards/${encodeURIComponent(slug)}/images${query}`);
   }
@@ -96,30 +101,36 @@ export class ArmbianApiClient {
     return this.fetch('/api/v1/health');
   }
 
-  async getHomePage(): Promise<ApiResponse<{
-    platinum_boards: BoardSummary[];
-    promoted_boards: BoardSummary[];
-    partners: Partner[];
-    stats: { boards: number; images: number; vendors: number };
-  }>> {
+  async getHomePage(): Promise<
+    ApiResponse<{
+      platinum_boards: BoardSummary[];
+      promoted_boards: BoardSummary[];
+      partners: Partner[];
+      stats: { boards: number; images: number; vendors: number };
+    }>
+  > {
     return this.fetch('/api/v1/pages/home');
   }
 
-  async getBoardsPage(): Promise<ApiResponse<{
-    boards: BoardSummary[];
-    vendors: Vendor[];
-    total: number;
-  }>> {
+  async getBoardsPage(): Promise<
+    ApiResponse<{
+      boards: BoardSummary[];
+      vendors: Vendor[];
+      total: number;
+    }>
+  > {
     return this.fetch('/api/v1/pages/boards');
   }
 
-  async getBoardsInit(): Promise<ApiResponse<{
-    boards: BoardSummary[];
-    platinumBoards: BoardSummary[];
-    vendors: Vendor[];
-    total: number;
-    tierCounts: Record<string, number>;
-  }>> {
+  async getBoardsInit(): Promise<
+    ApiResponse<{
+      boards: BoardSummary[];
+      platinumBoards: BoardSummary[];
+      vendors: Vendor[];
+      total: number;
+      tierCounts: Record<string, number>;
+    }>
+  > {
     return this.fetch('/api/v1/pages/boards-init');
   }
 

@@ -20,10 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const result = await payload.find({
       collection: 'pages',
       where: {
-        and: [
-          { slug: { equals: slug } },
-          { status: { equals: 'published' } },
-        ],
+        and: [{ slug: { equals: slug } }, { status: { equals: 'published' } }],
       },
       limit: 1,
     });
@@ -50,10 +47,7 @@ export default async function CmsPage({ params }: Props) {
     const result = await payload.find({
       collection: 'pages',
       where: {
-        and: [
-          { slug: { equals: slug } },
-          { status: { equals: 'published' } },
-        ],
+        and: [{ slug: { equals: slug } }, { status: { equals: 'published' } }],
       },
       limit: 1,
     });

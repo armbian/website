@@ -8,7 +8,10 @@ import type { BoardSummary } from '@armbian/schemas';
 export function BoardCard({ board }: { board: BoardSummary }) {
   const t = useTranslations('boards');
   return (
-    <Link href={`/boards/${board.slug}`} className="hw-card rounded-2xl group flex flex-col overflow-hidden relative">
+    <Link
+      href={`/boards/${board.slug}`}
+      className="hw-card rounded-2xl group flex flex-col overflow-hidden relative"
+    >
       {/* Image */}
       <div className="relative aspect-[3/2] bg-[rgb(var(--bg-sub))] p-4">
         {board.image_url ? (
@@ -16,8 +19,15 @@ export function BoardCard({ board }: { board: BoardSummary }) {
             src={board.image_url}
             alt={board.name}
             className="hw-img object-contain p-2"
-            style={{ objectFit: 'contain', position: 'absolute', inset: 0, width: '100%', height: '100%' }}
-            loading="lazy" />
+            style={{
+              objectFit: 'contain',
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+            }}
+            loading="lazy"
+          />
         ) : (
           <div className="flex h-full items-center justify-center text-2xl font-bold text-[rgb(var(--fg-3)/0.3)]">
             {board.name.charAt(0)}

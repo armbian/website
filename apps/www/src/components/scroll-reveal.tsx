@@ -46,13 +46,17 @@ export function ScrollReveal({
         scale: 0.97,
         filter: 'blur(3px)',
       }}
-      animate={isInView ? {
-        opacity: 1,
-        x: 0,
-        y: 0,
-        scale: 1,
-        filter: 'blur(0px)',
-      } : undefined}
+      animate={
+        isInView
+          ? {
+              opacity: 1,
+              x: 0,
+              y: 0,
+              scale: 1,
+              filter: 'blur(0px)',
+            }
+          : undefined
+      }
       transition={{
         duration,
         delay,
@@ -100,9 +104,7 @@ export function CountUp({ value, suffix = '' }: { value: number; suffix?: string
         initial={{ opacity: 0 }}
         animate={isInView ? { opacity: 1 } : undefined}
       >
-        {isInView ? (
-          <CountUpInner value={value} />
-        ) : '0'}
+        {isInView ? <CountUpInner value={value} /> : '0'}
       </motion.span>
       <span className="text-[rgb(var(--brand))]">{suffix}</span>
     </>

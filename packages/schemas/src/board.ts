@@ -1,14 +1,7 @@
 import { z } from 'zod';
 
 /** Support tier levels ordered by quality */
-export const SupportTierEnum = z.enum([
-  'platinum',
-  'standard',
-  'community',
-  'wip',
-  'eos',
-  'tvb',
-]);
+export const SupportTierEnum = z.enum(['platinum', 'standard', 'community', 'wip', 'eos', 'tvb']);
 export type SupportTier = z.infer<typeof SupportTierEnum>;
 
 /** Maintainer reference embedded in board detail */

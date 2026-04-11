@@ -42,7 +42,7 @@ export const DESKTOP_VARIANTS: Record<string, string> = {
 
 const VARIANT_SUFFIXES: Record<string, string> = {
   'backported-mesa': '(Backported Mesa)',
-  'ufs': '(UFS)',
+  ufs: '(UFS)',
 };
 
 export function getVariantLabel(variant: string): string {

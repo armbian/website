@@ -5,16 +5,13 @@ export function SupportBadge({ tier, label }: { tier: SupportTier; label?: strin
   const config = SUPPORT_TIERS[tier];
   if (!config) return null;
 
-  const base = 'inline-flex items-center rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider';
+  const base =
+    'inline-flex items-center rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider';
 
   const displayLabel = label ?? config.label;
 
   if (tier === 'platinum') {
-    return (
-      <span className={`${base} badge-platinum`}>
-        {displayLabel}
-      </span>
-    );
+    return <span className={`${base} badge-platinum`}>{displayLabel}</span>;
   }
 
   return (

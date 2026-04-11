@@ -17,7 +17,6 @@ function domain(url: string): string {
   return url.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
 }
 
-
 export const dynamic = 'force-dynamic';
 
 interface Props {
@@ -43,15 +42,35 @@ export default async function PartnersPage({ params }: Props) {
   try {
     const res = await api.getPartners();
     partners = res.data;
-  } catch { /* graceful */ }
+  } catch {
+    /* graceful */
+  }
 
   const tiers: Record<string, Partner[]> = {};
   for (const p of partners) (tiers[p.tier] ??= []).push(p);
 
   const sections = [
-    { key: 'platinum', label: t('tier_platinum'), color: '#D4AF37', description: t('tier_platinum_desc'), partners: tiers['platinum'] ?? [] },
-    { key: 'gold', label: t('tier_gold'), color: '#f26522', description: t('tier_gold_desc'), partners: tiers['gold'] ?? [] },
-    { key: 'silver', label: t('tier_silver'), color: '#64748b', description: t('tier_silver_desc'), partners: tiers['silver'] ?? [] },
+    {
+      key: 'platinum',
+      label: t('tier_platinum'),
+      color: '#D4AF37',
+      description: t('tier_platinum_desc'),
+      partners: tiers['platinum'] ?? [],
+    },
+    {
+      key: 'gold',
+      label: t('tier_gold'),
+      color: '#f26522',
+      description: t('tier_gold_desc'),
+      partners: tiers['gold'] ?? [],
+    },
+    {
+      key: 'silver',
+      label: t('tier_silver'),
+      color: '#64748b',
+      description: t('tier_silver_desc'),
+      partners: tiers['silver'] ?? [],
+    },
   ].filter((s) => s.partners.length > 0);
 
   return (
@@ -72,10 +91,15 @@ export default async function PartnersPage({ params }: Props) {
           <section key={section.key} className={sIdx > 0 ? 'mt-12 sm:mt-14' : ''}>
             <ScrollReveal>
               <div className="flex items-center gap-3 mb-5 sm:mb-6">
-                <div className="w-1.5 h-7 sm:h-8 rounded-full shrink-0" style={{ backgroundColor: section.color }} />
+                <div
+                  className="w-1.5 h-7 sm:h-8 rounded-full shrink-0"
+                  style={{ backgroundColor: section.color }}
+                />
                 <div className="min-w-0">
                   <h2 className="text-xl sm:text-2xl font-black tracking-tight">{section.label}</h2>
-                  <p className="text-xs sm:text-sm text-[rgb(var(--fg-3))]">{section.description}</p>
+                  <p className="text-xs sm:text-sm text-[rgb(var(--fg-3))]">
+                    {section.description}
+                  </p>
                 </div>
                 <div className="flex-1 h-px bg-[rgb(var(--border)/0.3)] hidden sm:block" />
               </div>
@@ -87,10 +111,17 @@ export default async function PartnersPage({ params }: Props) {
                   <div className="hw-card rounded-xl sm:rounded-2xl group relative overflow-hidden flex flex-col h-full">
                     <div className="h-20 sm:h-24 flex items-center justify-center overflow-hidden rounded-t-xl sm:rounded-t-2xl bg-white">
                       {cleanLogo(p.logo_url) ? (
-                        <img src={cleanLogo(p.logo_url)!} alt={p.name} width={120} height={80}
-                          className="h-12 sm:h-14 w-auto object-contain scale-[1.8]" />
+                        <img
+                          src={cleanLogo(p.logo_url)!}
+                          alt={p.name}
+                          width={120}
+                          height={80}
+                          className="h-12 sm:h-14 w-auto object-contain scale-[1.8]"
+                        />
                       ) : (
-                        <span className="text-2xl sm:text-3xl font-black text-[rgb(var(--fg-3)/0.3)]">{p.name.charAt(0)}</span>
+                        <span className="text-2xl sm:text-3xl font-black text-[rgb(var(--fg-3)/0.3)]">
+                          {p.name.charAt(0)}
+                        </span>
                       )}
                     </div>
                     <div className="p-4 sm:p-5 flex flex-col flex-1">
@@ -104,8 +135,12 @@ export default async function PartnersPage({ params }: Props) {
                       )}
                       {p.website && (
                         <div className="mt-3 sm:mt-4 pt-3 border-t border-[rgb(var(--border)/0.3)]">
-                          <a href={p.website} target="_blank" rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 text-xs text-[rgb(var(--fg-3))] hover:text-[rgb(var(--brand))] transition-colors">
+                          <a
+                            href={p.website}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 text-xs text-[rgb(var(--fg-3))] hover:text-[rgb(var(--brand))] transition-colors"
+                          >
                             {domain(p.website)}
                             <ExternalLink size={10} strokeWidth={2} className="opacity-50" />
                           </a>
@@ -123,10 +158,16 @@ export default async function PartnersPage({ params }: Props) {
           <section className="mt-16 sm:mt-20 relative rounded-xl sm:rounded-2xl overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-[rgb(var(--brand)/0.06)] via-transparent to-transparent pointer-events-none" />
             <div className="relative border border-[rgb(var(--brand)/0.15)] rounded-xl sm:rounded-2xl px-5 sm:px-8 py-10 sm:py-14 text-center">
-              <h2 className="text-xl sm:text-2xl font-black tracking-tight mb-3">{t('cta_title')}</h2>
-              <p className="text-xs sm:text-sm text-[rgb(var(--fg-2))] max-w-md mx-auto mb-6 sm:mb-8 leading-relaxed">{t('cta_subtitle')}</p>
-              <Link href="/contact"
-                className="inline-flex items-center gap-2 rounded-xl bg-[rgb(var(--brand))] px-5 sm:px-7 py-3 sm:py-4 text-sm font-bold text-white shadow-lg shadow-[rgb(var(--brand)/0.25)] transition-all hover:bg-[rgb(var(--brand-hover))] hover:-translate-y-0.5">
+              <h2 className="text-xl sm:text-2xl font-black tracking-tight mb-3">
+                {t('cta_title')}
+              </h2>
+              <p className="text-xs sm:text-sm text-[rgb(var(--fg-2))] max-w-md mx-auto mb-6 sm:mb-8 leading-relaxed">
+                {t('cta_subtitle')}
+              </p>
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-2 rounded-xl bg-[rgb(var(--brand))] px-5 sm:px-7 py-3 sm:py-4 text-sm font-bold text-white shadow-lg shadow-[rgb(var(--brand)/0.25)] transition-all hover:bg-[rgb(var(--brand-hover))] hover:-translate-y-0.5"
+              >
                 {t('cta_button')}
                 <ArrowRight size={14} strokeWidth={2.5} />
               </Link>

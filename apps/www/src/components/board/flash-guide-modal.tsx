@@ -10,7 +10,12 @@ interface FlashGuideModalProps {
   buttonLabel: string;
 }
 
-export function FlashGuideModal({ title, content, prerequisites, buttonLabel }: FlashGuideModalProps) {
+export function FlashGuideModal({
+  title,
+  content,
+  prerequisites,
+  buttonLabel,
+}: FlashGuideModalProps) {
   const [open, setOpen] = useState(false);
   const dialogRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -38,7 +43,9 @@ export function FlashGuideModal({ title, content, prerequisites, buttonLabel }: 
       >
         <BookOpen size={16} strokeWidth={1.5} className="opacity-50 shrink-0" />
         <span className="flex-1">{buttonLabel}</span>
-        <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full shrink-0">Guide</span>
+        <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full shrink-0">
+          Guide
+        </span>
       </button>
 
       {open && (
@@ -80,8 +87,15 @@ export function FlashGuideModal({ title, content, prerequisites, buttonLabel }: 
                   </p>
                   <ul className="space-y-2">
                     {prerequisites.map((item, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-[rgb(var(--fg-2))]">
-                        <CheckCircle size={14} strokeWidth={2} className="text-emerald-500 mt-0.5 shrink-0" />
+                      <li
+                        key={i}
+                        className="flex items-start gap-2 text-sm text-[rgb(var(--fg-2))]"
+                      >
+                        <CheckCircle
+                          size={14}
+                          strokeWidth={2}
+                          className="text-emerald-500 mt-0.5 shrink-0"
+                        />
                         {item}
                       </li>
                     ))}

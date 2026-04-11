@@ -59,7 +59,9 @@ export function Navbar() {
   // Lock body scroll when mobile menu open
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [mobileOpen]);
 
   return (
@@ -77,13 +79,15 @@ export function Navbar() {
             alt="Armbian"
             width={400}
             height={60}
-            className="h-6 sm:h-7 w-auto max-w-[140px] object-contain hidden dark:block" />
+            className="h-6 sm:h-7 w-auto max-w-[140px] object-contain hidden dark:block"
+          />
           <img
             src="/armbian-logo-black.png"
             alt="Armbian"
             width={400}
             height={60}
-            className="h-6 sm:h-7 w-auto max-w-[140px] object-contain block dark:hidden" />
+            className="h-6 sm:h-7 w-auto max-w-[140px] object-contain block dark:hidden"
+          />
         </Link>
 
         {/* Desktop nav */}
@@ -127,11 +131,7 @@ export function Navbar() {
             aria-label={t('menu')}
             aria-expanded={mobileOpen}
           >
-            {mobileOpen ? (
-              <X size={18} strokeWidth={1.5} />
-            ) : (
-              <Menu size={18} strokeWidth={1.5} />
-            )}
+            {mobileOpen ? <X size={18} strokeWidth={1.5} /> : <Menu size={18} strokeWidth={1.5} />}
           </button>
         </div>
       </nav>

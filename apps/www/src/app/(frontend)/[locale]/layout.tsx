@@ -38,6 +38,7 @@ export async function generateMetadata({
   alternates['x-default'] = '/';
 
   return {
+    metadataBase: new URL(process.env['NEXT_PUBLIC_SITE_URL'] ?? 'https://www.armbian.com'),
     title: {
       template: '%s | Armbian',
       default: title,
@@ -45,6 +46,18 @@ export async function generateMetadata({
     description,
     alternates: {
       languages: alternates,
+    },
+    openGraph: {
+      type: 'website',
+      siteName: 'Armbian',
+      title,
+      description,
+      locale,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
     },
   };
 }
@@ -76,9 +89,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
           <ThemeProvider>
             <Navbar />
             <AnnouncementsBanner readMoreLabel={tAnnouncements('read_more')} />
-            <main>
-              {children}
-            </main>
+            <main>{children}</main>
             <Footer />
             <ScrollToTop />
           </ThemeProvider>

@@ -8,7 +8,16 @@ import { SupportBadge } from '@/components/ui/support-badge';
 import { Pill } from '@/components/ui/pill';
 import { SUPPORT_TIERS } from '@armbian/config';
 import type { BoardSummary, Vendor, SupportTier } from '@armbian/schemas';
-import { Search, X, ArrowRight, Star, ChevronLeft, ChevronRight, AlertCircle, RefreshCw } from 'lucide-react';
+import {
+  Search,
+  X,
+  ArrowRight,
+  Star,
+  ChevronLeft,
+  ChevronRight,
+  AlertCircle,
+  RefreshCw,
+} from 'lucide-react';
 import { BoardGridSkeleton } from '@/components/ui/skeleton';
 
 interface BoardsCatalogProps {
@@ -23,7 +32,7 @@ const PAGE_SIZE = 24;
 const SORT_OPTIONS = ['popularity', 'name', 'support'] as const;
 type SortKey = (typeof SORT_OPTIONS)[number];
 const TIER_ORDER = Object.keys(SUPPORT_TIERS).sort(
-  (a, b) => SUPPORT_TIERS[a as SupportTier].sortOrder - SUPPORT_TIERS[b as SupportTier].sortOrder
+  (a, b) => SUPPORT_TIERS[a as SupportTier].sortOrder - SUPPORT_TIERS[b as SupportTier].sortOrder,
 ) as SupportTier[];
 
 function BoardImage({ board }: { board: BoardSummary }) {
@@ -40,10 +49,20 @@ function BoardImage({ board }: { board: BoardSummary }) {
   if (!board.image_url || failed) {
     return (
       <>
-        <img src="/armbian-logo-white.png" alt="Armbian" width={120} height={32}
-          className="w-auto h-8 object-contain opacity-20 hidden dark:block" />
-        <img src="/armbian-logo-black.png" alt="Armbian" width={120} height={32}
-          className="w-auto h-8 object-contain opacity-15 block dark:hidden" />
+        <img
+          src="/armbian-logo-white.png"
+          alt="Armbian"
+          width={120}
+          height={32}
+          className="w-auto h-8 object-contain opacity-20 hidden dark:block"
+        />
+        <img
+          src="/armbian-logo-black.png"
+          alt="Armbian"
+          width={120}
+          height={32}
+          className="w-auto h-8 object-contain opacity-15 block dark:hidden"
+        />
       </>
     );
   }
@@ -55,17 +74,31 @@ function BoardImage({ board }: { board: BoardSummary }) {
           <div className="w-6 h-6 rounded-full border-2 border-[rgb(var(--border))] border-t-[rgb(var(--brand))] animate-spin" />
         </div>
       )}
-      <img ref={imgRef} src={board.image_url} alt={board.name} width={200} height={128}
+      <img
+        ref={imgRef}
+        src={board.image_url}
+        alt={board.name}
+        width={200}
+        height={128}
         className={`hw-img h-full w-auto object-contain relative z-10 drop-shadow-lg transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'}`}
         loading="lazy"
         onLoad={() => setLoaded(true)}
-        onError={() => setFailed(true)} />
+        onError={() => setFailed(true)}
+      />
     </>
   );
 }
 
 /** Page number buttons: prev ... 3 4 [5] 6 7 ... next */
-function Pagination({ page, totalPages, onPageChange }: { page: number; totalPages: number; onPageChange: (p: number) => void }) {
+function Pagination({
+  page,
+  totalPages,
+  onPageChange,
+}: {
+  page: number;
+  totalPages: number;
+  onPageChange: (p: number) => void;
+}) {
   if (totalPages <= 1) return null;
 
   const pages: (number | '...')[] = [];
@@ -79,36 +112,58 @@ function Pagination({ page, totalPages, onPageChange }: { page: number; totalPag
     pages.push(totalPages);
   }
 
-  const btnBase = 'inline-flex items-center justify-center min-w-[36px] h-9 rounded-lg text-sm font-medium transition-colors';
+  const btnBase =
+    'inline-flex items-center justify-center min-w-[36px] h-9 rounded-lg text-sm font-medium transition-colors';
 
   return (
     <nav className="flex items-center justify-center gap-1 mt-8" aria-label="Pagination">
-      <button type="button" disabled={page === 1} onClick={() => onPageChange(page - 1)}
-        className={`${btnBase} px-2 ${page === 1 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-[rgb(var(--bg-sub))]'}`}>
+      <button
+        type="button"
+        disabled={page === 1}
+        onClick={() => onPageChange(page - 1)}
+        className={`${btnBase} px-2 ${page === 1 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-[rgb(var(--bg-sub))]'}`}
+      >
         <ChevronLeft size={16} strokeWidth={2} />
       </button>
       {pages.map((p, i) =>
         p === '...' ? (
-          <span key={`dots-${i}`} className="px-1 text-[rgb(var(--fg-3))]">...</span>
+          <span key={`dots-${i}`} className="px-1 text-[rgb(var(--fg-3))]">
+            ...
+          </span>
         ) : (
-          <button key={p} type="button" onClick={() => onPageChange(p)}
-            className={`${btnBase} ${p === page
-              ? 'bg-[rgb(var(--brand))] text-white'
-              : 'hover:bg-[rgb(var(--bg-sub))] text-[rgb(var(--fg-2))]'
-            }`}>
+          <button
+            key={p}
+            type="button"
+            onClick={() => onPageChange(p)}
+            className={`${btnBase} ${
+              p === page
+                ? 'bg-[rgb(var(--brand))] text-white'
+                : 'hover:bg-[rgb(var(--bg-sub))] text-[rgb(var(--fg-2))]'
+            }`}
+          >
             {p}
           </button>
         ),
       )}
-      <button type="button" disabled={page === totalPages} onClick={() => onPageChange(page + 1)}
-        className={`${btnBase} px-2 ${page === totalPages ? 'opacity-30 cursor-not-allowed' : 'hover:bg-[rgb(var(--bg-sub))]'}`}>
+      <button
+        type="button"
+        disabled={page === totalPages}
+        onClick={() => onPageChange(page + 1)}
+        className={`${btnBase} px-2 ${page === totalPages ? 'opacity-30 cursor-not-allowed' : 'hover:bg-[rgb(var(--bg-sub))]'}`}
+      >
         <ChevronRight size={16} strokeWidth={2} />
       </button>
     </nav>
   );
 }
 
-export function BoardsCatalog({ initialBoards, platinumBoards, vendors: initialVendors, total: serverTotal, tierCounts: serverTierCounts }: BoardsCatalogProps) {
+export function BoardsCatalog({
+  initialBoards,
+  platinumBoards,
+  vendors: initialVendors,
+  total: serverTotal,
+  tierCounts: serverTierCounts,
+}: BoardsCatalogProps) {
   const t = useTranslations('boards');
   const tSupport = useTranslations('support');
   const pathname = usePathname();
@@ -129,9 +184,10 @@ export function BoardsCatalog({ initialBoards, platinumBoards, vendors: initialV
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const gridRef = useRef<HTMLDivElement>(null);
 
-  const sortedVendors = useMemo(() =>
-    initialVendors.filter((v) => v.name?.trim()).sort((a, b) => a.name.localeCompare(b.name)),
-  [initialVendors]);
+  const sortedVendors = useMemo(
+    () => initialVendors.filter((v) => v.name?.trim()).sort((a, b) => a.name.localeCompare(b.name)),
+    [initialVendors],
+  );
   const visibleVendors = showAllVendors ? sortedVendors : sortedVendors.slice(0, 20);
   const totalPages = Math.ceil(currentTotal / PAGE_SIZE);
 
@@ -197,7 +253,12 @@ export function BoardsCatalog({ initialBoards, platinumBoards, vendors: initialV
 
   // Search
   const doSearch = useCallback(async (q: string) => {
-    if (q.length < 2) { setSearchResults(null); setSearching(false); setLoadError(false); return; }
+    if (q.length < 2) {
+      setSearchResults(null);
+      setSearching(false);
+      setLoadError(false);
+      return;
+    }
     setSearching(true);
     setLoadError(false);
     try {
@@ -215,7 +276,9 @@ export function BoardsCatalog({ initialBoards, platinumBoards, vendors: initialV
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => doSearch(search), 300);
-    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
   }, [search, doSearch]);
 
   const featuredPlatinum = useMemo(() => platinumBoards.slice(0, 4), [platinumBoards]);
@@ -225,8 +288,12 @@ export function BoardsCatalog({ initialBoards, platinumBoards, vendors: initialV
   const hasFilters = vendor || support || search;
 
   function clearFilters() {
-    setVendor(''); setSupport(''); setSort('popularity');
-    setSearch(''); setSearchResults(null); setPage(1);
+    setVendor('');
+    setSupport('');
+    setSort('popularity');
+    setSearch('');
+    setSearchResults(null);
+    setPage(1);
   }
 
   return (
@@ -250,7 +317,10 @@ export function BoardsCatalog({ initialBoards, platinumBoards, vendors: initialV
                 onClick={() => {
                   setSupport('platinum');
                   setSearchResults(null);
-                  setTimeout(() => gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
+                  setTimeout(
+                    () => gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+                    150,
+                  );
                 }}
                 className="flex items-center gap-1.5 text-xs font-semibold text-[#D4AF37] hover:text-[#FFDF00] transition-colors"
               >
@@ -260,9 +330,12 @@ export function BoardsCatalog({ initialBoards, platinumBoards, vendors: initialV
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
               {featuredPlatinum.map((board) => (
-                <Link key={board.slug} href={`/boards/${board.slug}`}
+                <Link
+                  key={board.slug}
+                  href={`/boards/${board.slug}`}
                   className="hw-card rounded-2xl p-4 group relative overflow-hidden flex flex-col"
-                  style={{ borderColor: 'rgba(212,175,55,0.2)' }}>
+                  style={{ borderColor: 'rgba(212,175,55,0.2)' }}
+                >
                   <div className="h-28 w-full flex items-center justify-center relative mb-3 z-10 p-2">
                     <div className="absolute inset-0 bg-white/[0.03] rounded-xl group-hover:bg-[rgb(var(--brand)/0.05)] transition-colors border border-white/5 group-hover:border-[rgb(var(--brand)/0.2)]" />
                     <div className="relative z-10 h-full flex items-center justify-center">
@@ -271,11 +344,19 @@ export function BoardsCatalog({ initialBoards, platinumBoards, vendors: initialV
                   </div>
                   <div className="mt-auto border-t border-white/10 pt-3 z-10 flex items-end justify-between gap-2">
                     <div className="min-w-0">
-                      <span className="text-[9px] text-[#D4AF37] font-mono font-bold uppercase tracking-widest mb-0.5 block truncate">{board.vendor_name}</span>
-                      <h3 className="text-sm font-bold group-hover:text-[#D4AF37] transition-colors tracking-tight truncate">{board.name}</h3>
+                      <span className="text-[9px] text-[#D4AF37] font-mono font-bold uppercase tracking-widest mb-0.5 block truncate">
+                        {board.vendor_name}
+                      </span>
+                      <h3 className="text-sm font-bold group-hover:text-[#D4AF37] transition-colors tracking-tight truncate">
+                        {board.name}
+                      </h3>
                     </div>
                     <div className="w-6 h-6 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/20 flex items-center justify-center shrink-0 group-hover:bg-[#D4AF37] group-hover:border-[#D4AF37] transition-all">
-                      <ArrowRight size={12} strokeWidth={2.5} className="text-[#D4AF37] group-hover:text-black transition-colors" />
+                      <ArrowRight
+                        size={12}
+                        strokeWidth={2.5}
+                        className="text-[#D4AF37] group-hover:text-black transition-colors"
+                      />
                     </div>
                   </div>
                 </Link>
@@ -288,9 +369,15 @@ export function BoardsCatalog({ initialBoards, platinumBoards, vendors: initialV
 
       {/* ── Search ── */}
       <div className="relative mb-5">
-        <Search size={16} strokeWidth={2} className="absolute left-4 top-1/2 -translate-y-1/2 text-[rgb(var(--fg-3))]" />
+        <Search
+          size={16}
+          strokeWidth={2}
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-[rgb(var(--fg-3))]"
+        />
         <input
-          type="text" value={search} onChange={(e) => setSearch(e.target.value)}
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
           placeholder={t('search_placeholder')}
           className="w-full rounded-xl border border-[rgb(var(--border))] bg-[rgb(var(--bg-el))] pl-11 pr-4 py-3 text-sm outline-none transition-all placeholder:text-[rgb(var(--fg-3))] focus:border-[rgb(var(--brand))] focus:ring-2 focus:ring-[rgb(var(--brand)/0.15)]"
         />
@@ -304,26 +391,62 @@ export function BoardsCatalog({ initialBoards, platinumBoards, vendors: initialV
       {/* ── Filters ── */}
       <div className="space-y-2.5 mb-6">
         <div className="flex flex-wrap items-center gap-1">
-          <Pill active={!support} onClick={() => { setSupport(''); setSearchResults(null); }}>{t('all')} ({serverTotal})</Pill>
-          {TIER_ORDER.map((tier) => serverTierCounts[tier] ? (
-            <Pill key={tier} active={support === tier} color={SUPPORT_TIERS[tier].badgeColor}
-              onClick={() => { setSupport(support === tier ? '' : tier); setSearchResults(null); }}>
-              {tSupport(tier)} ({serverTierCounts[tier]})
-            </Pill>
-          ) : null)}
+          <Pill
+            active={!support}
+            onClick={() => {
+              setSupport('');
+              setSearchResults(null);
+            }}
+          >
+            {t('all')} ({serverTotal})
+          </Pill>
+          {TIER_ORDER.map((tier) =>
+            serverTierCounts[tier] ? (
+              <Pill
+                key={tier}
+                active={support === tier}
+                color={SUPPORT_TIERS[tier].badgeColor}
+                onClick={() => {
+                  setSupport(support === tier ? '' : tier);
+                  setSearchResults(null);
+                }}
+              >
+                {tSupport(tier)} ({serverTierCounts[tier]})
+              </Pill>
+            ) : null,
+          )}
         </div>
         <div className="flex flex-wrap items-center gap-1">
-          <Pill active={!vendor} onClick={() => { setVendor(''); setSearchResults(null); }}>{t('all')} ({sortedVendors.length})</Pill>
+          <Pill
+            active={!vendor}
+            onClick={() => {
+              setVendor('');
+              setSearchResults(null);
+            }}
+          >
+            {t('all')} ({sortedVendors.length})
+          </Pill>
           {visibleVendors.map((v) => (
-            <Pill key={v.slug} active={vendor === v.slug}
-              onClick={() => { setVendor(vendor === v.slug ? '' : v.slug); setSearchResults(null); }}>
+            <Pill
+              key={v.slug}
+              active={vendor === v.slug}
+              onClick={() => {
+                setVendor(vendor === v.slug ? '' : v.slug);
+                setSearchResults(null);
+              }}
+            >
               {v.name}
             </Pill>
           ))}
           {sortedVendors.length > 20 && (
-            <button type="button" onClick={() => setShowAllVendors(!showAllVendors)}
-              className="text-[11px] font-semibold text-[rgb(var(--brand))] hover:underline px-1.5 py-1">
-              {showAllVendors ? t('show_less') : t('show_more', { count: sortedVendors.length - 20 })}
+            <button
+              type="button"
+              onClick={() => setShowAllVendors(!showAllVendors)}
+              className="text-[11px] font-semibold text-[rgb(var(--brand))] hover:underline px-1.5 py-1"
+            >
+              {showAllVendors
+                ? t('show_less')
+                : t('show_more', { count: sortedVendors.length - 20 })}
             </button>
           )}
         </div>
@@ -334,21 +457,28 @@ export function BoardsCatalog({ initialBoards, platinumBoards, vendors: initialV
         <span className="text-xs text-[rgb(var(--fg-3))] tabular-nums">
           {searchResults
             ? t('results_count', { count: displayTotal })
-            : `${(page - 1) * PAGE_SIZE + 1}–${Math.min(page * PAGE_SIZE, displayTotal)} / ${displayTotal}`
-          }
+            : `${(page - 1) * PAGE_SIZE + 1}–${Math.min(page * PAGE_SIZE, displayTotal)} / ${displayTotal}`}
         </span>
         <div className="flex items-center gap-3">
           {hasFilters && (
-            <button type="button" onClick={clearFilters}
-              className="flex items-center gap-1 text-xs font-semibold text-[rgb(var(--brand))] hover:underline">
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="flex items-center gap-1 text-xs font-semibold text-[rgb(var(--brand))] hover:underline"
+            >
               <X size={12} strokeWidth={2.5} />
               {t('clear_all')}
             </button>
           )}
-          <select value={sort} onChange={(e) => setSort(e.target.value as SortKey)}
-            className="rounded-lg border border-[rgb(var(--border))] bg-[rgb(var(--bg-el))] px-3 py-1.5 text-xs outline-none focus:border-[rgb(var(--brand))] cursor-pointer">
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value as SortKey)}
+            className="rounded-lg border border-[rgb(var(--border))] bg-[rgb(var(--bg-el))] px-3 py-1.5 text-xs outline-none focus:border-[rgb(var(--brand))] cursor-pointer"
+          >
             {SORT_OPTIONS.map((s) => (
-              <option key={s} value={s}>{t(`sort_${s}`)}</option>
+              <option key={s} value={s}>
+                {t(`sort_${s}`)}
+              </option>
             ))}
           </select>
         </div>
@@ -380,8 +510,11 @@ export function BoardsCatalog({ initialBoards, platinumBoards, vendors: initialV
         <>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {displayBoards.map((board) => (
-              <Link key={board.slug} href={`/boards/${board.slug}`}
-                className="hw-card rounded-2xl p-4 group relative overflow-hidden flex flex-col">
+              <Link
+                key={board.slug}
+                href={`/boards/${board.slug}`}
+                className="hw-card rounded-2xl p-4 group relative overflow-hidden flex flex-col"
+              >
                 <div className="absolute top-3 right-3 z-20">
                   <SupportBadge tier={board.support_tier} />
                 </div>
@@ -401,7 +534,11 @@ export function BoardsCatalog({ initialBoards, platinumBoards, vendors: initialV
                     </h3>
                   </div>
                   <div className="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-[rgb(var(--brand))] group-hover:border-[rgb(var(--brand))] transition-all">
-                    <ArrowRight size={12} strokeWidth={2.5} className="text-[rgb(var(--fg-3))] group-hover:text-white transition-colors" />
+                    <ArrowRight
+                      size={12}
+                      strokeWidth={2.5}
+                      className="text-[rgb(var(--fg-3))] group-hover:text-white transition-colors"
+                    />
                   </div>
                 </div>
               </Link>
@@ -409,7 +546,9 @@ export function BoardsCatalog({ initialBoards, platinumBoards, vendors: initialV
           </div>
 
           {/* ── Pagination ── */}
-          {!searchResults && <Pagination page={page} totalPages={totalPages} onPageChange={goToPage} />}
+          {!searchResults && (
+            <Pagination page={page} totalPages={totalPages} onPageChange={goToPage} />
+          )}
         </>
       ) : (
         <div className="mt-20 text-center">
@@ -418,8 +557,11 @@ export function BoardsCatalog({ initialBoards, platinumBoards, vendors: initialV
           </div>
           <p className="text-lg font-bold">{t('no_results')}</p>
           <p className="mt-1 text-sm text-[rgb(var(--fg-3))]">{t('no_results_subtitle')}</p>
-          <button type="button" onClick={clearFilters}
-            className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[rgb(var(--brand))] text-white font-semibold text-sm hover:bg-[rgb(var(--brand-hover))] transition-colors">
+          <button
+            type="button"
+            onClick={clearFilters}
+            className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[rgb(var(--brand))] text-white font-semibold text-sm hover:bg-[rgb(var(--brand-hover))] transition-colors"
+          >
             {t('clear_filters')}
           </button>
         </div>

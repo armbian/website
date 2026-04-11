@@ -25,11 +25,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const result = await api.getBoardsInit();
     total = result.data.total;
     vendorCount = result.data.vendors.length;
-  } catch { /* graceful */ }
+  } catch {
+    /* graceful */
+  }
 
   return {
     title: t('hero_title'),
-    description: t('hero_subtitle', { boards: String(total || '--'), vendors: String(vendorCount || '--') }),
+    description: t('hero_subtitle', {
+      boards: String(total || '--'),
+      vendors: String(vendorCount || '--'),
+    }),
     other: { 'Cache-Control': 'public, max-age=60, s-maxage=300' },
   };
 }
@@ -52,7 +57,9 @@ export default async function BoardsPage({ params }: Props) {
     vendors = result.data.vendors;
     total = result.data.total;
     tierCounts = result.data.tierCounts;
-  } catch { /* graceful */ }
+  } catch {
+    /* graceful */
+  }
 
   return (
     <div className="min-h-screen">
@@ -64,7 +71,10 @@ export default async function BoardsPage({ params }: Props) {
                 {t('hero_title')}
               </h1>
               <p className="text-fluid-lg text-[rgb(var(--fg-2))] leading-relaxed max-w-2xl mx-auto">
-                {t('hero_subtitle', { boards: String(total || '--'), vendors: String(vendors.length || '--') })}
+                {t('hero_subtitle', {
+                  boards: String(total || '--'),
+                  vendors: String(vendors.length || '--'),
+                })}
               </p>
             </div>
           </ScrollReveal>
@@ -73,7 +83,13 @@ export default async function BoardsPage({ params }: Props) {
 
       <section className="pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Suspense fallback={<div className="pt-8"><BoardGridSkeleton count={12} /></div>}>
+          <Suspense
+            fallback={
+              <div className="pt-8">
+                <BoardGridSkeleton count={12} />
+              </div>
+            }
+          >
             <BoardsCatalog
               initialBoards={initialBoards}
               platinumBoards={platinumBoards}

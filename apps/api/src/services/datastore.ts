@@ -16,7 +16,10 @@ export interface SyncMetadata {
   imageCount: number;
   vendorCount: number;
   githubStars: number | null;
-  sourceStatuses: Record<string, { status: 'ok' | 'error' | 'stale'; lastFetch: Date | null; error?: string }>;
+  sourceStatuses: Record<
+    string,
+    { status: 'ok' | 'error' | 'stale'; lastFetch: Date | null; error?: string }
+  >;
 }
 
 export interface NormalizedData {
@@ -238,9 +241,10 @@ export class DataStore {
   /** Get top distro codenames by image count, grouped by family */
   getDistroReleases(): { debian: string[]; ubuntu: string[] } {
     const counts: Record<string, number> = {};
-    for (const imgs of this.imagesByBoard.values()) for (const img of imgs) {
-      counts[img.distribution] = (counts[img.distribution] || 0) + 1;
-    }
+    for (const imgs of this.imagesByBoard.values())
+      for (const img of imgs) {
+        counts[img.distribution] = (counts[img.distribution] || 0) + 1;
+      }
 
     const debian: [string, number][] = [];
     const ubuntu: [string, number][] = [];
@@ -254,8 +258,14 @@ export class DataStore {
     }
 
     return {
-      debian: debian.sort((a, b) => b[1] - a[1]).slice(0, 2).map(([name]) => name),
-      ubuntu: ubuntu.sort((a, b) => b[1] - a[1]).slice(0, 2).map(([name]) => name),
+      debian: debian
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 2)
+        .map(([name]) => name),
+      ubuntu: ubuntu
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 2)
+        .map(([name]) => name),
     };
   }
 
@@ -289,14 +299,11 @@ export class DataStore {
     return this._metadata;
   }
 
-  updateSourceStatus(
-    source: string,
-    status: 'ok' | 'error' | 'stale',
-    error?: string,
-  ): void {
+  updateSourceStatus(source: string, status: 'ok' | 'error' | 'stale', error?: string): void {
     this._metadata.sourceStatuses[source] = {
       status,
-      lastFetch: status === 'ok' ? new Date() : this._metadata.sourceStatuses[source]?.lastFetch ?? null,
+      lastFetch:
+        status === 'ok' ? new Date() : (this._metadata.sourceStatuses[source]?.lastFetch ?? null),
       error,
     };
   }

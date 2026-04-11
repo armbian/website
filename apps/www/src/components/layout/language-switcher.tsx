@@ -52,7 +52,9 @@ export function LanguageSwitcher() {
     try {
       localStorage.setItem('locale', newLocale);
       document.cookie = `locale=${newLocale};path=/;max-age=${365 * 24 * 60 * 60};SameSite=Lax`;
-    } catch { /* SSR safety */ }
+    } catch {
+      /* SSR safety */
+    }
     router.replace(pathname, { locale: newLocale });
   }
 
@@ -68,7 +70,11 @@ export function LanguageSwitcher() {
       >
         <FlagIcon locale={locale} size={16} />
         {locale.toUpperCase()}
-        <ChevronDown size={12} strokeWidth={1.5} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown
+          size={12}
+          strokeWidth={1.5}
+          className={`transition-transform ${open ? 'rotate-180' : ''}`}
+        />
       </button>
 
       {open && (
