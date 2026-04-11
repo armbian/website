@@ -2,6 +2,11 @@ import { createHash } from 'node:crypto';
 import type {
   BoardDetail,
   Image,
+  ImageFormat,
+  StorageVariant,
+  CompanionFile,
+  CompanionType,
+  DisplayVariant,
   Vendor,
   Partner,
   Maintainer,
@@ -41,6 +46,150 @@ interface EnrichmentData {
   boardConfigSlugs?: Set<string>;
 }
 
+/**
+ * Whitelist of upstream `file_extension` values mapped to the canonical
+ * image format we expose on the site. Anything not in this map is skipped
+ * and tracked so the operator can extend the list when upstream introduces
+ * a new format.
+ */
+const VALID_IMAGE_EXTENSIONS: Record<string, ImageFormat> = {
+  'img.xz': 'sd',
+  'oowow.img.xz': 'sd',
+  'rootfs.img.xz': 'sd',
+  'ufs.img.xz': 'sd',
+  'recovery.img.xz': 'sd',
+  'kebab.img.xz': 'sd',
+  'boe.img.xz': 'sd',
+  'csot.img.xz': 'sd',
+  xz: 'rootfs',
+  'ufs.xz': 'rootfs',
+  'img.qcow2': 'qemu',
+  'img.qcow2.xz': 'qemu',
+  'hyperv.zip': 'hyperv',
+  'hyperv.zip.xz': 'hyperv',
+};
+
+/**
+ * Board slugs whose `.tar.xz` archives are Qualcomm Deep Download (QDL)
+ * payloads rather than conventional rootfs tarballs. This is a temporary
+ * override until upstream starts emitting a dedicated format marker for
+ * them; remove entries here once the JSON exposes the distinction natively.
+ */
+const QDL_BOARD_SLUGS = new Set<string>(['arduino-uno-q']);
+
+/**
+ * Companion file patterns. Each entry knows how to detect a companion file
+ * by filename suffix and how to label it for the UI.
+ */
+const COMPANION_PATTERNS: { regex: RegExp; type: CompanionType; label: string }[] = [
+  { regex: /\.fip\.img\.xz$/i, type: 'fip', label: 'ARM Trusted Firmware (FIP)' },
+  { regex: /\.lk\.bin\.xz$/i, type: 'bootloader', label: 'Little Kernel bootloader' },
+  { regex: /\.boot_recovery\.img\.xz$/i, type: 'recovery', label: 'Recovery partition' },
+];
+
+/**
+ * Display variant pattern: matches device-specific boot partition images
+ * such as `boot_sm8250-xiaomi-elish-boe.img.xz`. The trailing token is the
+ * display panel identifier we expose to the user (BOE, CSOT, …).
+ */
+const DISPLAY_VARIANT_REGEX = /\.boot_[a-z0-9]+(?:-[a-z0-9]+)*-([a-z0-9]+)\.img\.xz$/i;
+const ANY_BOOT_PARTITION_REGEX = /\.boot_[^.]+\.img\.xz$/i;
+
+type AssetClassification =
+  | {
+      kind: 'primary';
+      format: ImageFormat;
+      storage: StorageVariant | null;
+      cleanVariant: string;
+      baseName: string;
+    }
+  | { kind: 'companion'; companionType: CompanionType; label: string; baseName: string }
+  | { kind: 'display-variant'; display: string; baseName: string }
+  | { kind: 'unknown' };
+
+/** Strip a `-ufs` suffix off the upstream variant string. */
+function extractStorageVariant(variant: string): {
+  variant: string;
+  storage: StorageVariant | null;
+} {
+  const m = variant.match(/^(.*)-ufs$/i);
+  if (m) return { variant: m[1]!, storage: 'ufs' };
+  return { variant, storage: null };
+}
+
+/** Strip a known primary suffix to obtain the shared base filename. */
+function extractPrimaryBaseName(filename: string): string {
+  const suffixes = [
+    /\.oowow\.img\.xz$/i,
+    /\.rootfs\.img\.xz$/i,
+    /\.ufs\.img\.xz$/i,
+    /\.kebab\.img\.xz$/i,
+    /\.boe\.img\.xz$/i,
+    /\.csot\.img\.xz$/i,
+    /\.recovery\.img\.xz$/i,
+    /\.img\.qcow2\.xz$/i,
+    /\.img\.qcow2$/i,
+    /\.hyperv\.zip\.xz$/i,
+    /\.hyperv\.zip$/i,
+    /\.img\.xz$/i,
+    /\.tar\.xz$/i,
+    /\.ufs\.xz$/i,
+    /\.xz$/i,
+  ];
+  for (const re of suffixes) {
+    if (re.test(filename)) return filename.replace(re, '');
+  }
+  return filename;
+}
+
+function classifyAsset(asset: RawImageAsset): AssetClassification {
+  const filename = (asset.file_url.split('/').pop() ?? '').toLowerCase();
+
+  // Companion files are matched first because their suffix is more specific
+  // than the bare `.img.xz` extension.
+  for (const pat of COMPANION_PATTERNS) {
+    if (pat.regex.test(filename)) {
+      return {
+        kind: 'companion',
+        companionType: pat.type,
+        label: pat.label,
+        baseName: filename.replace(pat.regex, ''),
+      };
+    }
+  }
+
+  // Device-specific boot partitions become display variants. Each board with
+  // multiple panels surfaces them as a radio selector in the UI.
+  const displayMatch = filename.match(DISPLAY_VARIANT_REGEX);
+  if (displayMatch) {
+    return {
+      kind: 'display-variant',
+      display: displayMatch[1]!.toUpperCase(),
+      baseName: filename.replace(ANY_BOOT_PARTITION_REGEX, ''),
+    };
+  }
+
+  // The remaining files are primaries. They must pass the format whitelist.
+  let format = VALID_IMAGE_EXTENSIONS[asset.file_extension];
+  if (!format) return { kind: 'unknown' };
+
+  // QDL override: a handful of Qualcomm-based boards ship `.tar.xz` archives
+  // that are really QDL payloads, not rootfs tarballs. Upgrade the format so
+  // the UI can label them correctly.
+  if (format === 'rootfs' && QDL_BOARD_SLUGS.has(asset.board_slug)) {
+    format = 'qdl';
+  }
+
+  const { variant: cleanVariant, storage } = extractStorageVariant(asset.variant);
+  return {
+    kind: 'primary',
+    format,
+    storage,
+    cleanVariant,
+    baseName: extractPrimaryBaseName(filename),
+  };
+}
+
 export class Normalizer {
   constructor() {}
 
@@ -49,16 +198,37 @@ export class Normalizer {
     const maintainerMap = this.buildMaintainerBoardMap(raw.maintainers);
     const partnerMap = this.buildPartnerMap(raw.partners);
 
-    // 1. Extract unique boards from image entries
-    const boardMap = new Map<string, {
-      asset: RawImageAsset;
-      images: RawImageAsset[];
-      platinum: boolean;
-    }>();
+    // Tracker for unknown extensions encountered during this run; surfaced
+    // at the end of normalize() so operators learn about new upstream formats.
+    const unknownExtensions = new Set<string>();
 
+    // Pass 1 — classify every upstream asset once. Primaries become flashable
+    // images, companions get attached to their primary by matching baseName,
+    // display variants become selectable boot partitions on the primary image.
+    type ClassifiedAsset = { asset: RawImageAsset; classification: AssetClassification };
+    const classified: ClassifiedAsset[] = [];
     for (const asset of raw.images) {
-      // Only process actual image files (not .asc, .sha, .torrent)
-      if (asset.file_extension !== 'img.xz') continue;
+      const classification = classifyAsset(asset);
+      if (classification.kind === 'unknown') {
+        unknownExtensions.add(asset.file_extension);
+        continue;
+      }
+      classified.push({ asset, classification });
+    }
+
+    // 1. Extract unique boards — primary assets only so `image_count` reflects
+    // the flashable images the user actually sees, not companion firmware.
+    const boardMap = new Map<
+      string,
+      {
+        asset: RawImageAsset;
+        images: RawImageAsset[];
+        platinum: boolean;
+      }
+    >();
+
+    for (const { asset, classification } of classified) {
+      if (classification.kind !== 'primary') continue;
 
       const existing = boardMap.get(asset.board_slug);
       if (existing) {
@@ -84,9 +254,7 @@ export class Normalizer {
         platinum ? 'true' : 'false',
       );
 
-      const hasDesktop = boardImages.some(
-        (img) => img.variant !== 'minimal' && img.variant !== '',
-      );
+      const hasDesktop = boardImages.some((img) => img.variant !== 'minimal' && img.variant !== '');
 
       const promoted = boardImages.some((img) => img.promoted === 'true');
 
@@ -110,8 +278,10 @@ export class Normalizer {
         features: enrich?.features ?? [],
         docs_url: boardDocsUrl(slug),
         forum_url: boardForumUrl(slug),
-        github_url: (!enrichment.boardConfigSlugs?.size || enrichment.boardConfigSlugs.has(slug))
-          ? boardGithubUrl(slug, supportTier) : null,
+        github_url:
+          !enrichment.boardConfigSlugs?.size || enrichment.boardConfigSlugs.has(slug)
+            ? boardGithubUrl(slug, supportTier)
+            : null,
         build_command: buildCommand(slug),
         legacy_paths: this.getLegacyPaths(slug, enrichment.redirects),
         maintainers: boardMaintainers,
@@ -119,16 +289,19 @@ export class Normalizer {
       });
     }
 
-    // 3. Build normalized images
-    const normalizedImages: Image[] = [];
-    for (const asset of raw.images) {
-      if (asset.file_extension !== 'img.xz') continue;
-      if (asset.file_url.includes('.fip.img.xz')) continue;
+    // 3. Build normalized images — one entry per primary asset, keyed by the
+    // primary's baseName so companions / display variants can be attached to
+    // the same flashable image in the follow-up passes.
+    const primaryByBaseName = new Map<string, { image: Image; boardSlug: string }>();
 
-      normalizedImages.push({
+    for (const { asset, classification } of classified) {
+      if (classification.kind !== 'primary') continue;
+
+      const key = `${asset.board_slug}::${classification.baseName}`;
+      const image: Image = {
         id: hashString(asset.file_url),
         board_slug: asset.board_slug,
-        variant: asset.variant,
+        variant: classification.cleanVariant || asset.variant,
         distribution: asset.distro,
         release: asset.armbian_version,
         kernel_branch: asset.branch,
@@ -136,6 +309,10 @@ export class Normalizer {
         application: asset.file_application || null,
         promoted: asset.promoted === 'true',
         stability: asset.branch === 'edge' ? 'edge' : 'stable',
+        format: classification.format,
+        storage: classification.storage,
+        companions: [],
+        display_variants: [],
         download: {
           file_url: asset.redi_url || asset.file_url,
           direct_url: asset.file_url,
@@ -145,7 +322,65 @@ export class Normalizer {
           size_bytes: parseInt(asset.file_size, 10) || 0,
           updated_at: asset.file_date || new Date().toISOString(),
         },
-      });
+      };
+      primaryByBaseName.set(key, { image, boardSlug: asset.board_slug });
+    }
+
+    // Attach companions to every primary that shares their baseName. A single
+    // FIP file may be reused across multiple kernel branches / distros for the
+    // same board, so we broadcast it to all matching primaries. We prefer the
+    // short `redi_url` redirect over the raw archive path so the user hits the
+    // same canonical URL pattern as the main download button.
+    for (const { asset, classification } of classified) {
+      if (classification.kind !== 'companion') continue;
+
+      const companion: CompanionFile = {
+        type: classification.companionType,
+        label: classification.label,
+        url: asset.redi_url || asset.file_url,
+        size_bytes: parseInt(asset.file_size, 10) || 0,
+      };
+
+      for (const entry of primaryByBaseName.values()) {
+        if (entry.boardSlug !== asset.board_slug) continue;
+        const entryBase = extractPrimaryBaseName(
+          (entry.image.download.direct_url.split('/').pop() ?? '').toLowerCase(),
+        );
+        if (entryBase === classification.baseName) {
+          entry.image.companions.push(companion);
+        }
+      }
+    }
+
+    // Attach display variants the same way.
+    for (const { asset, classification } of classified) {
+      if (classification.kind !== 'display-variant') continue;
+
+      const variant: DisplayVariant = {
+        label: classification.display,
+        url: asset.redi_url || asset.file_url,
+        size_bytes: parseInt(asset.file_size, 10) || 0,
+      };
+
+      for (const entry of primaryByBaseName.values()) {
+        if (entry.boardSlug !== asset.board_slug) continue;
+        const entryBase = extractPrimaryBaseName(
+          (entry.image.download.direct_url.split('/').pop() ?? '').toLowerCase(),
+        );
+        if (entryBase === classification.baseName) {
+          entry.image.display_variants.push(variant);
+        }
+      }
+    }
+
+    const normalizedImages: Image[] = [...primaryByBaseName.values()].map((e) => e.image);
+
+    if (unknownExtensions.size > 0) {
+      console.warn(
+        '[normalizer] Unknown file_extension values skipped:',
+        [...unknownExtensions].sort().join(', '),
+        '— add them to VALID_IMAGE_EXTENSIONS if they should be supported.',
+      );
     }
 
     // 4. Build normalized vendors — deduplicate by clean display name
@@ -212,7 +447,9 @@ export class Normalizer {
         github: m.Github ?? null,
         teams: m.Team,
         boards_maintained: m.Maintaining
-          ? m.Maintaining.split(',').map((s) => s.trim()).filter(Boolean)
+          ? m.Maintaining.split(',')
+              .map((s) => s.trim())
+              .filter(Boolean)
           : [],
         competences: m.Your_core_competences,
         days_since_last_activity: m.Days_since_last_activity ?? -1,
@@ -227,7 +464,17 @@ export class Normalizer {
     }
 
     // Auto-generate legacy redirects for all boards
-    const reservedPaths = new Set(['/', '/boards', '/vendors', '/partners', '/authors', '/donate', '/contact', '/sitemap.xml', '/robots.txt']);
+    const reservedPaths = new Set([
+      '/',
+      '/boards',
+      '/vendors',
+      '/partners',
+      '/authors',
+      '/donate',
+      '/contact',
+      '/sitemap.xml',
+      '/robots.txt',
+    ]);
     for (const board of boards) {
       const target = `/boards/${board.slug}`;
       const paths = [`/${board.slug}`, `/download/${board.slug}`];
@@ -236,7 +483,10 @@ export class Normalizer {
       // Stripped-vendor variants (e.g. "one", "pi", "cb1") are intentionally
       // skipped to avoid generic collisions with site pages and CMS slugs.
       if (board.name) {
-        const fullHyphenated = board.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        const fullHyphenated = board.name
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '');
         if (fullHyphenated && fullHyphenated !== board.slug) {
           paths.push(`/${fullHyphenated}`, `/download/${fullHyphenated}`);
         }
@@ -252,7 +502,9 @@ export class Normalizer {
     return {
       boards,
       images: normalizedImages,
-      vendors: [...vendorMap.values()],
+      vendors: [...vendorMap.values()].sort((a, b) =>
+        a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }),
+      ),
       partners,
       maintainers,
       redirects,
@@ -260,15 +512,15 @@ export class Normalizer {
     };
   }
 
-  private buildMaintainerBoardMap(
-    maintainers: RawMaintainer[],
-  ): Map<string, BoardMaintainer[]> {
+  private buildMaintainerBoardMap(maintainers: RawMaintainer[]): Map<string, BoardMaintainer[]> {
     const map = new Map<string, BoardMaintainer[]>();
 
     for (const m of maintainers) {
       if (!m.Maintaining || !m.First_Name) continue;
 
-      const boardSlugs = m.Maintaining.split(',').map((s) => s.trim()).filter(Boolean);
+      const boardSlugs = m.Maintaining.split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
       const maintainerRef: BoardMaintainer = {
         name: m.First_Name,
         avatar: m.Avatar,
@@ -325,9 +577,15 @@ export class Normalizer {
     const s = slug.toLowerCase();
 
     // Known riscv64 boards
-    if (s.includes('riscv') || s.includes('visionfive') || s.includes('star64')
-      || s.includes('licheerv') || s.startsWith('spacemit')
-      || s.includes('sipeed')) return 'riscv64';
+    if (
+      s.includes('riscv') ||
+      s.includes('visionfive') ||
+      s.includes('star64') ||
+      s.includes('licheerv') ||
+      s.startsWith('spacemit') ||
+      s.includes('sipeed')
+    )
+      return 'riscv64';
 
     // Known x86/amd64
     if (s.includes('uefi-x86') || s.includes('qemu-uefi-x86')) return 'amd64';
@@ -367,4 +625,3 @@ function normalizeToSlug(name: string): string {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
 }
-
