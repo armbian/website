@@ -2,6 +2,11 @@
 node_modules/
 .pnpm-store/
 
+# Host-side cache for Docker one-shot runs (pnpm store + node_modules
+# bind-mounted by manage.sh quality / manage.sh pnpm). Keeps subsequent
+# runs fast without polluting the workspace tree.
+cache/
+
 # Build outputs
 dist/
 .next/

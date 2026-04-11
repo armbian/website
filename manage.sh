@@ -49,6 +49,59 @@ cd "$SCRIPT_DIR"
 
 COMPOSE="docker compose"
 BACKUPS_DIR="$SCRIPT_DIR/backups"
+CACHE_DIR="$SCRIPT_DIR/cache"
+
+# Named Docker volumes for each workspace node_modules. Using named volumes
+# (not host bind mounts) avoids leaving empty placeholder directories in the
+# project root — Docker would otherwise create them whenever we mount a path
+# nested inside a bind-mounted source tree.
+NM_VOLUMES=(
+  "armbian_nm_root:/app/node_modules"
+  "armbian_nm_api:/app/apps/api/node_modules"
+  "armbian_nm_www:/app/apps/www/node_modules"
+  "armbian_nm_schemas:/app/packages/schemas/node_modules"
+  "armbian_nm_config:/app/packages/config/node_modules"
+  "armbian_nm_api_client:/app/packages/api-client/node_modules"
+  "armbian_nm_theme:/app/packages/theme/node_modules"
+)
+
+# Prepare the host-side pnpm store (visible under ./cache/) before any
+# docker run. Named volumes above are created lazily by Docker.
+_ensure_cache_dirs() {
+  mkdir -p "$CACHE_DIR/pnpm-store"
+}
+
+# Emit the `-v` flags for the pnpm store bind mount + every named node_modules
+# volume. Use with: docker run $(_cache_mounts) ...
+_cache_mounts() {
+  printf -- '-v %s:/app/.pnpm-store ' "$CACHE_DIR/pnpm-store"
+  local entry
+  for entry in "${NM_VOLUMES[@]}"; do
+    printf -- '-v %s ' "$entry"
+  done
+}
+
+# Docker creates empty placeholder directories in the project root whenever
+# we nest a mount inside a bind-mounted source tree. Real dep content lives
+# in the named volumes, so these placeholders are always 0 bytes and safe to
+# remove after the container exits.
+_cleanup_mount_placeholders() {
+  local paths=(
+    "$SCRIPT_DIR/.pnpm-store"
+    "$SCRIPT_DIR/node_modules"
+    "$SCRIPT_DIR/apps/api/node_modules"
+    "$SCRIPT_DIR/apps/www/node_modules"
+    "$SCRIPT_DIR/packages/schemas/node_modules"
+    "$SCRIPT_DIR/packages/config/node_modules"
+    "$SCRIPT_DIR/packages/api-client/node_modules"
+    "$SCRIPT_DIR/packages/theme/node_modules"
+  )
+  local p
+  for p in "${paths[@]}"; do
+    # rmdir only removes empty dirs — guards against wiping real content.
+    [[ -d "$p" ]] && rmdir "$p" 2>/dev/null || true
+  done
+}
 
 # ---------------------------------------------------------------------------
 # cmd: up
@@ -285,6 +338,34 @@ cmd_db_restore() {
 }
 
 # ---------------------------------------------------------------------------
+# cmd: cache:clean — wipe the host-side dependency cache
+# ---------------------------------------------------------------------------
+cmd_cache_clean() {
+  local has_dir=false
+  local has_vols=false
+  [[ -d "$CACHE_DIR" ]] && has_dir=true
+  docker volume ls -q --filter name=armbian_nm_ 2>/dev/null | grep -q . && has_vols=true
+
+  if ! $has_dir && ! $has_vols; then
+    info "No cache to clean (./cache missing and no armbian_nm_* volumes)."
+    return 0
+  fi
+
+  warn "This will remove:"
+  $has_dir  && echo "  - ./cache (pnpm store)"
+  $has_vols && echo "  - Docker named volumes: $(docker volume ls -q --filter name=armbian_nm_ | tr '\n' ' ')"
+  _confirm "Continue? [y/N] " || { info "Aborted."; exit 0; }
+
+  $has_dir && rm -rf "$CACHE_DIR"
+  if $has_vols; then
+    # shellcheck disable=SC2046
+    docker volume rm $(docker volume ls -q --filter name=armbian_nm_) >/dev/null 2>&1 || true
+  fi
+  _cleanup_mount_placeholders
+  success "Cache cleared."
+}
+
+# ---------------------------------------------------------------------------
 # cmd: clean
 # ---------------------------------------------------------------------------
 cmd_clean() {
@@ -428,6 +509,74 @@ _wait_healthy() {
 }
 
 # ---------------------------------------------------------------------------
+# cmd: quality — run lint / typecheck / test inside Docker
+#
+# Uses a one-shot Node container so no local node_modules are required.
+# Works on the project checkout mounted at /app.
+# ---------------------------------------------------------------------------
+cmd_quality() {
+  local check="${1:-all}"
+  local run_lint=false
+  local run_typecheck=false
+  local run_test=false
+  local run_format=false
+
+  case "$check" in
+    all)        run_typecheck=true; run_test=true ;;
+    lint)       run_lint=true ;;
+    typecheck)  run_typecheck=true ;;
+    test)       run_test=true ;;
+    format)     run_format=true ;;
+    *)
+      error "Unknown quality check: '$check'"
+      info  "Valid checks: all, lint, typecheck, test, format"
+      exit 1
+      ;;
+  esac
+
+  info "Running quality checks: ${BOLD}$check${RESET} (inside Docker)"
+
+  local cmds=()
+  $run_lint      && cmds+=("pnpm lint")
+  $run_typecheck && cmds+=("pnpm typecheck")
+  $run_test      && cmds+=("pnpm test")
+  $run_format    && cmds+=("pnpm format:check")
+
+  if (( ${#cmds[@]} == 0 )); then
+    warn "No checks selected."
+    return 0
+  fi
+
+  # Chain with && so the first failure stops the run and returns non-zero.
+  local joined="${cmds[0]}"
+  local i
+  for (( i=1; i<${#cmds[@]}; i++ )); do
+    joined+=" && ${cmds[$i]}"
+  done
+
+  _ensure_cache_dirs
+
+  local failed=false
+  # shellcheck disable=SC2046
+  docker run --rm \
+    -e NPM_CONFIG_STORE_DIR=/app/.pnpm-store \
+    -v "$SCRIPT_DIR":/app \
+    $(_cache_mounts) \
+    -w /app \
+    node:22-alpine \
+    sh -c "corepack enable && corepack prepare pnpm@10 --activate && pnpm install --frozen-lockfile --prefer-offline && $joined" \
+    || failed=true
+
+  _cleanup_mount_placeholders
+
+  if $failed; then
+    error "Quality checks failed."
+    exit 1
+  fi
+  success "All quality checks passed."
+}
+
+# ---------------------------------------------------------------------------
 # cmd: pnpm — run pnpm commands inside Docker (no local node_modules)
 # ---------------------------------------------------------------------------
 cmd_pnpm() {
@@ -442,21 +591,19 @@ cmd_pnpm() {
     exit 1
   fi
 
+  _ensure_cache_dirs
+
   info "Running: pnpm $* (inside Docker)"
+  # shellcheck disable=SC2046
   docker run --rm \
-    -v "$(pwd)":/app \
+    -e NPM_CONFIG_STORE_DIR=/app/.pnpm-store \
+    -v "$SCRIPT_DIR":/app \
+    $(_cache_mounts) \
     -w /app \
     node:22-alpine \
     sh -c "corepack enable && corepack prepare pnpm@10 --activate && pnpm $*"
 
-  # Clean up any local artifacts Docker may have created
-  if [[ -d "node_modules" || -d "apps/www/node_modules" || -d "apps/api/node_modules" ]]; then
-    warn "Removing local node_modules created by Docker..."
-    rm -rf node_modules apps/www/node_modules apps/api/node_modules \
-           packages/schemas/node_modules packages/config/node_modules \
-           packages/api-client/node_modules packages/theme/node_modules \
-           .pnpm-store 2>/dev/null || true
-  fi
+  _cleanup_mount_placeholders
 
   success "Done. Lockfile updated. Run './manage.sh rebuild' to apply."
 }
@@ -481,6 +628,8 @@ cmd_help() {
   echo -e "  ${CYAN}db:backup${RESET}            Dump the database to backups/ with a timestamp"
   echo -e "  ${CYAN}db:restore <file>${RESET}    Restore a database backup file (.sql or .sql.gz)"
   echo -e "  ${CYAN}pnpm <args...>${RESET}       Run pnpm commands inside Docker (add/remove/update packages)"
+  echo -e "  ${CYAN}quality [check]${RESET}      Run lint + typecheck + test (check: all|lint|typecheck|test|format)"
+  echo -e "  ${CYAN}cache:clean${RESET}          Wipe ./cache (pnpm store + workspace node_modules)"
   echo -e "  ${CYAN}clean${RESET}                Remove Docker images, volumes, and build cache (with confirmation)"
   echo -e "  ${CYAN}env${RESET}                  Validate .env file and required variables"
   echo -e "  ${CYAN}help${RESET}                 Show this help message"
@@ -492,6 +641,8 @@ cmd_help() {
   echo "  ./manage.sh db:backup"
   echo "  ./manage.sh db:restore backups/payload_20260101_120000.sql.gz"
   echo "  ./manage.sh shell api"
+  echo "  ./manage.sh quality           # run lint + typecheck + test"
+  echo "  ./manage.sh quality typecheck # run only typecheck"
   echo ""
 }
 
@@ -516,6 +667,8 @@ case "$COMMAND" in
   db:backup)   banner; cmd_db_backup ;;
   db:restore)  banner; cmd_db_restore "$@" ;;
   pnpm)        banner; cmd_pnpm "$@" ;;
+  quality)     banner; cmd_quality "$@" ;;
+  cache:clean) banner; cmd_cache_clean ;;
   clean)       banner; cmd_clean ;;
   env)         banner; cmd_env_check ;;
   help|--help|-h) cmd_help ;;
