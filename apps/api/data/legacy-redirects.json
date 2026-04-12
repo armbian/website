@@ -1066,21 +1066,6 @@
   },
   {
     "board_id": "__page__",
-    "canonical": "/donate",
-    "legacy": ["/donate"]
-  },
-  {
-    "board_id": "__page__",
-    "canonical": "/partners",
-    "legacy": ["/partners"]
-  },
-  {
-    "board_id": "__page__",
-    "canonical": "/contact",
-    "legacy": ["/contact"]
-  },
-  {
-    "board_id": "__page__",
     "canonical": "/team",
     "legacy": ["/authors"]
   },
