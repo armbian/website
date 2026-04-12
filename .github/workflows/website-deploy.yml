@@ -58,16 +58,9 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
             set -euo pipefail
-            TAG="${{ steps.tag.outputs.ref }}"
-
-            echo "==> Switching to $TAG"
             cd /home/website/armbian
-            git fetch --all --tags --quiet
-            git checkout "$TAG" --quiet
-
             echo "==> Deploying"
             ./manage.sh deploy
-
             echo "==> Deploy complete"
 
       - name: Post-deploy health check
