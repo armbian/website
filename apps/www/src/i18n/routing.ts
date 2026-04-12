@@ -9,6 +9,10 @@ const baseConfig = {
   locales: [...LOCALES] as const,
   defaultLocale: DEFAULT_LOCALE,
   localePrefix: 'as-needed' as const,
+  // Disable cookie/Accept-Language detection so unprefixed paths always
+  // serve the domain's default locale. Users switch language explicitly
+  // via the switcher or URL prefix — no implicit sticky behaviour.
+  localeDetection: false,
 };
 
 const primaryDefaultLocale = (DOMAIN_LOCALE_MAP[primaryDomain] ??
