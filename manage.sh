@@ -234,8 +234,16 @@ cmd_status() {
   else
     echo -e "  ${RED}API (internal)${RESET}: container not running"
   fi
-  _http_check "http://localhost/" "WWW (Caddy :80)"
-  _http_check "http://localhost:${API_HOST_PORT:-8080}/api/v1/health" "API (Caddy :${API_HOST_PORT:-8080})"
+  _http_check "http://localhost/" "WWW (Caddy)"
+  # API may be on a custom port (:8080) or on a real domain (443 via Caddy).
+  # Try the configured hostname first, fall back to port-based check.
+  _load_env_vars
+  local api_host="${API_HOSTNAME:-:8080}"
+  if [[ "$api_host" == :* ]]; then
+    _http_check "http://localhost${api_host}/api/v1/health" "API (Caddy ${api_host})"
+  else
+    _http_check "https://${api_host}/api/v1/health" "API (${api_host})"
+  fi
   echo ""
 
   $all_healthy && success "Stack is healthy." || warn "Some services need attention."
