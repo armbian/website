@@ -240,7 +240,9 @@ export function BoardsCatalog({
     gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  // URL sync
+  // URL sync — use window.location.pathname (which preserves the locale
+  // prefix like /it/boards) instead of next-intl's usePathname() which
+  // strips it, causing the locale to be lost on replaceState.
   useEffect(() => {
     const params = new URLSearchParams();
     if (vendor) params.set('vendor', vendor);
@@ -248,7 +250,8 @@ export function BoardsCatalog({
     if (sort !== 'popularity') params.set('sort', sort);
     if (page > 1) params.set('page', String(page));
     const qs = params.toString();
-    window.history.replaceState(null, '', qs ? `${pathname}?${qs}` : pathname);
+    const browserPath = window.location.pathname;
+    window.history.replaceState(null, '', qs ? `${browserPath}?${qs}` : browserPath);
   }, [vendor, support, sort, page, pathname]);
 
   // Search
