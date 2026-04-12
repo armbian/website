@@ -107,8 +107,12 @@ export function LanguageSwitcher() {
     const currentHost = window.location.hostname.replace(/^www\./, '');
 
     if (targetDomain === currentHost) {
-      // Same domain — use the next-intl router so we keep SPA navigation.
-      router.replace(pathname, { locale: newLocale });
+      // Same domain — construct the URL ourselves to avoid next-intl's
+      // router picking up the container HOSTNAME (0.0.0.0) from SSR.
+      const domainDefault = DOMAIN_LOCALE_MAP[currentHost] ?? DEFAULT_LOCALE;
+      const prefix = newLocale !== domainDefault ? `/${newLocale}` : '';
+      const sameDomainTarget = `${prefix}${pathname === '/' ? '' : pathname}` || '/';
+      window.location.assign(sameDomainTarget);
       return;
     }
 
