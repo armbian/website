@@ -1,12 +1,1442 @@
 [
   {
-    "board_id": "orangepi-5",
-    "canonical": "/boards/orangepi-5",
-    "legacy": ["/download/orange-pi-5"]
+    "board_id": "armsom-cm5-io",
+    "canonical": "/boards/armsom-cm5-io",
+    "legacy": ["/armsom-cm5-io", "/download/armsom-cm5-io"]
+  },
+  {
+    "board_id": "armsom-cm5-rpi-cm4-io",
+    "canonical": "/boards/armsom-cm5-rpi-cm4-io",
+    "legacy": ["/armsom-cm5-rpi-cm4-io", "/download/armsom-cm5-rpi-cm4-io"]
+  },
+  {
+    "board_id": "armsom-sige1",
+    "canonical": "/boards/armsom-sige1",
+    "legacy": ["/armsom-sige1", "/download/armsom-sige1"]
+  },
+  {
+    "board_id": "armsom-sige3",
+    "canonical": "/boards/armsom-sige3",
+    "legacy": ["/armsom-sige3", "/download/armsom-sige3"]
+  },
+  {
+    "board_id": "armsom-sige5",
+    "canonical": "/boards/armsom-sige5",
+    "legacy": ["/armsom-sige5", "/download/armsom-sige5"]
+  },
+  {
+    "board_id": "armsom-sige7",
+    "canonical": "/boards/armsom-sige7",
+    "legacy": ["/armsom-sige7", "/download/armsom-sige7"]
+  },
+  {
+    "board_id": "bananapim2plus",
+    "canonical": "/boards/bananapim2plus",
+    "legacy": ["/banana-pi-m2-plus", "/download/banana-pi-m2-plus"]
+  },
+  {
+    "board_id": "bananapipro",
+    "canonical": "/boards/bananapipro",
+    "legacy": ["/banana-pi-pro", "/download/banana-pi-pro"]
+  },
+  {
+    "board_id": "bananapi",
+    "canonical": "/boards/bananapi",
+    "legacy": ["/bananapi", "/download/bananapi"]
+  },
+  {
+    "board_id": "bananapif3",
+    "canonical": "/boards/bananapif3",
+    "legacy": ["/bananapi-f3", "/download/bananapi-f3"]
+  },
+  {
+    "board_id": "bananapim2zero",
+    "canonical": "/boards/bananapim2zero",
+    "legacy": ["/bananapi-m2-zero", "/download/bananapi-m2-zero"]
+  },
+  {
+    "board_id": "bananapim2s",
+    "canonical": "/boards/bananapim2s",
+    "legacy": ["/bananapi-m2s", "/download/bananapi-m2s"]
+  },
+  {
+    "board_id": "bananapim3",
+    "canonical": "/boards/bananapim3",
+    "legacy": ["/bananapi-m3", "/download/bananapi-m3"]
+  },
+  {
+    "board_id": "bananapim4zero",
+    "canonical": "/boards/bananapim4zero",
+    "legacy": ["/bananapi-m4-zero", "/download/bananapi-m4-zero"]
+  },
+  {
+    "board_id": "bananapim5",
+    "canonical": "/boards/bananapim5",
+    "legacy": ["/bananapi-m5", "/download/bananapi-m5"]
+  },
+  {
+    "board_id": "bananapim64",
+    "canonical": "/boards/bananapim64",
+    "legacy": ["/bananapi-m64", "/download/bananapi-m64"]
+  },
+  {
+    "board_id": "bananapim7",
+    "canonical": "/boards/bananapim7",
+    "legacy": ["/bananapi-m7", "/download/bananapi-m7"]
+  },
+  {
+    "board_id": "bananapir2",
+    "canonical": "/boards/bananapir2",
+    "legacy": ["/bananapi-r2", "/download/bananapi-r2"]
+  },
+  {
+    "board_id": "bananapir2pro",
+    "canonical": "/boards/bananapir2pro",
+    "legacy": ["/bananapi-r2-pro", "/download/bananapi-r2-pro"]
+  },
+  {
+    "board_id": "bananapir4",
+    "canonical": "/boards/bananapir4",
+    "legacy": ["/bananapi-r4", "/download/bananapi-r4"]
+  },
+  {
+    "board_id": "bananapicm4io",
+    "canonical": "/boards/bananapicm4io",
+    "legacy": ["/bananapicm4io", "/download/bananapicm4io"]
+  },
+  {
+    "board_id": "bananapim2pro",
+    "canonical": "/boards/bananapim2pro",
+    "legacy": ["/bananapim2pro", "/download/bananapim2pro"]
+  },
+  {
+    "board_id": "beaglebone-ai64",
+    "canonical": "/boards/beaglebone-ai64",
+    "legacy": ["/beaglebone-ai64", "/download/beaglebone-ai64"]
+  },
+  {
+    "board_id": "beagleplay",
+    "canonical": "/boards/beagleplay",
+    "legacy": ["/beagleplay", "/download/beagleplay"]
+  },
+  {
+    "board_id": "beagley-ai",
+    "canonical": "/boards/beagley-ai",
+    "legacy": ["/beagley-ai", "/download/beagley-ai"]
+  },
+  {
+    "board_id": "bigtreetech-cb1",
+    "canonical": "/boards/bigtreetech-cb1",
+    "legacy": ["/bigtreetech-cb1", "/download/bigtreetech-cb1"]
+  },
+  {
+    "board_id": "clearfogbase",
+    "canonical": "/boards/clearfogbase",
+    "legacy": ["/clearfog-base", "/download/clearfog-base"]
+  },
+  {
+    "board_id": "coolpi-cm5",
+    "canonical": "/boards/coolpi-cm5",
+    "legacy": ["/cool-pi-cm5", "/download/cool-pi-cm5"]
+  },
+  {
+    "board_id": "cubieboard2",
+    "canonical": "/boards/cubieboard2",
+    "legacy": ["/cubieboard-2", "/download/cubieboard-2"]
+  },
+  {
+    "board_id": "cubietruck",
+    "canonical": "/boards/cubietruck",
+    "legacy": ["/cubietruck", "/download/cubietruck"]
+  },
+  {
+    "board_id": "dshanpi-a1",
+    "canonical": "/boards/dshanpi-a1",
+    "legacy": ["/dshanpi-a1", "/download/dshanpi-a1"]
+  },
+  {
+    "board_id": "dshanpi-r1",
+    "canonical": "/boards/dshanpi-r1",
+    "legacy": ["/dshanpi-r1", "/download/dshanpi-r1"]
+  },
+  {
+    "board_id": "espressobin",
+    "canonical": "/boards/espressobin",
+    "legacy": ["/espressobin", "/download/espressobin"]
+  },
+  {
+    "board_id": "firefly-rk3399",
+    "canonical": "/boards/firefly-rk3399",
+    "legacy": ["/firefly-rk3399", "/download/firefly-rk3399"]
+  },
+  {
+    "board_id": "fxblox-rk1",
+    "canonical": "/boards/fxblox-rk1",
+    "legacy": ["/fxblox-rk1", "/download/fxblox-rk1"]
+  },
+  {
+    "board_id": "helios4",
+    "canonical": "/boards/helios4",
+    "legacy": ["/helios4", "/download/helios4"]
+  },
+  {
+    "board_id": "helios64",
+    "canonical": "/boards/helios64",
+    "legacy": ["/helios64", "/download/helios64"]
+  },
+  {
+    "board_id": "hikey960",
+    "canonical": "/boards/hikey960",
+    "legacy": ["/hikey-960", "/download/hikey-960"]
+  },
+  {
+    "board_id": "inovato-quadra",
+    "canonical": "/boards/inovato-quadra",
+    "legacy": ["/inovato-quadra", "/download/inovato-quadra"]
+  },
+  {
+    "board_id": "khadas-edge",
+    "canonical": "/boards/khadas-edge",
+    "legacy": ["/khadas-edge", "/download/khadas-edge"]
+  },
+  {
+    "board_id": "khadas-edge2",
+    "canonical": "/boards/khadas-edge2",
+    "legacy": ["/khadas-edge-2", "/download/khadas-edge-2"]
+  },
+  {
+    "board_id": "khadas-vim1",
+    "canonical": "/boards/khadas-vim1",
+    "legacy": ["/khadas-vim1", "/download/khadas-vim1"]
+  },
+  {
+    "board_id": "khadas-vim1s",
+    "canonical": "/boards/khadas-vim1s",
+    "legacy": ["/khadas-vim1s", "/download/khadas-vim1s"]
+  },
+  {
+    "board_id": "khadas-vim2",
+    "canonical": "/boards/khadas-vim2",
+    "legacy": ["/khadas-vim2", "/download/khadas-vim2"]
+  },
+  {
+    "board_id": "khadas-vim3",
+    "canonical": "/boards/khadas-vim3",
+    "legacy": ["/khadas-vim3", "/download/khadas-vim3"]
+  },
+  {
+    "board_id": "khadas-vim3l",
+    "canonical": "/boards/khadas-vim3l",
+    "legacy": ["/khadas-vim3l", "/download/khadas-vim3l"]
+  },
+  {
+    "board_id": "khadas-vim4",
+    "canonical": "/boards/khadas-vim4",
+    "legacy": ["/khadas-vim4", "/download/khadas-vim4"]
+  },
+  {
+    "board_id": "lafrite",
+    "canonical": "/boards/lafrite",
+    "legacy": ["/la-frite", "/download/la-frite"]
+  },
+  {
+    "board_id": "lepotato",
+    "canonical": "/boards/lepotato",
+    "legacy": ["/lepotato", "/download/lepotato"]
+  },
+  {
+    "board_id": "longanpi-3h",
+    "canonical": "/boards/longanpi-3h",
+    "legacy": ["/longanpi-3h", "/download/longanpi-3h"]
+  },
+  {
+    "board_id": "mba8mpxl",
+    "canonical": "/boards/mba8mpxl",
+    "legacy": ["/mba8mpxl", "/download/mba8mpxl"]
+  },
+  {
+    "board_id": "mekotronics-r58-4x4",
+    "canonical": "/boards/mekotronics-r58-4x4",
+    "legacy": ["/mekotronics-r58-4x4", "/download/mekotronics-r58-4x4"]
+  },
+  {
+    "board_id": "mekotronics-r58hd",
+    "canonical": "/boards/mekotronics-r58hd",
+    "legacy": ["/mekotronics-r58-hd", "/download/mekotronics-r58-hd"]
+  },
+  {
+    "board_id": "mekotronics-r58-minipc",
+    "canonical": "/boards/mekotronics-r58-minipc",
+    "legacy": ["/mekotronics-r58-mini-pc", "/download/mekotronics-r58-mini-pc"]
+  },
+  {
+    "board_id": "mekotronics-r58s2",
+    "canonical": "/boards/mekotronics-r58s2",
+    "legacy": ["/mekotronics-r58s2", "/download/mekotronics-r58s2"]
+  },
+  {
+    "board_id": "mekotronics-r58x",
+    "canonical": "/boards/mekotronics-r58x",
+    "legacy": ["/mekotronics-r58x", "/download/mekotronics-r58x"]
+  },
+  {
+    "board_id": "mekotronics-r58x-4g",
+    "canonical": "/boards/mekotronics-r58x-4g",
+    "legacy": ["/mekotronics-r58x-4g", "/download/mekotronics-r58x-4g"]
+  },
+  {
+    "board_id": "mixtile-blade3",
+    "canonical": "/boards/mixtile-blade3",
+    "legacy": ["/mixtile-blade-3", "/download/mixtile-blade-3"]
+  },
+  {
+    "board_id": "mksklipad50",
+    "canonical": "/boards/mksklipad50",
+    "legacy": ["/mks-klipad50", "/download/mks-klipad50"]
+  },
+  {
+    "board_id": "mkspi",
+    "canonical": "/boards/mkspi",
+    "legacy": ["/mks-pi", "/download/mks-pi"]
   },
   {
     "board_id": "musepipro",
     "canonical": "/boards/musepipro",
-    "legacy": ["/muse-pi-pro", "/muse-pi-pro/"]
+    "legacy": ["/muse-pi-pro", "/download/muse-pi-pro"]
+  },
+  {
+    "board_id": "musebook",
+    "canonical": "/boards/musebook",
+    "legacy": ["/musebook", "/download/musebook"]
+  },
+  {
+    "board_id": "nanopct4",
+    "canonical": "/boards/nanopct4",
+    "legacy": ["/nanopc-t4", "/download/nanopc-t4"]
+  },
+  {
+    "board_id": "nanopct6",
+    "canonical": "/boards/nanopct6",
+    "legacy": ["/nanopct6", "/download/nanopct6"]
+  },
+  {
+    "board_id": "nanopct6-lts",
+    "canonical": "/boards/nanopct6-lts",
+    "legacy": ["/nanopct6-lts", "/download/nanopct6-lts"]
+  },
+  {
+    "board_id": "nanopia64",
+    "canonical": "/boards/nanopia64",
+    "legacy": ["/nanopi-a64", "/download/nanopi-a64"]
+  },
+  {
+    "board_id": "nanopiduo",
+    "canonical": "/boards/nanopiduo",
+    "legacy": ["/nanopi-duo", "/download/nanopi-duo"]
+  },
+  {
+    "board_id": "nanopiduo2",
+    "canonical": "/boards/nanopiduo2",
+    "legacy": ["/nanopi-duo-2", "/download/nanopi-duo-2"]
+  },
+  {
+    "board_id": "nanopik1plus",
+    "canonical": "/boards/nanopik1plus",
+    "legacy": ["/nanopi-k1-plus", "/download/nanopi-k1-plus"]
+  },
+  {
+    "board_id": "nanopim4",
+    "canonical": "/boards/nanopim4",
+    "legacy": ["/nanopi-m4", "/download/nanopi-m4"]
+  },
+  {
+    "board_id": "nanopim4v2",
+    "canonical": "/boards/nanopim4v2",
+    "legacy": ["/nanopi-m4-v2", "/download/nanopi-m4-v2"]
+  },
+  {
+    "board_id": "nanopi-m5",
+    "canonical": "/boards/nanopi-m5",
+    "legacy": ["/nanopi-m5", "/download/nanopi-m5"]
+  },
+  {
+    "board_id": "nanopi-m6",
+    "canonical": "/boards/nanopi-m6",
+    "legacy": ["/nanopi-m6", "/download/nanopi-m6"]
+  },
+  {
+    "board_id": "nanopineo",
+    "canonical": "/boards/nanopineo",
+    "legacy": ["/nanopi-neo", "/download/nanopi-neo"]
+  },
+  {
+    "board_id": "nanopineo2",
+    "canonical": "/boards/nanopineo2",
+    "legacy": ["/nanopi-neo-2", "/download/nanopi-neo-2"]
+  },
+  {
+    "board_id": "nanopineo2black",
+    "canonical": "/boards/nanopineo2black",
+    "legacy": ["/nanopi-neo-2-black", "/download/nanopi-neo-2-black"]
+  },
+  {
+    "board_id": "nanopineoplus2",
+    "canonical": "/boards/nanopineoplus2",
+    "legacy": ["/nanopi-neo-plus2", "/download/nanopi-neo-plus2"]
+  },
+  {
+    "board_id": "nanopineo4",
+    "canonical": "/boards/nanopineo4",
+    "legacy": ["/nanopi-neo4", "/download/nanopi-neo4"]
+  },
+  {
+    "board_id": "nanopi-r1",
+    "canonical": "/boards/nanopi-r1",
+    "legacy": ["/nanopi-r1", "/download/nanopi-r1"]
+  },
+  {
+    "board_id": "nanopi-r2s",
+    "canonical": "/boards/nanopi-r2s",
+    "legacy": ["/nanopi-r2s", "/download/nanopi-r2s"]
+  },
+  {
+    "board_id": "nanopi-r3s",
+    "canonical": "/boards/nanopi-r3s",
+    "legacy": ["/nanopi-r3s", "/download/nanopi-r3s"]
+  },
+  {
+    "board_id": "nanopi-r4s",
+    "canonical": "/boards/nanopi-r4s",
+    "legacy": ["/nanopi-r4s", "/download/nanopi-r4s"]
+  },
+  {
+    "board_id": "nanopi-r4se",
+    "canonical": "/boards/nanopi-r4se",
+    "legacy": ["/nanopi-r4se", "/download/nanopi-r4se"]
+  },
+  {
+    "board_id": "nanopi-r5c",
+    "canonical": "/boards/nanopi-r5c",
+    "legacy": ["/nanopi-r5c", "/download/nanopi-r5c"]
+  },
+  {
+    "board_id": "nanopi-r5s",
+    "canonical": "/boards/nanopi-r5s",
+    "legacy": ["/nanopi-r5s", "/download/nanopi-r5s"]
+  },
+  {
+    "board_id": "nanopi-r6s",
+    "canonical": "/boards/nanopi-r6s",
+    "legacy": ["/nanopi-r6s", "/download/nanopi-r6s"]
+  },
+  {
+    "board_id": "nanopi-r76s",
+    "canonical": "/boards/nanopi-r76s",
+    "legacy": ["/nanopi-r76s", "/download/nanopi-r76s"]
+  },
+  {
+    "board_id": "nanopineo3",
+    "canonical": "/boards/nanopineo3",
+    "legacy": ["/nanopineo3", "/download/nanopineo3"]
+  },
+  {
+    "board_id": "odroidc2",
+    "canonical": "/boards/odroidc2",
+    "legacy": ["/odroid-c2", "/download/odroid-c2"]
+  },
+  {
+    "board_id": "odroidc4",
+    "canonical": "/boards/odroidc4",
+    "legacy": ["/odroid-c4", "/download/odroid-c4"]
+  },
+  {
+    "board_id": "odroidhc4",
+    "canonical": "/boards/odroidhc4",
+    "legacy": ["/odroid-hc4", "/download/odroid-hc4"]
+  },
+  {
+    "board_id": "odroidm1",
+    "canonical": "/boards/odroidm1",
+    "legacy": ["/odroid-m1", "/download/odroid-m1"]
+  },
+  {
+    "board_id": "odroidm1s",
+    "canonical": "/boards/odroidm1s",
+    "legacy": ["/odroid-m1s", "/download/odroid-m1s"]
+  },
+  {
+    "board_id": "odroidm2",
+    "canonical": "/boards/odroidm2",
+    "legacy": ["/odroid-m2", "/download/odroid-m2"]
+  },
+  {
+    "board_id": "odroidn2",
+    "canonical": "/boards/odroidn2",
+    "legacy": ["/odroid-n2", "/download/odroid-n2"]
+  },
+  {
+    "board_id": "odroidn2l",
+    "canonical": "/boards/odroidn2l",
+    "legacy": ["/odroid-n2l", "/download/odroid-n2l"]
+  },
+  {
+    "board_id": "odroidxu4",
+    "canonical": "/boards/odroidxu4",
+    "legacy": ["/odroid-xu4", "/download/odroid-xu4"]
+  },
+  {
+    "board_id": "odroidc1",
+    "canonical": "/boards/odroidc1",
+    "legacy": ["/odroidc1", "/download/odroidc1"]
+  },
+  {
+    "board_id": "olimex-teres-a64",
+    "canonical": "/boards/olimex-teres-a64",
+    "legacy": ["/olimex-teres-a64", "/download/olimex-teres-a64"]
+  },
+  {
+    "board_id": "oneplus-kebab",
+    "canonical": "/boards/oneplus-kebab",
+    "legacy": ["/oneplus-kebab", "/download/oneplus-kebab"]
+  },
+  {
+    "board_id": "orangepi2",
+    "canonical": "/boards/orangepi2",
+    "legacy": ["/orange-pi-2", "/download/orange-pi-2"]
+  },
+  {
+    "board_id": "orangepi3",
+    "canonical": "/boards/orangepi3",
+    "legacy": ["/orange-pi-3", "/download/orange-pi-3"]
+  },
+  {
+    "board_id": "orangepi4",
+    "canonical": "/boards/orangepi4",
+    "legacy": ["/orange-pi-4", "/download/orange-pi-4"]
+  },
+  {
+    "board_id": "orangepi4-lts",
+    "canonical": "/boards/orangepi4-lts",
+    "legacy": ["/orange-pi-4-lts", "/download/orange-pi-4-lts"]
+  },
+  {
+    "board_id": "orangepi5-plus",
+    "canonical": "/boards/orangepi5-plus",
+    "legacy": ["/orange-pi-5-plus", "/download/orange-pi-5-plus"]
+  },
+  {
+    "board_id": "orangepi5pro",
+    "canonical": "/boards/orangepi5pro",
+    "legacy": ["/orange-pi-5-pro", "/download/orange-pi-5-pro"]
+  },
+  {
+    "board_id": "orangepilite",
+    "canonical": "/boards/orangepilite",
+    "legacy": ["/orange-pi-lite", "/download/orange-pi-lite"]
+  },
+  {
+    "board_id": "orangepilite2",
+    "canonical": "/boards/orangepilite2",
+    "legacy": ["/orange-pi-lite-2", "/download/orange-pi-lite-2"]
+  },
+  {
+    "board_id": "orangepione",
+    "canonical": "/boards/orangepione",
+    "legacy": ["/orange-pi-one", "/download/orange-pi-one"]
+  },
+  {
+    "board_id": "orangepioneplus",
+    "canonical": "/boards/orangepioneplus",
+    "legacy": ["/orange-pi-one-plus", "/download/orange-pi-one-plus"]
+  },
+  {
+    "board_id": "orangepipc",
+    "canonical": "/boards/orangepipc",
+    "legacy": ["/orange-pi-pc", "/download/orange-pi-pc"]
+  },
+  {
+    "board_id": "orangepipcplus",
+    "canonical": "/boards/orangepipcplus",
+    "legacy": ["/orange-pi-pc-plus", "/download/orange-pi-pc-plus"]
+  },
+  {
+    "board_id": "orangepipc2",
+    "canonical": "/boards/orangepipc2",
+    "legacy": ["/orange-pi-pc2", "/download/orange-pi-pc2"]
+  },
+  {
+    "board_id": "orangepiplus",
+    "canonical": "/boards/orangepiplus",
+    "legacy": ["/orange-pi-plus", "/download/orange-pi-plus"]
+  },
+  {
+    "board_id": "orangepiprime",
+    "canonical": "/boards/orangepiprime",
+    "legacy": ["/orange-pi-prime", "/download/orange-pi-prime"]
+  },
+  {
+    "board_id": "orangepi-r1",
+    "canonical": "/boards/orangepi-r1",
+    "legacy": ["/orange-pi-r1", "/download/orange-pi-r1"]
+  },
+  {
+    "board_id": "orangepi-rk3399",
+    "canonical": "/boards/orangepi-rk3399",
+    "legacy": ["/orange-pi-rk3399", "/download/orange-pi-rk3399"]
+  },
+  {
+    "board_id": "orangepiwin",
+    "canonical": "/boards/orangepiwin",
+    "legacy": ["/orange-pi-win", "/download/orange-pi-win"]
+  },
+  {
+    "board_id": "orangepizero",
+    "canonical": "/boards/orangepizero",
+    "legacy": ["/orange-pi-zero", "/download/orange-pi-zero"]
+  },
+  {
+    "board_id": "orangepizero2",
+    "canonical": "/boards/orangepizero2",
+    "legacy": ["/orange-pi-zero-2", "/download/orange-pi-zero-2"]
+  },
+  {
+    "board_id": "orangepizero2w",
+    "canonical": "/boards/orangepizero2w",
+    "legacy": ["/orange-pi-zero-2w", "/download/orange-pi-zero-2w"]
+  },
+  {
+    "board_id": "orangepizero3",
+    "canonical": "/boards/orangepizero3",
+    "legacy": ["/orange-pi-zero-3", "/download/orange-pi-zero-3"]
+  },
+  {
+    "board_id": "orangepizeroplus",
+    "canonical": "/boards/orangepizeroplus",
+    "legacy": ["/orange-pi-zero-plus", "/download/orange-pi-zero-plus"]
+  },
+  {
+    "board_id": "orangepizeroplus2-h3",
+    "canonical": "/boards/orangepizeroplus2-h3",
+    "legacy": ["/orange-pi-zero-plus-2-h3", "/download/orange-pi-zero-plus-2-h3"]
+  },
+  {
+    "board_id": "orangepi5",
+    "canonical": "/boards/orangepi5",
+    "legacy": ["/orangepi-5", "/download/orangepi-5"]
+  },
+  {
+    "board_id": "orangepi5-max",
+    "canonical": "/boards/orangepi5-max",
+    "legacy": ["/orangepi-5-max", "/download/orangepi-5-max"]
+  },
+  {
+    "board_id": "orangepi-r1plus",
+    "canonical": "/boards/orangepi-r1plus",
+    "legacy": ["/orangepi-r1plus", "/download/orangepi-r1plus"]
+  },
+  {
+    "board_id": "orangepi-r1plus-lts",
+    "canonical": "/boards/orangepi-r1plus-lts",
+    "legacy": ["/orangepi-r1plus-lts", "/download/orangepi-r1plus-lts"]
+  },
+  {
+    "board_id": "orangepi3-lts",
+    "canonical": "/boards/orangepi3-lts",
+    "legacy": ["/orangepi3-lts", "/download/orangepi3-lts"]
+  },
+  {
+    "board_id": "orangepi3b",
+    "canonical": "/boards/orangepi3b",
+    "legacy": ["/orangepi3b", "/download/orangepi3b"]
+  },
+  {
+    "board_id": "panther-x2",
+    "canonical": "/boards/panther-x2",
+    "legacy": ["/panther-x2", "/download/panther-x2"]
+  },
+  {
+    "board_id": "phytiumpi",
+    "canonical": "/boards/phytiumpi",
+    "legacy": ["/phytiumpi", "/download/phytiumpi"]
+  },
+  {
+    "board_id": "pineh64",
+    "canonical": "/boards/pineh64",
+    "legacy": ["/pine-h64", "/download/pine-h64"]
+  },
+  {
+    "board_id": "pineh64-b",
+    "canonical": "/boards/pineh64-b",
+    "legacy": ["/pine-h64-b", "/download/pine-h64-b"]
+  },
+  {
+    "board_id": "pine64",
+    "canonical": "/boards/pine64",
+    "legacy": ["/pine64", "/download/pine64"]
+  },
+  {
+    "board_id": "pinebook-a64",
+    "canonical": "/boards/pinebook-a64",
+    "legacy": ["/pinebook-a64", "/download/pinebook-a64"]
+  },
+  {
+    "board_id": "pinebook-pro",
+    "canonical": "/boards/pinebook-pro",
+    "legacy": ["/pinebook-pro", "/download/pinebook-pro"]
+  },
+  {
+    "board_id": "pinecube",
+    "canonical": "/boards/pinecube",
+    "legacy": ["/pinecube", "/download/pinecube"]
+  },
+  {
+    "board_id": "pocketbeagle2",
+    "canonical": "/boards/pocketbeagle2",
+    "legacy": ["/pocketbeagle-2", "/download/pocketbeagle-2"]
+  },
+  {
+    "board_id": "quartz64b",
+    "canonical": "/boards/quartz64b",
+    "legacy": ["/quartz64-b", "/download/quartz64-b"]
+  },
+  {
+    "board_id": "quartz64a",
+    "canonical": "/boards/quartz64a",
+    "legacy": ["/quartz64a", "/download/quartz64a"]
+  },
+  {
+    "board_id": "radxa-cubie-a5e",
+    "canonical": "/boards/radxa-cubie-a5e",
+    "legacy": ["/radxa-cubie-a5e", "/download/radxa-cubie-a5e"]
+  },
+  {
+    "board_id": "radxa-dragon-q6a",
+    "canonical": "/boards/radxa-dragon-q6a",
+    "legacy": ["/radxa-dragon-q6a", "/download/radxa-dragon-q6a"]
+  },
+  {
+    "board_id": "radxa-e25",
+    "canonical": "/boards/radxa-e25",
+    "legacy": ["/radxa-e25", "/download/radxa-e25"]
+  },
+  {
+    "board_id": "radxa-e52c",
+    "canonical": "/boards/radxa-e52c",
+    "legacy": ["/radxa-e52c", "/download/radxa-e52c"]
+  },
+  {
+    "board_id": "radxa-e54c",
+    "canonical": "/boards/radxa-e54c",
+    "legacy": ["/radxa-e54c", "/download/radxa-e54c"]
+  },
+  {
+    "board_id": "radxa-nio-12l",
+    "canonical": "/boards/radxa-nio-12l",
+    "legacy": ["/radxa-nio-12l", "/download/radxa-nio-12l"]
+  },
+  {
+    "board_id": "radxa-rock-4d",
+    "canonical": "/boards/radxa-rock-4d",
+    "legacy": ["/radxa-rock-4d", "/download/radxa-rock-4d"]
+  },
+  {
+    "board_id": "radxa-zero",
+    "canonical": "/boards/radxa-zero",
+    "legacy": ["/radxa-zero", "/download/radxa-zero"]
+  },
+  {
+    "board_id": "radxa-zero3",
+    "canonical": "/boards/radxa-zero3",
+    "legacy": ["/radxa-zero-3", "/download/radxa-zero-3"]
+  },
+  {
+    "board_id": "radxa-zero2",
+    "canonical": "/boards/radxa-zero2",
+    "legacy": ["/radxa-zero2", "/download/radxa-zero2"]
+  },
+  {
+    "board_id": "recore",
+    "canonical": "/boards/recore",
+    "legacy": ["/recore", "/download/recore"]
+  },
+  {
+    "board_id": "renegade",
+    "canonical": "/boards/renegade",
+    "legacy": ["/renegade", "/download/renegade"]
+  },
+  {
+    "board_id": "rock-2a",
+    "canonical": "/boards/rock-2a",
+    "legacy": ["/rock-2a", "/download/rock-2a"]
+  },
+  {
+    "board_id": "rock-2f",
+    "canonical": "/boards/rock-2f",
+    "legacy": ["/rock-2f", "/download/rock-2f"]
+  },
+  {
+    "board_id": "rock-3a",
+    "canonical": "/boards/rock-3a",
+    "legacy": ["/rock-3a", "/download/rock-3a"]
+  },
+  {
+    "board_id": "rock-5b",
+    "canonical": "/boards/rock-5b",
+    "legacy": ["/rock-5b", "/download/rock-5b"]
+  },
+  {
+    "board_id": "rock-5b-plus",
+    "canonical": "/boards/rock-5b-plus",
+    "legacy": ["/rock-5b-plus", "/download/rock-5b-plus"]
+  },
+  {
+    "board_id": "rock64",
+    "canonical": "/boards/rock64",
+    "legacy": ["/rock64", "/download/rock64"]
+  },
+  {
+    "board_id": "rockpi-s",
+    "canonical": "/boards/rockpi-s",
+    "legacy": ["/rockpi-s", "/download/rockpi-s"]
+  },
+  {
+    "board_id": "rockpi-e",
+    "canonical": "/boards/rockpi-e",
+    "legacy": ["/rockpie", "/download/rockpie"]
+  },
+  {
+    "board_id": "rockpro64",
+    "canonical": "/boards/rockpro64",
+    "legacy": ["/rockpro64", "/download/rockpro64"]
+  },
+  {
+    "board_id": "rpi4b",
+    "canonical": "/boards/rpi4b",
+    "legacy": ["/rpi4b", "/download/rpi4b"]
+  },
+  {
+    "board_id": "station-m1",
+    "canonical": "/boards/station-m1",
+    "legacy": ["/station-m1", "/download/station-m1"]
+  },
+  {
+    "board_id": "station-m2",
+    "canonical": "/boards/station-m2",
+    "legacy": ["/station-m2", "/download/station-m2"]
+  },
+  {
+    "board_id": "station-m3",
+    "canonical": "/boards/station-m3",
+    "legacy": ["/station-m3", "/download/station-m3"]
+  },
+  {
+    "board_id": "station-p1",
+    "canonical": "/boards/station-p1",
+    "legacy": ["/station-p1", "/download/station-p1"]
+  },
+  {
+    "board_id": "station-p2",
+    "canonical": "/boards/station-p2",
+    "legacy": ["/station-p2", "/download/station-p2"]
+  },
+  {
+    "board_id": "sweet-potato",
+    "canonical": "/boards/sweet-potato",
+    "legacy": ["/sweet-potato", "/download/sweet-potato"]
+  },
+  {
+    "board_id": "tinkerboard",
+    "canonical": "/boards/tinkerboard",
+    "legacy": ["/tinkerboard", "/download/tinkerboard"]
+  },
+  {
+    "board_id": "tinkerboard-2",
+    "canonical": "/boards/tinkerboard-2",
+    "legacy": ["/tinkerboard-2", "/download/tinkerboard-2"]
+  },
+  {
+    "board_id": "tritium-h3",
+    "canonical": "/boards/tritium-h3",
+    "legacy": ["/tritium-h3", "/download/tritium-h3"]
+  },
+  {
+    "board_id": "tritium-h5",
+    "canonical": "/boards/tritium-h5",
+    "legacy": ["/tritium-h5", "/download/tritium-h5"]
+  },
+  {
+    "board_id": "uefi-arm64",
+    "canonical": "/boards/uefi-arm64",
+    "legacy": ["/uefi-arm64", "/download/uefi-arm64"]
+  },
+  {
+    "board_id": "uefi-riscv64",
+    "canonical": "/boards/uefi-riscv64",
+    "legacy": ["/uefi-riscv64", "/download/uefi-riscv64"]
+  },
+  {
+    "board_id": "uefi-x86",
+    "canonical": "/boards/uefi-x86",
+    "legacy": ["/uefi-x86", "/download/uefi-x86"]
+  },
+  {
+    "board_id": "visionfive2",
+    "canonical": "/boards/visionfive2",
+    "legacy": ["/visionfive2", "/download/visionfive2"]
+  },
+  {
+    "board_id": "xpressreal-t3",
+    "canonical": "/boards/xpressreal-t3",
+    "legacy": ["/xpressreal-t3", "/download/xpressreal-t3"]
+  },
+  {
+    "board_id": "xt-q8l-v10",
+    "canonical": "/boards/xt-q8l-v10",
+    "legacy": ["/xt-q8l-v10", "/download/xt-q8l-v10"]
+  },
+  {
+    "board_id": "youyeetoo-yy3588",
+    "canonical": "/boards/youyeetoo-yy3588",
+    "legacy": ["/youyeetoo-yy3588", "/download/youyeetoo-yy3588"]
+  },
+  {
+    "board_id": "zeropi",
+    "canonical": "/boards/zeropi",
+    "legacy": ["/zero-pi", "/download/zero-pi"]
+  },
+  {
+    "board_id": "cm3588-nas",
+    "canonical": "/boards/cm3588-nas",
+    "legacy": ["/nanopc-cm3588-nas", "/download/nanopc-cm3588-nas"]
+  },
+  {
+    "board_id": "nanopik2-s905",
+    "canonical": "/boards/nanopik2-s905",
+    "legacy": ["/nanopi-k2", "/download/nanopi-k2"]
+  },
+  {
+    "board_id": "radxa-cm4-io",
+    "canonical": "/boards/radxa-cm4-io",
+    "legacy": ["/cm4-io", "/download/cm4-io"]
+  },
+  {
+    "board_id": "radxa-cm5-io",
+    "canonical": "/boards/radxa-cm5-io",
+    "legacy": ["/cm5-io", "/download/cm5-io"]
+  },
+  {
+    "board_id": "rockpi-4b",
+    "canonical": "/boards/rockpi-4b",
+    "legacy": ["/rock-pi-4", "/download/rock-pi-4"]
+  },
+  {
+    "board_id": "rockpi-4b",
+    "canonical": "/boards/rockpi-4b",
+    "legacy": ["/rockpi4", "/download/rockpi4"]
+  },
+  {
+    "board_id": "bananapi",
+    "canonical": "/boards/bananapi",
+    "legacy": ["/banana-pi-plus", "/download/banana-pi-plus"]
+  },
+  {
+    "board_id": "uefi-arm64",
+    "canonical": "/boards/uefi-arm64",
+    "legacy": ["/qemu-uboot-arm64", "/download/qemu-uboot-arm64"]
+  },
+  {
+    "board_id": "uefi-x86",
+    "canonical": "/boards/uefi-x86",
+    "legacy": ["/qemu-uboot-x86", "/download/qemu-uboot-x86"]
+  },
+  {
+    "board_id": "rock-5-itx",
+    "canonical": "/boards/rock-5-itx",
+    "legacy": ["/radxa-rock-5-itx", "/download/radxa-rock-5-itx"]
+  },
+  {
+    "board_id": "rock-5c",
+    "canonical": "/boards/rock-5c",
+    "legacy": ["/radxa-rock-5c", "/download/radxa-rock-5c"]
+  },
+  {
+    "board_id": "rock-5t",
+    "canonical": "/boards/rock-5t",
+    "legacy": ["/radxa-rock-5t", "/download/radxa-rock-5t"]
+  },
+  {
+    "board_id": "rock-s0",
+    "canonical": "/boards/rock-s0",
+    "legacy": ["/radxa-rock-s0", "/download/radxa-rock-s0"]
+  },
+  {
+    "board_id": "xiaomi-elish",
+    "canonical": "/boards/xiaomi-elish",
+    "legacy": ["/xiaomi-pad-5-pro", "/download/xiaomi-pad-5-pro"]
+  },
+  {
+    "board_id": "sk-am62b",
+    "canonical": "/boards/sk-am62b",
+    "legacy": ["/texas-instruments-sk-am62b", "/download/texas-instruments-sk-am62b"]
+  },
+  {
+    "board_id": "sk-am64b",
+    "canonical": "/boards/sk-am64b",
+    "legacy": ["/texas-instruments-sk-am64b", "/download/texas-instruments-sk-am64b"]
+  },
+  {
+    "board_id": "sk-am68",
+    "canonical": "/boards/sk-am68",
+    "legacy": ["/texas-instruments-sk-am68", "/download/texas-instruments-sk-am68"]
+  },
+  {
+    "board_id": "sk-am69",
+    "canonical": "/boards/sk-am69",
+    "legacy": ["/texas-instruments-sk-am69", "/download/texas-instruments-sk-am69"]
+  },
+  {
+    "board_id": "sk-tda4vm",
+    "canonical": "/boards/sk-tda4vm",
+    "legacy": ["/texas-instruments-sk-tda4vm", "/download/texas-instruments-sk-tda4vm"]
+  },
+  {
+    "board_id": "sk-am62-lp",
+    "canonical": "/boards/sk-am62-lp",
+    "legacy": ["/ti-sk-am62-lp", "/download/ti-sk-am62-lp"]
+  },
+  {
+    "board_id": "sk-am62-sip",
+    "canonical": "/boards/sk-am62-sip",
+    "legacy": ["/ti-sk-am62-sip", "/download/ti-sk-am62-sip"]
+  },
+  {
+    "board_id": "__page__",
+    "canonical": "/boards?support=community",
+    "legacy": ["/community"]
+  },
+  {
+    "board_id": "__page__",
+    "canonical": "/boards",
+    "legacy": ["/download-2"]
+  },
+  {
+    "board_id": "__page__",
+    "canonical": "/boards",
+    "legacy": ["/download-risc"]
+  },
+  {
+    "board_id": "__page__",
+    "canonical": "/boards",
+    "legacy": ["/compatible"]
+  },
+  {
+    "board_id": "__page__",
+    "canonical": "/boards?support=eos",
+    "legacy": ["/deprecated"]
+  },
+  {
+    "board_id": "__page__",
+    "canonical": "/boards?support=wip",
+    "legacy": ["/work-in-progress"]
+  },
+  {
+    "board_id": "__page__",
+    "canonical": "https://docs.armbian.com/Process_Contribute/",
+    "legacy": ["/bugs"]
+  },
+  {
+    "board_id": "__page__",
+    "canonical": "https://docs.armbian.com/Process_Contribute/",
+    "legacy": ["/contribute"]
+  },
+  {
+    "board_id": "__page__",
+    "canonical": "https://docs.armbian.com/Process_Contribute/",
+    "legacy": ["/get-involved"]
+  },
+  {
+    "board_id": "__page__",
+    "canonical": "https://docs.armbian.com/Process_Contribute/",
+    "legacy": ["/participate"]
+  },
+  {
+    "board_id": "__page__",
+    "canonical": "https://docs.armbian.com",
+    "legacy": ["/faq"]
+  },
+  {
+    "board_id": "__page__",
+    "canonical": "/donate",
+    "legacy": ["/donate"]
+  },
+  {
+    "board_id": "__page__",
+    "canonical": "/partners",
+    "legacy": ["/partners"]
+  },
+  {
+    "board_id": "__page__",
+    "canonical": "/contact",
+    "legacy": ["/contact"]
+  },
+  {
+    "board_id": "__page__",
+    "canonical": "/team",
+    "legacy": ["/authors"]
+  },
+  {
+    "board_id": "__page__",
+    "canonical": "https://docs.armbian.com",
+    "legacy": ["/kernel"]
+  },
+  {
+    "board_id": "__page__",
+    "canonical": "https://blog.armbian.com/rss/",
+    "legacy": ["/feed"]
+  },
+  {
+    "board_id": "__page__",
+    "canonical": "/boards",
+    "legacy": ["/download", "/download/"]
+  },
+  {
+    "board_id": "youyeetoo-r1-v3",
+    "canonical": "/boards/youyeetoo-r1-v3",
+    "legacy": ["/youyeetoo-r1", "/download/youyeetoo-r1"]
+  },
+  {
+    "board_id": "armsom-aim7-io",
+    "canonical": "/boards/armsom-aim7-io",
+    "legacy": ["/armsom-aim7", "/download/armsom-aim7"]
+  },
+  {
+    "board_id": "armsom-w3",
+    "canonical": "/boards/armsom-w3",
+    "legacy": ["/armsom-w3lm7-som", "/download/armsom-w3lm7-som"]
+  },
+  {
+    "board_id": "clearfogpro",
+    "canonical": "/boards/clearfogpro",
+    "legacy": ["/clearfog", "/download/clearfog"]
+  },
+  {
+    "board_id": "cubieboard",
+    "canonical": "/boards/cubieboard",
+    "legacy": ["/cubieboard-1", "/download/cubieboard-1"]
+  },
+  {
+    "board_id": "nanopineocore2",
+    "canonical": "/boards/nanopineocore2",
+    "legacy": ["/nanopi-neo-core-2-lts", "/download/nanopi-neo-core-2-lts"]
+  },
+  {
+    "board_id": "ayn-odin2",
+    "canonical": "/boards/ayn-odin2",
+    "legacy": ["/odin-2", "/download/odin-2"]
+  },
+  {
+    "board_id": "lime",
+    "canonical": "/boards/lime",
+    "legacy": ["/olimex-lime", "/download/olimex-lime"]
+  },
+  {
+    "board_id": "lime2",
+    "canonical": "/boards/lime2",
+    "legacy": ["/olimex-lime-2", "/download/olimex-lime-2"]
+  },
+  {
+    "board_id": "lime-a33",
+    "canonical": "/boards/lime-a33",
+    "legacy": ["/olimex-lime-a33", "/download/olimex-lime-a33"]
+  },
+  {
+    "board_id": "lime-a64",
+    "canonical": "/boards/lime-a64",
+    "legacy": ["/olimex-lime-a64", "/download/olimex-lime-a64"]
+  },
+  {
+    "board_id": "olimex-a20-olinuxino-micro",
+    "canonical": "/boards/olimex-a20-olinuxino-micro",
+    "legacy": ["/olimex-micro", "/download/olimex-micro"]
+  },
+  {
+    "board_id": "sakurapi-rk3308b",
+    "canonical": "/boards/sakurapi-rk3308b",
+    "legacy": ["/sakura-pi", "/download/sakura-pi"]
+  },
+  {
+    "board_id": "sk-am62p",
+    "canonical": "/boards/sk-am62p",
+    "legacy": ["/texas-instruments-sk-am62p-lp", "/download/texas-instruments-sk-am62p-lp"]
+  },
+  {
+    "board_id": "tmds62levm",
+    "canonical": "/boards/tmds62levm",
+    "legacy": ["/texas-instruments-tmds62levm", "/download/texas-instruments-tmds62levm"]
+  },
+  {
+    "board_id": "tinker-edge-r",
+    "canonical": "/boards/tinker-edge-r",
+    "legacy": ["/tinkerboard-edge-r", "/download/tinkerboard-edge-r"]
+  },
+  {
+    "board_id": "udoo",
+    "canonical": "/boards/udoo",
+    "legacy": ["/udoo-quad", "/download/udoo-quad"]
+  },
+  {
+    "board_id": "visionfive2",
+    "canonical": "/boards/visionfive2",
+    "legacy": ["/vision-five", "/download/vision-five"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/cubox-i"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/hummingboard"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/hummingboard-2"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/olimex-lime-2-emmc"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/nanopi-m1"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/orangepi"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/orange-pi-mini"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/nanopi-neo-air"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/nanopi-m3"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/",
+    "legacy": ["/homepage"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/nanopi-fire3"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/nanopc-t3-plus"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/",
+    "legacy": ["/latest-kernels"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/orange-pi-plus-2"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/orange-pi-plus-2e"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/orange-pi-zero-2-h5"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/",
+    "legacy": ["/welcome"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/",
+    "legacy": ["/authors_old"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/",
+    "legacy": ["/logbook"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/",
+    "legacy": ["/donors"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/",
+    "legacy": ["/search_gcse"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/",
+    "legacy": ["/search"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/sopine-a64"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/bananapi-m2u"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/nanopc-t3"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/",
+    "legacy": ["/using-armbian-tools"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/rk322x-tv-box"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/jetson-nano"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/jethub-d1"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/",
+    "legacy": ["/archives"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/jethub-h1"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/devterm-a06"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/",
+    "legacy": ["/maintainer-registry"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/",
+    "legacy": ["/rc-testing"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/",
+    "legacy": ["/volunteer-registration"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/",
+    "legacy": ["/thank-you"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/",
+    "legacy": ["/update-data"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/",
+    "legacy": ["/partner-contact-form"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/beagle-v"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/sifive-unmatched"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/star64"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/lenovo-x13s"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/licheepi-4a"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/rpi5b"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/amlogic-s9xx-tv-box"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/avaota-a1"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/orangepi-cm4"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/xiaomi-mi-10-pro"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/mba8mp-ras314"]
+  },
+  {
+    "board_id": "__legacy__",
+    "canonical": "/boards",
+    "legacy": ["/mks-skipr"]
   }
 ]

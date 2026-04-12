@@ -463,7 +463,10 @@ export class Normalizer {
       }
     }
 
-    // Auto-generate legacy redirects for all boards
+    // Auto-generate basic redirects from board slug. Full legacy URL
+    // coverage (old WordPress paths, vendor renames, etc.) comes from
+    // the legacy-redirects.json enrichment file populated from the old
+    // WordPress database — see apps/api/data/legacy-redirects.json.
     const reservedPaths = new Set([
       '/',
       '/boards',
@@ -479,16 +482,13 @@ export class Normalizer {
       const target = `/boards/${board.slug}`;
       const paths = [`/${board.slug}`, `/download/${board.slug}`];
 
-      // Alias derived from the full board name, e.g. "NanoPC T6 LTS" → nanopc-t6-lts.
-      // Stripped-vendor variants (e.g. "one", "pi", "cb1") are intentionally
-      // skipped to avoid generic collisions with site pages and CMS slugs.
       if (board.name) {
-        const fullHyphenated = board.name
+        const hyphenated = board.name
           .toLowerCase()
           .replace(/[^a-z0-9]+/g, '-')
           .replace(/(^-|-$)/g, '');
-        if (fullHyphenated && fullHyphenated !== board.slug) {
-          paths.push(`/${fullHyphenated}`, `/download/${fullHyphenated}`);
+        if (hyphenated && hyphenated !== board.slug) {
+          paths.push(`/${hyphenated}`, `/download/${hyphenated}`);
         }
       }
 

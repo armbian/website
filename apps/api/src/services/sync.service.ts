@@ -300,7 +300,7 @@ export class SyncService {
     lines.push('\t\tdefault ""');
     lines.push('\t}');
     lines.push('\t@is_legacy not vars {legacy_target} ""');
-    lines.push('\tredir @is_legacy {legacy_target}/ 301');
+    lines.push('\tredir @is_legacy {legacy_target} 301');
     lines.push('}');
 
     try {
