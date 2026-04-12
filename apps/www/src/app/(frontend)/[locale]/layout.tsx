@@ -49,6 +49,7 @@ export async function generateMetadata({
     },
     description,
     alternates: {
+      canonical: locale === DEFAULT_LOCALE ? '/' : `/${locale}`,
       languages: alternates,
     },
     openGraph: {
@@ -57,11 +58,13 @@ export async function generateMetadata({
       title,
       description,
       locale,
+      images: [{ url: '/armbian-icon.png', width: 1024, height: 1024, alt: 'Armbian' }],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
+      images: ['/armbian-icon.png'],
     },
   };
 }
