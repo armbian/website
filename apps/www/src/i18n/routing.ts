@@ -9,11 +9,14 @@ const baseConfig = {
   locales: [...LOCALES] as const,
   defaultLocale: DEFAULT_LOCALE,
   localePrefix: 'as-needed' as const,
-  // Disable cookie/Accept-Language detection so unprefixed paths always
-  // serve the domain's default locale. Users switch language explicitly
-  // via the switcher or URL prefix — no implicit sticky behaviour.
   localeDetection: false,
 };
+
+// Per next-intl docs: when using domains with as-needed prefix, each
+// locale must be assigned to exactly ONE domain. Forced domains own
+// their single locale exclusively; the primary domain gets the rest.
+const forcedLocales = new Set(Object.values(DOMAIN_LOCALE_MAP));
+const primaryLocales = LOCALES.filter((l) => !forcedLocales.has(l));
 
 const primaryDefaultLocale = (DOMAIN_LOCALE_MAP[primaryDomain] ??
   DEFAULT_LOCALE) as (typeof LOCALES)[number];
@@ -22,7 +25,11 @@ export const routing = DOMAIN_ROUTING_ENABLED
   ? defineRouting({
       ...baseConfig,
       domains: [
-        { domain: primaryDomain, defaultLocale: primaryDefaultLocale, locales: [...LOCALES] },
+        {
+          domain: primaryDomain,
+          defaultLocale: primaryDefaultLocale,
+          locales: [...primaryLocales],
+        },
         ...Object.entries(DOMAIN_LOCALE_MAP)
           .filter(([domain]) => domain !== primaryDomain)
           .map(([domain, locale]) => ({
