@@ -27,8 +27,7 @@ const KNOWN_DOMAINS = new Set([PRIMARY_DOMAIN, ...Object.keys(DOMAIN_LOCALE_MAP)
  * could redirect users off their own instance and onto the production
  * site. Defaults to off.
  */
-const DOMAIN_ROUTING_ENABLED =
-  process.env['NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING'] === 'true';
+const DOMAIN_ROUTING_ENABLED = process.env['NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING'] === 'true';
 
 /**
  * Decide whether the current browser hostname matches one of the known

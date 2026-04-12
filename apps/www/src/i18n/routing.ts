@@ -1,8 +1,7 @@
 import { defineRouting } from 'next-intl/routing';
 import { LOCALES, DEFAULT_LOCALE, DOMAIN_LOCALE_MAP } from '@armbian/config';
 
-const DOMAIN_ROUTING_ENABLED =
-  process.env['NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING'] === 'true';
+const DOMAIN_ROUTING_ENABLED = process.env['NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING'] === 'true';
 
 const primaryDomain = process.env['NEXT_PUBLIC_PRIMARY_DOMAIN'] ?? 'armbian.com';
 

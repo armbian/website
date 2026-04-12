@@ -78,11 +78,11 @@ Run `./manage.sh help` for the full list.
 
 Three GitHub Actions workflows form a gated pipeline:
 
-| Workflow | Trigger | Purpose |
-|---|---|---|
-| **CI** (`ci.yml`) | Push/PR to `main` | Typecheck + test |
-| **Release** (`release.yml`) | Tag `v*.*.*` | CI gate, build multi-arch Docker images, push to GHCR, create GitHub Release |
-| **Deploy** (`deploy.yml`) | Release completes (or manual) | SSH into production, `git checkout <tag>`, `./manage.sh deploy` |
+| Workflow                    | Trigger                       | Purpose                                                                      |
+| --------------------------- | ----------------------------- | ---------------------------------------------------------------------------- |
+| **CI** (`ci.yml`)           | Push/PR to `main`             | Typecheck + test                                                             |
+| **Release** (`release.yml`) | Tag `v*.*.*`                  | CI gate, build multi-arch Docker images, push to GHCR, create GitHub Release |
+| **Deploy** (`deploy.yml`)   | Release completes (or manual) | SSH into production, `git checkout <tag>`, `./manage.sh deploy`              |
 
 To release: tag a commit (`git tag v0.5.0 && git push --tags`). CI runs first; if it passes, Docker images are built for `linux/amd64` and `linux/arm64`, pushed to `ghcr.io/armbian/website/{api,www}`, and a GitHub Release with auto-generated notes is created. The deploy workflow then pulls the new images on the server.
 

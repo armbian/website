@@ -3,12 +3,7 @@
 import { Fragment, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { KERNEL_BRANCHES } from '@armbian/config';
-import type {
-  ImageFormat,
-  StorageVariant,
-  CompanionFile,
-  DisplayVariant,
-} from '@armbian/schemas';
+import type { ImageFormat, StorageVariant, CompanionFile, DisplayVariant } from '@armbian/schemas';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { Download, Star, ChevronDown } from 'lucide-react';
 import { Monitor, Zap, Server, Package } from 'lucide-react';
@@ -61,8 +56,7 @@ const CHIP_STYLE: Record<ChipKind, string> = {
   format:
     'bg-amber-500/15 text-amber-700 ring-amber-500/30 dark:text-amber-300 dark:ring-amber-500/25',
   // Cyan info: special storage hardware (UFS).
-  storage:
-    'bg-cyan-500/15 text-cyan-700 ring-cyan-500/30 dark:text-cyan-300 dark:ring-cyan-500/25',
+  storage: 'bg-cyan-500/15 text-cyan-700 ring-cyan-500/30 dark:text-cyan-300 dark:ring-cyan-500/25',
   // Violet: pre-bundled app overlay (Home Assistant / Kali / OMV / openHAB).
   app: 'bg-violet-500/15 text-violet-700 ring-violet-500/30 dark:text-violet-300 dark:ring-violet-500/25',
   // Fuchsia: variant modifier (Mesa, backported stacks).

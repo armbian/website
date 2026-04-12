@@ -150,7 +150,10 @@ export function ContactForm() {
 
   return (
     <>
-      <Script src={`${ARMBIAN_URLS.RECAPTCHA_SCRIPT}?render=explicit`} strategy="afterInteractive" />
+      <Script
+        src={`${ARMBIAN_URLS.RECAPTCHA_SCRIPT}?render=explicit`}
+        strategy="afterInteractive"
+      />
       <iframe name="biginHiddenFrame" className="hidden" onLoad={handleIframeLoad} />
       <form
         method="POST"

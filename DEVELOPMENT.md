@@ -287,20 +287,20 @@ Defined in `apps/www/src/app/(frontend)/globals.css`.
 
 Copy `.env.example` to `.env`. All variables:
 
-| Variable                               | Required | Default                 | Description                              |
-| -------------------------------------- | -------- | ----------------------- | ---------------------------------------- |
-| `POSTGRES_PASSWORD`                    | **Yes**  | —                       | Database password                        |
-| `PAYLOAD_SECRET`                       | **Yes**  | —                       | 64-char hex for Payload auth             |
-| `DATA_SYNC_INTERVAL_MS`               | No       | `14400000`              | Sync interval (4h)                       |
-| `CORS_ORIGINS`                         | No       | `http://localhost:3000` | Extra CORS origins                       |
-| `LOG_LEVEL`                            | No       | `info`                  | API log level                            |
-| `NEXT_PUBLIC_SITE_URL`                 | No       | —                       | Base URL for Open Graph absolute URLs    |
-| `NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING`    | No       | `false`                 | Enable cross-domain locale switching     |
-| `WP_CONTENT_DIR`                       | No       | `./legacy/wp-content`   | Host path for legacy `/wp-content` files |
-| `OIDC_CLIENT_ID`                       | No       | —                       | Authentik OAuth2 client ID               |
-| `OIDC_CLIENT_SECRET`                   | No       | —                       | Authentik OAuth2 secret                  |
-| `OIDC_ISSUER_URL`                      | No       | —                       | Authentik issuer URL                     |
-| `OIDC_ALLOWED_DOMAINS`                 | No       | —                       | Restrict OIDC to email domains           |
+| Variable                            | Required | Default                 | Description                              |
+| ----------------------------------- | -------- | ----------------------- | ---------------------------------------- |
+| `POSTGRES_PASSWORD`                 | **Yes**  | —                       | Database password                        |
+| `PAYLOAD_SECRET`                    | **Yes**  | —                       | 64-char hex for Payload auth             |
+| `DATA_SYNC_INTERVAL_MS`             | No       | `14400000`              | Sync interval (4h)                       |
+| `CORS_ORIGINS`                      | No       | `http://localhost:3000` | Extra CORS origins                       |
+| `LOG_LEVEL`                         | No       | `info`                  | API log level                            |
+| `NEXT_PUBLIC_SITE_URL`              | No       | —                       | Base URL for Open Graph absolute URLs    |
+| `NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING` | No       | `false`                 | Enable cross-domain locale switching     |
+| `WP_CONTENT_DIR`                    | No       | `./legacy/wp-content`   | Host path for legacy `/wp-content` files |
+| `OIDC_CLIENT_ID`                    | No       | —                       | Authentik OAuth2 client ID               |
+| `OIDC_CLIENT_SECRET`                | No       | —                       | Authentik OAuth2 secret                  |
+| `OIDC_ISSUER_URL`                   | No       | —                       | Authentik issuer URL                     |
+| `OIDC_ALLOWED_DOMAINS`              | No       | —                       | Restrict OIDC to email domains           |
 
 Without `POSTGRES_PASSWORD` and `PAYLOAD_SECRET`, the stack won't start.
 
@@ -341,12 +341,12 @@ git tag v0.5.0 && git push --tags
 
 ### Required GitHub Secrets
 
-| Secret | Purpose |
-|---|---|
-| `DEPLOY_HOST` | Production server hostname/IP |
-| `DEPLOY_USER` | SSH username |
-| `DEPLOY_KEY` | SSH private key |
-| `GHCR_TOKEN` | GitHub token for pulling images on the server |
+| Secret        | Purpose                                       |
+| ------------- | --------------------------------------------- |
+| `DEPLOY_HOST` | Production server hostname/IP                 |
+| `DEPLOY_USER` | SSH username                                  |
+| `DEPLOY_KEY`  | SSH private key                               |
+| `GHCR_TOKEN`  | GitHub token for pulling images on the server |
 
 `GITHUB_TOKEN` is used automatically for GHCR push during the build job.
 
@@ -356,11 +356,11 @@ git tag v0.5.0 && git push --tags
 
 The official Armbian deployment serves three domains:
 
-| Domain | Locale | Behavior |
-|---|---|---|
-| `armbian.com` | all 17 | Default English, other locales via `/<locale>` prefix |
-| `armbian.cn` | `zh` only | Forces Chinese on every page |
-| `armbian.de` | `de` only | Forces German on every page |
+| Domain        | Locale    | Behavior                                              |
+| ------------- | --------- | ----------------------------------------------------- |
+| `armbian.com` | all 17    | Default English, other locales via `/<locale>` prefix |
+| `armbian.cn`  | `zh` only | Forces Chinese on every page                          |
+| `armbian.de`  | `de` only | Forces German on every page                           |
 
 This is configured in `packages/config/src/locales.ts` (`DOMAIN_LOCALE_MAP`) and `apps/www/src/i18n/routing.ts`.
 
