@@ -39,10 +39,6 @@ export async function generateMetadata({
 
   return {
     metadataBase: new URL(process.env['NEXT_PUBLIC_SITE_URL'] ?? 'https://www.armbian.com'),
-    icons: {
-      icon: '/favicon.ico',
-      apple: '/favicon.ico',
-    },
     title: {
       template: '%s | Armbian',
       default: title,
