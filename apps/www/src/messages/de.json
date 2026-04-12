@@ -263,7 +263,8 @@
     "consultation_title": "Business-Beratung",
     "consultation_badge": "Vorauszahlung",
     "consultation_desc": "Individuelle kostenpflichtige Beratung für kommerzielle Integrationen, Custom Builds und Enterprise-Support. Für alle verfügbar.",
-    "consultation_cta": "Beratung buchen"
+    "consultation_cta": "Beratung buchen",
+    "form_captcha_error": "Bitte löse das reCAPTCHA vor dem Absenden des Formulars."
   },
   "vendors": {
     "title": "Hersteller",

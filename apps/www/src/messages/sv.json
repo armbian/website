@@ -263,7 +263,8 @@
     "consultation_title": "Affärskonsultation",
     "consultation_badge": "Förskottsbetalning",
     "consultation_desc": "Individuell betald konsultation för kommersiella integrationer, anpassade byggen och företagssupport. Tillgängligt för alla.",
-    "consultation_cta": "Boka konsultation"
+    "consultation_cta": "Boka konsultation",
+    "form_captcha_error": "Slutför reCAPTCHA innan du skickar formuläret."
   },
   "vendors": {
     "title": "Tillverkare",

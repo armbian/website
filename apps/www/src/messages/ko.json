@@ -263,7 +263,8 @@
     "consultation_title": "비즈니스 컨설팅",
     "consultation_badge": "선불",
     "consultation_desc": "상업 통합, 커스텀 빌드 및 엔터프라이즈 지원을 위한 개별 유료 컨설팅. 누구나 이용 가능합니다.",
-    "consultation_cta": "컨설팅 예약"
+    "consultation_cta": "컨설팅 예약",
+    "form_captcha_error": "양식을 제출하기 전에 reCAPTCHA를 완료해 주세요."
   },
   "vendors": {
     "title": "제조사",

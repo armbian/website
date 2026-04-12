@@ -1,18 +1,127 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect, type FormEvent } from 'react';
+import Script from 'next/script';
 import { useTranslations } from 'next-intl';
-import { Send, CheckCircle, Loader2 } from 'lucide-react';
-import { ARMBIAN_URLS } from '@armbian/config';
+import { Send, CheckCircle, Loader2, AlertCircle } from 'lucide-react';
+import { ARMBIAN_URLS, BIGIN_FORM_TOKENS, RECAPTCHA_SITE_KEY } from '@armbian/config';
+
+// Minimal grecaptcha surface we interact with. The full API is loaded
+// asynchronously by the Google script tag at runtime.
+declare global {
+  interface Window {
+    grecaptcha?: {
+      ready: (cb: () => void) => void;
+      render: (
+        container: HTMLElement,
+        params: { sitekey: string; theme?: 'light' | 'dark' },
+      ) => number;
+      getResponse: (widgetId?: number) => string;
+      reset: (widgetId?: number) => void;
+    };
+  }
+}
+
+function isDarkTheme(): boolean {
+  if (typeof document === 'undefined') return false;
+  return document.documentElement.classList.contains('dark');
+}
 
 export function ContactForm() {
   const t = useTranslations('contact');
   const [status, setStatus] = useState<'idle' | 'sending' | 'success'>('idle');
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [captchaError, setCaptchaError] = useState(false);
+  const captchaContainerRef = useRef<HTMLDivElement>(null);
+  const widgetIdRef = useRef<number | null>(null);
 
-  function handleSubmit() {
+  // Render the reCAPTCHA widget explicitly (instead of relying on the
+  // auto-render from `.g-recaptcha`) so we can pass the current theme. The
+  // widget re-renders whenever the user toggles dark mode: reCAPTCHA has no
+  // API to change the theme of an existing widget, and trying to call
+  // `grecaptcha.render` twice on the same DOM element fails silently. We
+  // work around it by mounting each widget into a brand new child element
+  // that Google has never seen before.
+  useEffect(() => {
+    let cancelled = false;
+    let lastTheme: 'light' | 'dark' | null = null;
+
+    const renderWidget = () => {
+      if (cancelled || !captchaContainerRef.current || !window.grecaptcha) return;
+      const theme = isDarkTheme() ? 'dark' : 'light';
+      if (theme === lastTheme && widgetIdRef.current !== null) return;
+      lastTheme = theme;
+
+      // Replace the container's child with a fresh div each time so
+      // grecaptcha.render() always sees a pristine element.
+      const fresh = document.createElement('div');
+      captchaContainerRef.current.replaceChildren(fresh);
+      try {
+        widgetIdRef.current = window.grecaptcha.render(fresh, {
+          sitekey: RECAPTCHA_SITE_KEY,
+          theme,
+        });
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error('reCAPTCHA render failed', err);
+      }
+    };
+
+    const waitForApi = () => {
+      if (cancelled) return;
+      if (window.grecaptcha) {
+        window.grecaptcha.ready(renderWidget);
+      } else {
+        setTimeout(waitForApi, 150);
+      }
+    };
+    waitForApi();
+
+    // Re-render on theme toggle. The MutationObserver fires for every
+    // attribute mutation on <html>, so renderWidget() guards against
+    // unrelated changes via the lastTheme comparison.
+    const observer = new MutationObserver(renderWidget);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
+    return () => {
+      cancelled = true;
+      observer.disconnect();
+    };
+  }, []);
+
+  // Reset the reCAPTCHA widget whenever we return to the idle state so the
+  // next submission requires a fresh token (the response is single-use).
+  useEffect(() => {
+    if (status !== 'idle') return;
+    if (typeof window === 'undefined' || !window.grecaptcha) return;
+    if (widgetIdRef.current === null) return;
+    try {
+      window.grecaptcha.reset(widgetIdRef.current);
+    } catch {
+      /* widget not mounted yet */
+    }
+  }, [status]);
+
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    const token =
+      typeof window !== 'undefined' && window.grecaptcha && widgetIdRef.current !== null
+        ? window.grecaptcha.getResponse(widgetIdRef.current)
+        : '';
+
+    if (!token) {
+      e.preventDefault();
+      setCaptchaError(true);
+      return;
+    }
+
+    setCaptchaError(false);
     setStatus('sending');
-    setTimeout(() => setStatus('success'), 3000);
+    // Optimistic fallback: if the hidden iframe never fires onLoad (cross
+    // origin can silently fail), flip to success after a short delay so the
+    // user gets feedback.
+    setTimeout(() => setStatus((s) => (s === 'sending' ? 'success' : s)), 3000);
   }
 
   function handleIframeLoad() {
@@ -41,12 +150,8 @@ export function ContactForm() {
 
   return (
     <>
-      <iframe
-        ref={iframeRef}
-        name="biginHiddenFrame"
-        className="hidden"
-        onLoad={handleIframeLoad}
-      />
+      <Script src={`${ARMBIAN_URLS.RECAPTCHA_SCRIPT}?render=explicit`} strategy="afterInteractive" />
+      <iframe name="biginHiddenFrame" className="hidden" onLoad={handleIframeLoad} />
       <form
         method="POST"
         action={ARMBIAN_URLS.BIGIN_FORM}
@@ -55,18 +160,10 @@ export function ContactForm() {
         onSubmit={handleSubmit}
         className="space-y-5 flex-1 flex flex-col"
       >
-        <input
-          type="hidden"
-          name="xnQsjsdp"
-          value="8a3429ee12927ae9c27c07c12f33105a5c55ecef1dd8739be38e6f5a578e27ea"
-        />
+        <input type="hidden" name="xnQsjsdp" value={BIGIN_FORM_TOKENS.xnQsjsdp} />
         <input type="hidden" name="zc_gad" value="" />
-        <input
-          type="hidden"
-          name="xmIwtLD"
-          value="24f594c268bd49456368bb68dec3340d6434d709a223dcf881a88fe0ddeafee28c5bef380d48302ac03d97b49a711f8e"
-        />
-        <input type="hidden" name="actionType" value="Q29udGFjdHM=" />
+        <input type="hidden" name="xmIwtLD" value={BIGIN_FORM_TOKENS.xmIwtLD} />
+        <input type="hidden" name="actionType" value={BIGIN_FORM_TOKENS.actionType} />
         <input type="hidden" name="rmsg" value="true" />
         <input type="hidden" name="returnURL" value="null" />
 
@@ -142,11 +239,20 @@ export function ContactForm() {
           />
         </div>
 
-        <div className="flex justify-end pt-2">
+        <div className="flex flex-col gap-4 pt-2 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col items-start gap-1.5">
+            <div ref={captchaContainerRef} />
+            {captchaError && (
+              <p className="inline-flex items-center gap-1.5 text-[11px] font-medium text-red-400">
+                <AlertCircle size={13} strokeWidth={2} />
+                {t('form_captcha_error')}
+              </p>
+            )}
+          </div>
           <button
             type="submit"
             disabled={status === 'sending'}
-            className="inline-flex items-center gap-2.5 rounded-xl bg-[rgb(var(--brand))] px-7 py-3 text-sm font-bold text-white hover:bg-[rgb(var(--brand-hover))] transition-all shadow-lg shadow-[rgb(var(--brand)/0.25)] disabled:opacity-50 disabled:shadow-none"
+            className="inline-flex items-center justify-center gap-2.5 rounded-xl bg-[rgb(var(--brand))] px-7 py-3 text-sm font-bold text-white hover:bg-[rgb(var(--brand-hover))] transition-all shadow-lg shadow-[rgb(var(--brand)/0.25)] disabled:opacity-50 disabled:shadow-none"
           >
             {status === 'sending' ? (
               <Loader2 size={16} strokeWidth={2.5} className="animate-spin" />

@@ -307,7 +307,8 @@
     "consultation_title": "Consulenza Business",
     "consultation_badge": "A pagamento",
     "consultation_desc": "Consulenza individuale per integrazioni commerciali, build personalizzate e supporto enterprise. Aperta a tutti.",
-    "consultation_cta": "Prenota consulenza"
+    "consultation_cta": "Prenota consulenza",
+    "form_captcha_error": "Completa il reCAPTCHA prima di inviare il modulo."
   },
   "vendors": {
     "title": "Produttori",

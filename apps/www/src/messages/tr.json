@@ -263,7 +263,8 @@
     "consultation_title": "İş Danışmanlığı",
     "consultation_badge": "Ön ödemeli",
     "consultation_desc": "Ticari entegrasyonlar, özel derlemeler ve kurumsal destek için bireysel ücretli danışmanlık. Herkes için mevcuttur.",
-    "consultation_cta": "Danışmanlık rezervasyonu"
+    "consultation_cta": "Danışmanlık rezervasyonu",
+    "form_captcha_error": "Formu göndermeden önce reCAPTCHA doğrulamasını tamamlayın."
   },
   "vendors": {
     "title": "Üreticiler",

@@ -263,7 +263,8 @@
     "consultation_title": "Konsultacja biznesowa",
     "consultation_badge": "Płatność z góry",
     "consultation_desc": "Indywidualna płatna konsultacja w zakresie integracji komercyjnych, niestandardowych buildów i wsparcia enterprise. Dostępne dla wszystkich.",
-    "consultation_cta": "Zarezerwuj konsultację"
+    "consultation_cta": "Zarezerwuj konsultację",
+    "form_captcha_error": "Ukończ reCAPTCHA przed wysłaniem formularza."
   },
   "vendors": {
     "title": "Producenci",

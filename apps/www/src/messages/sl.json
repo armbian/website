@@ -263,7 +263,8 @@
     "consultation_title": "Poslovno svetovanje",
     "consultation_badge": "Predplačilo",
     "consultation_desc": "Individualno plačljivo svetovanje za komercialne integracije, prilagojene gradnje in podjetniško podporo. Na voljo vsem.",
-    "consultation_cta": "Rezerviraj svetovanje"
+    "consultation_cta": "Rezerviraj svetovanje",
+    "form_captcha_error": "Pred pošiljanjem obrazca rešite reCAPTCHA."
   },
   "vendors": {
     "title": "Proizvajalci",

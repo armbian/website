@@ -263,7 +263,8 @@
     "consultation_title": "Poslovno savjetovanje",
     "consultation_badge": "Plaćanje unaprijed",
     "consultation_desc": "Individualno plaćeno savjetovanje za komercijalne integracije, prilagođene buildove i enterprise podršku. Dostupno svima.",
-    "consultation_cta": "Rezerviraj savjetovanje"
+    "consultation_cta": "Rezerviraj savjetovanje",
+    "form_captcha_error": "Molimo riješite reCAPTCHA prije slanja obrasca."
   },
   "vendors": {
     "title": "Proizvođači",

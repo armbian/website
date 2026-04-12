@@ -263,7 +263,8 @@
     "consultation_title": "Consultoria Business",
     "consultation_badge": "Pagamento antecipado",
     "consultation_desc": "Consultoria individual paga para integrações comerciais, builds personalizados e suporte empresarial. Disponível para todos.",
-    "consultation_cta": "Agendar consultoria"
+    "consultation_cta": "Agendar consultoria",
+    "form_captcha_error": "Por favor, complete o reCAPTCHA antes de enviar o formulário."
   },
   "vendors": {
     "title": "Fabricantes",
