@@ -11,11 +11,14 @@ const baseConfig = {
   localePrefix: 'as-needed' as const,
 };
 
+const primaryDefaultLocale = (DOMAIN_LOCALE_MAP[primaryDomain] ??
+  DEFAULT_LOCALE) as (typeof LOCALES)[number];
+
 export const routing = DOMAIN_ROUTING_ENABLED
   ? defineRouting({
       ...baseConfig,
       domains: [
-        { domain: primaryDomain, defaultLocale: DEFAULT_LOCALE, locales: [...LOCALES] },
+        { domain: primaryDomain, defaultLocale: primaryDefaultLocale, locales: [...LOCALES] },
         ...Object.entries(DOMAIN_LOCALE_MAP)
           .filter(([domain]) => domain !== primaryDomain)
           .map(([domain, locale]) => ({
