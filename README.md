@@ -55,19 +55,38 @@ github.armbian.com (upstream JSON)
 
 All operations go through `manage.sh`:
 
-| Command                         | Description                              |
-| ------------------------------- | ---------------------------------------- |
-| `./manage.sh up`                | Build, start, and wait for health checks |
-| `./manage.sh down`              | Stop all services (data preserved)       |
-| `./manage.sh rebuild [service]` | Rebuild one or all services              |
-| `./manage.sh reset`             | Stop, wipe volumes, rebuild from scratch |
-| `./manage.sh status`            | Container health and endpoint checks     |
-| `./manage.sh logs [service]`    | Follow logs                              |
-| `./manage.sh db:backup`         | Dump database to `backups/`              |
-| `./manage.sh db:restore <file>` | Restore a backup                         |
-| `./manage.sh shell [service]`   | Open a shell in a container              |
+| Command                         | Description                                      |
+| ------------------------------- | ------------------------------------------------ |
+| `./manage.sh up`                | Build, start, and wait for health checks         |
+| `./manage.sh deploy`            | Pull pre-built GHCR images and restart           |
+| `./manage.sh down`              | Stop all services (data preserved)               |
+| `./manage.sh rebuild [service]` | Rebuild one or all services                      |
+| `./manage.sh reset`             | Stop, wipe volumes, rebuild from scratch         |
+| `./manage.sh status`            | Container health and endpoint checks             |
+| `./manage.sh logs [service]`    | Follow logs                                      |
+| `./manage.sh quality [check]`   | Run typecheck + test in Docker (lint, format...) |
+| `./manage.sh db:backup`         | Dump database to `backups/`                      |
+| `./manage.sh db:restore <file>` | Restore a backup                                 |
+| `./manage.sh cache:clean`       | Wipe pnpm store and node_modules volumes         |
+| `./manage.sh shell [service]`   | Open a shell in a container                      |
 
 Run `./manage.sh help` for the full list.
+
+`./manage.sh up` builds images locally from source. `./manage.sh deploy` pulls pre-built images from GHCR -- use this on production servers where you don't want to compile.
+
+## CI/CD Pipeline
+
+Three GitHub Actions workflows form a gated pipeline:
+
+| Workflow | Trigger | Purpose |
+|---|---|---|
+| **CI** (`ci.yml`) | Push/PR to `main` | Typecheck + test |
+| **Release** (`release.yml`) | Tag `v*.*.*` | CI gate, build multi-arch Docker images, push to GHCR, create GitHub Release |
+| **Deploy** (`deploy.yml`) | Release completes (or manual) | SSH into production, `git checkout <tag>`, `./manage.sh deploy` |
+
+To release: tag a commit (`git tag v0.5.0 && git push --tags`). CI runs first; if it passes, Docker images are built for `linux/amd64` and `linux/arm64`, pushed to `ghcr.io/armbian/website/{api,www}`, and a GitHub Release with auto-generated notes is created. The deploy workflow then pulls the new images on the server.
+
+Required GitHub secrets for deploy: `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_KEY` (SSH private key), `GHCR_TOKEN`.
 
 ## Deployment
 
@@ -82,13 +101,15 @@ Four Docker Compose services:
 
 Required environment variables: `POSTGRES_PASSWORD`, `PAYLOAD_SECRET`. For production, set `WWW_HOSTNAME`, `API_HOSTNAME`, and `CADDY_EMAIL` to enable automatic TLS. See `.env.example` for all options.
 
+The `docker-compose.yml` includes `image:` references to GHCR. When you run `./manage.sh deploy`, Compose pulls the pre-built images instead of building locally. When you run `./manage.sh up`, Compose uses the `build:` directive and compiles from source.
+
 Payload migrations run automatically on startup — no manual steps needed.
 
 ## Internationalization
 
 17 locales via `next-intl`: English (default), German, Chinese, French, Spanish, Italian, Russian, Portuguese, Japanese, Korean, Dutch, Polish, Turkish, Ukrainian, Croatian, Slovenian, Swedish.
 
-Domain forcing: `armbian.cn` → Chinese, `armbian.de` → German.
+Domain forcing: `armbian.cn` → Chinese, `armbian.de` → German. The language switcher redirects cross-domain on the official deployment. Self-hosted instances keep all locales on a single host unless `NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING=true` is set (build-time env var, baked into the client bundle).
 
 ## Resources
 

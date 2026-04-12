@@ -164,10 +164,36 @@ Images are fetched from the CDN on first request and cached on disk. Subsequent 
 ./manage.sh db:restore FILE   # restore a backup
 ```
 
+### Quality Checks
+
+```bash
+./manage.sh quality           # typecheck + test (inside Docker)
+./manage.sh quality typecheck # typecheck only
+./manage.sh quality test      # test only
+./manage.sh quality lint      # lint only
+./manage.sh quality format    # format check only
+```
+
+Runs in a one-shot Node 22 container with the project mounted at `/app`. No local `node_modules` required.
+
+### Deploy (Production)
+
+```bash
+./manage.sh deploy            # pull GHCR images, restart, wait for health
+```
+
+Unlike `./manage.sh up` (which builds from source), `deploy` pulls pre-built images from `ghcr.io/armbian/website/{api,www}`. Use this on production servers. If `GHCR_TOKEN` is set in `.env` or the environment, it authenticates to GHCR before pulling.
+
 ### Reset Everything
 
 ```bash
 ./manage.sh reset             # wipes volumes, rebuilds from scratch
+```
+
+### Cache Management
+
+```bash
+./manage.sh cache:clean       # wipe pnpm store + named node_modules volumes
 ```
 
 ---
@@ -261,19 +287,24 @@ Defined in `apps/www/src/app/(frontend)/globals.css`.
 
 Copy `.env.example` to `.env`. All variables:
 
-| Variable                | Required | Default                 | Description                    |
-| ----------------------- | -------- | ----------------------- | ------------------------------ |
-| `POSTGRES_PASSWORD`     | **Yes**  | —                       | Database password              |
-| `PAYLOAD_SECRET`        | **Yes**  | —                       | 64-char hex for Payload auth   |
-| `DATA_SYNC_INTERVAL_MS` | No       | `14400000`              | Sync interval (4h)             |
-| `CORS_ORIGINS`          | No       | `http://localhost:3000` | Extra CORS origins             |
-| `LOG_LEVEL`             | No       | `info`                  | API log level                  |
-| `OIDC_CLIENT_ID`        | No       | —                       | Authentik OAuth2 client ID     |
-| `OIDC_CLIENT_SECRET`    | No       | —                       | Authentik OAuth2 secret        |
-| `OIDC_ISSUER_URL`       | No       | —                       | Authentik issuer URL           |
-| `OIDC_ALLOWED_DOMAINS`  | No       | —                       | Restrict OIDC to email domains |
+| Variable                               | Required | Default                 | Description                              |
+| -------------------------------------- | -------- | ----------------------- | ---------------------------------------- |
+| `POSTGRES_PASSWORD`                    | **Yes**  | —                       | Database password                        |
+| `PAYLOAD_SECRET`                       | **Yes**  | —                       | 64-char hex for Payload auth             |
+| `DATA_SYNC_INTERVAL_MS`               | No       | `14400000`              | Sync interval (4h)                       |
+| `CORS_ORIGINS`                         | No       | `http://localhost:3000` | Extra CORS origins                       |
+| `LOG_LEVEL`                            | No       | `info`                  | API log level                            |
+| `NEXT_PUBLIC_SITE_URL`                 | No       | —                       | Base URL for Open Graph absolute URLs    |
+| `NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING`    | No       | `false`                 | Enable cross-domain locale switching     |
+| `WP_CONTENT_DIR`                       | No       | `./legacy/wp-content`   | Host path for legacy `/wp-content` files |
+| `OIDC_CLIENT_ID`                       | No       | —                       | Authentik OAuth2 client ID               |
+| `OIDC_CLIENT_SECRET`                   | No       | —                       | Authentik OAuth2 secret                  |
+| `OIDC_ISSUER_URL`                      | No       | —                       | Authentik issuer URL                     |
+| `OIDC_ALLOWED_DOMAINS`                 | No       | —                       | Restrict OIDC to email domains           |
 
 Without `POSTGRES_PASSWORD` and `PAYLOAD_SECRET`, the stack won't start.
+
+`NEXT_PUBLIC_*` variables are baked into the Next.js client bundle at build time. They are passed as Docker build args in `docker-compose.yml` and in the release workflow. Changing them requires a rebuild (`./manage.sh rebuild www`) or a new release tag.
 
 ### OIDC Authentication (Authentik)
 
@@ -287,6 +318,127 @@ Leave `OIDC_*` variables empty for local email/password login. When set, Authent
 | _(no match)_         | editor       |
 
 Roles sync on every login. First login auto-creates the user.
+
+---
+
+## CI/CD Pipeline
+
+Three GitHub Actions workflows:
+
+1. **CI** (`.github/workflows/ci.yml`) -- runs on push/PR to `main`. Installs deps, runs `pnpm typecheck` and `pnpm test`.
+2. **Release** (`.github/workflows/release.yml`) -- triggered by version tags (`v*.*.*`). Runs CI first, then builds multi-arch Docker images (`linux/amd64`, `linux/arm64`) and pushes them to GHCR (`ghcr.io/armbian/website/api`, `ghcr.io/armbian/website/www`). Creates a GitHub Release with auto-generated notes.
+3. **Deploy** (`.github/workflows/deploy.yml`) -- triggered automatically when the Release workflow completes, or manually via `workflow_dispatch`. SSHs into the production server, checks out the tag, and runs `./manage.sh deploy`.
+
+### Release Flow
+
+```
+git tag v0.5.0 && git push --tags
+    → CI (typecheck + test)
+    → Build (Docker images → GHCR)
+    → Release (GitHub Release notes)
+    → Deploy (SSH → ./manage.sh deploy)
+```
+
+### Required GitHub Secrets
+
+| Secret | Purpose |
+|---|---|
+| `DEPLOY_HOST` | Production server hostname/IP |
+| `DEPLOY_USER` | SSH username |
+| `DEPLOY_KEY` | SSH private key |
+| `GHCR_TOKEN` | GitHub token for pulling images on the server |
+
+`GITHUB_TOKEN` is used automatically for GHCR push during the build job.
+
+---
+
+## Multi-Domain Locale Routing
+
+The official Armbian deployment serves three domains:
+
+| Domain | Locale | Behavior |
+|---|---|---|
+| `armbian.com` | all 17 | Default English, other locales via `/<locale>` prefix |
+| `armbian.cn` | `zh` only | Forces Chinese on every page |
+| `armbian.de` | `de` only | Forces German on every page |
+
+This is configured in `packages/config/src/locales.ts` (`DOMAIN_LOCALE_MAP`) and `apps/www/src/i18n/routing.ts`.
+
+The language switcher (`language-switcher.tsx`) cross-redirects between domains only when **both** conditions are met:
+
+1. `NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING=true` (build-time env var)
+2. The current browser hostname matches a known Armbian domain
+
+Self-hosted instances and local development always use in-place locale switching via `/<locale>` prefixes, regardless of this setting.
+
+---
+
+## Contact Form and reCAPTCHA
+
+The contact page submits to Zoho Bigin via a hidden iframe (`biginHiddenFrame`). A Google reCAPTCHA v2 widget gates submission.
+
+### Configuration
+
+- **Site key**: `RECAPTCHA_SITE_KEY` in `packages/config/src/urls.ts` (public, baked into the bundle)
+- **Secret key**: configured on the Zoho Bigin side (not in this repo)
+- **Bigin form tokens**: `BIGIN_FORM_TOKENS` in `packages/config/src/urls.ts`
+
+### CSP Directives
+
+The reCAPTCHA integration requires these CSP entries in `apps/www/next.config.ts`:
+
+- `script-src`: `https://www.google.com/recaptcha/` and `https://www.gstatic.com/recaptcha/`
+- `frame-src`: `https://www.google.com/recaptcha/`
+- `connect-src`: `https://www.google.com`
+- `img-src`: `https://www.gstatic.com/recaptcha/`
+
+If the reCAPTCHA widget fails to render, check browser console for CSP violations.
+
+---
+
+## Legacy wp-content
+
+Caddy serves files at `/wp-content/*` for legacy WordPress URLs that are still linked from external sites. This only applies to requests with `Host: armbian.com` or `Host: www.armbian.com`.
+
+### Setup
+
+1. Set `WP_CONTENT_DIR` in `.env` to the host path containing the legacy files (e.g., `/srv/wp-content`)
+2. The directory is bind-mounted read-only into the Caddy container at `/srv/wp-content`
+3. If unset, it defaults to `./legacy/wp-content` (empty placeholder, gitignored)
+
+The Caddy matcher is in `docker/caddy/Caddyfile` -- it only triggers for the two production hostnames.
+
+---
+
+## Production Deploy Setup
+
+### Server Prerequisites
+
+1. Docker Engine with Compose v2
+2. Git
+3. The repository cloned at `/home/website` (or adjust `deploy.yml`)
+4. A `.env` file with production values
+
+### First Deploy
+
+```bash
+git clone https://github.com/armbian/armbian-site.git /home/website
+cd /home/website
+cp .env.example .env
+# Fill in POSTGRES_PASSWORD, PAYLOAD_SECRET, WWW_HOSTNAME, etc.
+./manage.sh up     # first time: build from source
+```
+
+### Subsequent Deploys
+
+Handled automatically by the Deploy workflow, or manually:
+
+```bash
+cd /home/website
+git fetch --all --tags
+git checkout v0.5.0
+./manage.sh deploy
+```
 
 ---
 
