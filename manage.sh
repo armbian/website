@@ -120,6 +120,11 @@ cmd_up() {
 # ---------------------------------------------------------------------------
 cmd_deploy() {
   cmd_env_check
+  if command -v git >/dev/null 2>&1 && [[ -d "$SCRIPT_DIR/.git" ]]; then
+    info "Pulling latest changes from repository..."
+    git -C "$SCRIPT_DIR" fetch --all --tags --quiet
+    git -C "$SCRIPT_DIR" pull --ff-only --quiet
+  fi
   info "Pulling latest images from registry..."
   $COMPOSE pull api www
   info "Restarting services..."
