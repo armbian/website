@@ -4,6 +4,14 @@ RUN corepack enable && corepack prepare pnpm@10 --activate
 FROM base AS build
 WORKDIR /app
 
+# Build-time public configuration. Next.js bakes NEXT_PUBLIC_* env vars
+# into the client bundle during `next build`, so they must be set BEFORE
+# the build command runs. Docker-compose passes them via build args.
+ARG NEXT_PUBLIC_SITE_URL
+ARG NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING
+ENV NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
+ENV NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING=${NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING}
+
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY packages/schemas/package.json ./packages/schemas/
 COPY packages/config/package.json ./packages/config/

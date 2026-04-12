@@ -2,9 +2,45 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import { LOCALES, LOCALE_LABELS, LOCALE_COUNTRY_MAP } from '@armbian/config';
+import {
+  LOCALES,
+  LOCALE_LABELS,
+  LOCALE_COUNTRY_MAP,
+  DOMAIN_LOCALE_MAP,
+  DEFAULT_LOCALE,
+} from '@armbian/config';
 import { useRouter, usePathname } from '@/i18n/navigation';
 import { ChevronDown } from 'lucide-react';
+
+/** Reverse map: locale → its dedicated domain (if any). */
+const LOCALE_DOMAIN_MAP = Object.fromEntries(
+  Object.entries(DOMAIN_LOCALE_MAP).map(([domain, loc]) => [loc, domain]),
+) as Record<string, string>;
+const PRIMARY_DOMAIN = 'armbian.com';
+const KNOWN_DOMAINS = new Set([PRIMARY_DOMAIN, ...Object.keys(DOMAIN_LOCALE_MAP)]);
+
+/**
+ * Cross-domain locale switching only makes sense when the same operator
+ * owns every configured Armbian domain (armbian.com / armbian.cn /
+ * armbian.de). Self-hosted forks or test deployments typically own a
+ * subset, so the feature must be opted into via env var — otherwise we
+ * could redirect users off their own instance and onto the production
+ * site. Defaults to off.
+ */
+const DOMAIN_ROUTING_ENABLED =
+  process.env['NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING'] === 'true';
+
+/**
+ * Decide whether the current browser hostname matches one of the known
+ * public Armbian domains. When it doesn't (localhost, IP, custom host),
+ * cross-domain switching is disabled and we fall back to in-place locale
+ * switching via next-intl's router so local development keeps working.
+ */
+function isProductionHost(): boolean {
+  if (typeof window === 'undefined') return false;
+  const host = window.location.hostname.replace(/^www\./, '');
+  return KNOWN_DOMAINS.has(host);
+}
 
 /** Get Twemoji CDN URL for a country code flag */
 function getFlagUrl(countryCode: string): string {
@@ -55,7 +91,35 @@ export function LanguageSwitcher() {
     } catch {
       /* SSR safety */
     }
-    router.replace(pathname, { locale: newLocale });
+
+    // Dev / custom host OR operator hasn't opted into multi-domain
+    // routing: there is no other real domain to jump to, so always keep
+    // the user on the current host and let next-intl swap the locale via
+    // `/<newLocale>` prefixes.
+    if (!DOMAIN_ROUTING_ENABLED || !isProductionHost()) {
+      router.replace(pathname, { locale: newLocale });
+      return;
+    }
+
+    // Production: compute the target domain for the new locale. Locale-
+    // forced domains (armbian.cn, armbian.de) own a single locale each;
+    // every other locale lives on the primary armbian.com.
+    const targetDomain = LOCALE_DOMAIN_MAP[newLocale] ?? PRIMARY_DOMAIN;
+    const currentHost = window.location.hostname.replace(/^www\./, '');
+
+    if (targetDomain === currentHost) {
+      // Same domain — use the next-intl router so we keep SPA navigation.
+      router.replace(pathname, { locale: newLocale });
+      return;
+    }
+
+    // Cross-domain switch: compose an absolute URL ourselves. The primary
+    // domain keeps a `/<locale>` prefix for anything that is not the
+    // default locale; forced domains always live at the root.
+    const prefix =
+      targetDomain === PRIMARY_DOMAIN && newLocale !== DEFAULT_LOCALE ? `/${newLocale}` : '';
+    const target = `https://${targetDomain}${prefix}${pathname === '/' ? '' : pathname}`;
+    window.location.assign(target);
   }
 
   return (
