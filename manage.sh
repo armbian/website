@@ -120,12 +120,6 @@ cmd_up() {
 # ---------------------------------------------------------------------------
 cmd_deploy() {
   cmd_env_check
-  # GHCR authentication — required for private repos. The token is read
-  # from GHCR_TOKEN env var (set in .env or exported in the shell).
-  if [[ -n "${GHCR_TOKEN:-}" ]]; then
-    info "Logging into GitHub Container Registry..."
-    echo "$GHCR_TOKEN" | docker login ghcr.io -u armbian --password-stdin 2>/dev/null
-  fi
   info "Pulling latest images from registry..."
   $COMPOSE pull api www
   info "Restarting services..."

@@ -45,20 +45,17 @@ jobs:
           [ -z "${{ secrets.DEPLOY_HOST }}" ] && missing="$missing DEPLOY_HOST"
           [ -z "${{ secrets.DEPLOY_USER }}" ] && missing="$missing DEPLOY_USER"
           [ -z "${{ secrets.DEPLOY_KEY }}" ]  && missing="$missing DEPLOY_KEY"
-          [ -z "${{ secrets.GHCR_TOKEN }}" ]  && missing="$missing GHCR_TOKEN"
           if [ -n "$missing" ]; then
             echo "::error::Missing required secrets:$missing. Configure them in Settings > Secrets > Actions."
             exit 1
           fi
 
       - name: Deploy via SSH
-        id: ssh
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
-          envs: GHCR_TOKEN
           script: |
             set -euo pipefail
             TAG="${{ steps.tag.outputs.ref }}"
@@ -68,13 +65,10 @@ jobs:
             git fetch --all --tags --quiet
             git checkout "$TAG" --quiet
 
-            echo "==> Pulling images from GHCR"
-            export GHCR_TOKEN="${GHCR_TOKEN}"
+            echo "==> Deploying"
             ./manage.sh deploy
 
             echo "==> Deploy complete"
-        env:
-          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
 
       - name: Post-deploy health check
         uses: appleboy/ssh-action@v1
@@ -87,7 +81,6 @@ jobs:
             STATUS=$(./manage.sh status 2>&1)
             echo "$STATUS"
             if echo "$STATUS" | grep -q "unhealthy\|not running"; then
-              echo "::error::One or more services are unhealthy after deploy."
               exit 1
             fi
 
