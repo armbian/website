@@ -79,9 +79,6 @@ jobs:
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "| Check | Result |" >> "$GITHUB_STEP_SUMMARY"
           echo "|-------|--------|" >> "$GITHUB_STEP_SUMMARY"
-          for step in typecheck test format i18n; do
-            eval "outcome=\${{ steps.${step}.outcome }}"
-          done
           echo "| Typecheck | ${{ steps.typecheck.outcome == 'success' && 'Passed' || steps.typecheck.outcome == 'skipped' && 'Skipped' || '**Failed**' }} |" >> "$GITHUB_STEP_SUMMARY"
           echo "| Test | ${{ steps.test.outcome == 'success' && 'Passed' || steps.test.outcome == 'skipped' && 'Skipped' || '**Failed**' }} |" >> "$GITHUB_STEP_SUMMARY"
           echo "| Format | ${{ steps.format.outcome == 'success' && 'Passed' || steps.format.outcome == 'skipped' && 'Skipped' || '**Failed**' }} |" >> "$GITHUB_STEP_SUMMARY"
