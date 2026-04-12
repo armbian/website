@@ -51,19 +51,6 @@ jobs:
             exit 1
           fi
 
-      - name: Verify image exists in GHCR
-        run: |
-          TAG="${{ steps.tag.outputs.ref }}"
-          VERSION="${TAG#v}"
-          echo "Checking ghcr.io/armbian/website/api:${VERSION} ..."
-          if ! docker buildx imagetools inspect "ghcr.io/armbian/website/api:${VERSION}" >/dev/null 2>&1; then
-            echo "::error::Image ghcr.io/armbian/website/api:${VERSION} not found. Run the Release workflow first."
-            exit 1
-          fi
-          echo "::notice title=Images verified::api:${VERSION} and www:${VERSION} found in GHCR"
-        env:
-          DOCKER_CLI_EXPERIMENTAL: enabled
-
       - name: Deploy via SSH
         id: ssh
         uses: appleboy/ssh-action@v1

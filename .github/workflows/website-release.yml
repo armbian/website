@@ -129,6 +129,7 @@ jobs:
           build-args: |
             NEXT_PUBLIC_SITE_URL=https://www.armbian.com
             NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING=true
+            NEXT_PUBLIC_PRIMARY_DOMAIN=armbian.com
           cache-from: type=gha,scope=${{ matrix.image }}
           cache-to: type=gha,scope=${{ matrix.image }},mode=max
 
