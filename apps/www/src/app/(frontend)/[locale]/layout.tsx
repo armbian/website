@@ -38,7 +38,7 @@ export async function generateMetadata({
   alternates['x-default'] = '/';
 
   return {
-    metadataBase: new URL(process.env['NEXT_PUBLIC_SITE_URL'] ?? 'https://www.armbian.com'),
+    metadataBase: new URL(process.env['NEXT_PUBLIC_SITE_URL'] || 'https://www.armbian.com'),
     title: {
       template: '%s | Armbian',
       default: title,
