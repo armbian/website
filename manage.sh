@@ -122,7 +122,7 @@ cmd_deploy() {
   cmd_env_check
   if command -v git >/dev/null 2>&1 && [[ -d "$SCRIPT_DIR/.git" ]]; then
     info "Pulling latest changes from repository..."
-    git -C "$SCRIPT_DIR" fetch --all --tags --quiet
+    git -C "$SCRIPT_DIR" fetch --all --tags --force --quiet
     # Only pull if on a branch (skip on detached HEAD from tag checkout).
     if git -C "$SCRIPT_DIR" symbolic-ref HEAD >/dev/null 2>&1; then
       git -C "$SCRIPT_DIR" pull --ff-only --quiet
