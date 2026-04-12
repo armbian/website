@@ -1066,11 +1066,6 @@
   },
   {
     "board_id": "__page__",
-    "canonical": "/team",
-    "legacy": ["/authors"]
-  },
-  {
-    "board_id": "__page__",
     "canonical": "https://docs.armbian.com",
     "legacy": ["/kernel"]
   },
