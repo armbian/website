@@ -9,8 +9,10 @@ WORKDIR /app
 # the build command runs. Docker-compose passes them via build args.
 ARG NEXT_PUBLIC_SITE_URL
 ARG NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING
+ARG NEXT_PUBLIC_PRIMARY_DOMAIN
 ENV NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
 ENV NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING=${NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING}
+ENV NEXT_PUBLIC_PRIMARY_DOMAIN=${NEXT_PUBLIC_PRIMARY_DOMAIN}
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY packages/schemas/package.json ./packages/schemas/

@@ -48,6 +48,7 @@ services:
       args:
         NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-}
         NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING: ${NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING:-false}
+        NEXT_PUBLIC_PRIMARY_DOMAIN: ${NEXT_PUBLIC_PRIMARY_DOMAIN:-armbian.com}
     restart: unless-stopped
     environment:
       - NODE_ENV=production
@@ -98,7 +99,7 @@ services:
       api:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost/"]
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:2019/config/"]
       interval: 10s
       timeout: 5s
       retries: 5

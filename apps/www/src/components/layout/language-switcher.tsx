@@ -16,7 +16,7 @@ import { ChevronDown } from 'lucide-react';
 const LOCALE_DOMAIN_MAP = Object.fromEntries(
   Object.entries(DOMAIN_LOCALE_MAP).map(([domain, loc]) => [loc, domain]),
 ) as Record<string, string>;
-const PRIMARY_DOMAIN = 'armbian.com';
+const PRIMARY_DOMAIN = process.env['NEXT_PUBLIC_PRIMARY_DOMAIN'] ?? 'armbian.com';
 const KNOWN_DOMAINS = new Set([PRIMARY_DOMAIN, ...Object.keys(DOMAIN_LOCALE_MAP)]);
 
 /**
@@ -113,11 +113,11 @@ export function LanguageSwitcher() {
       return;
     }
 
-    // Cross-domain switch: compose an absolute URL ourselves. The primary
-    // domain keeps a `/<locale>` prefix for anything that is not the
-    // default locale; forced domains always live at the root.
-    const prefix =
-      targetDomain === PRIMARY_DOMAIN && newLocale !== DEFAULT_LOCALE ? `/${newLocale}` : '';
+    // Cross-domain switch: compose an absolute URL ourselves. Each
+    // domain has a default locale served at the root — every other
+    // locale needs a `/<locale>` prefix.
+    const domainDefault = DOMAIN_LOCALE_MAP[targetDomain] ?? DEFAULT_LOCALE;
+    const prefix = newLocale !== domainDefault ? `/${newLocale}` : '';
     const target = `https://${targetDomain}${prefix}${pathname === '/' ? '' : pathname}`;
     window.location.assign(target);
   }

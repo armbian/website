@@ -1,24 +1,29 @@
 import { defineRouting } from 'next-intl/routing';
 import { LOCALES, DEFAULT_LOCALE, DOMAIN_LOCALE_MAP } from '@armbian/config';
 
-/**
- * Country-TLD domains force a single locale on every page served there
- * (e.g. armbian.cn always renders Chinese). The main armbian.com keeps
- * the default English locale and lets every other translation be reached
- * via `/<locale>` prefixes.
- */
-const forcedDomains = Object.entries(DOMAIN_LOCALE_MAP).map(([domain, locale]) => ({
-  domain,
-  defaultLocale: locale,
-  locales: [locale],
-}));
+const DOMAIN_ROUTING_ENABLED =
+  process.env['NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING'] === 'true';
 
-export const routing = defineRouting({
-  locales: [...LOCALES],
+const primaryDomain = process.env['NEXT_PUBLIC_PRIMARY_DOMAIN'] ?? 'armbian.com';
+
+const baseConfig = {
+  locales: [...LOCALES] as const,
   defaultLocale: DEFAULT_LOCALE,
-  localePrefix: 'as-needed',
-  domains: [
-    { domain: 'armbian.com', defaultLocale: DEFAULT_LOCALE, locales: [...LOCALES] },
-    ...forcedDomains,
-  ],
-});
+  localePrefix: 'as-needed' as const,
+};
+
+export const routing = DOMAIN_ROUTING_ENABLED
+  ? defineRouting({
+      ...baseConfig,
+      domains: [
+        { domain: primaryDomain, defaultLocale: DEFAULT_LOCALE, locales: [...LOCALES] },
+        ...Object.entries(DOMAIN_LOCALE_MAP)
+          .filter(([domain]) => domain !== primaryDomain)
+          .map(([domain, locale]) => ({
+            domain,
+            defaultLocale: locale as (typeof LOCALES)[number],
+            locales: [locale as (typeof LOCALES)[number]],
+          })),
+      ],
+    })
+  : defineRouting(baseConfig);
