@@ -1,0 +1,118 @@
+name: "Website: Deploy to production"
+
+on:
+  workflow_run:
+    workflows: ["Website: Release (tag)"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to deploy (e.g. v0.4.0)'
+        required: true
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to VPS
+    runs-on: ubuntu-latest
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+    steps:
+      - name: Resolve target version
+        id: tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ github.event.inputs.tag }}"
+          else
+            TAG="${{ github.event.workflow_run.head_branch }}"
+          fi
+
+          if [ -z "$TAG" ]; then
+            echo "::error::Could not resolve a target tag. For manual dispatch, provide a tag name."
+            exit 1
+          fi
+
+          echo "ref=$TAG" >> "$GITHUB_OUTPUT"
+          echo "::notice title=Deploy target::$TAG"
+
+      - name: Verify secrets are configured
+        run: |
+          missing=""
+          [ -z "${{ secrets.DEPLOY_HOST }}" ] && missing="$missing DEPLOY_HOST"
+          [ -z "${{ secrets.DEPLOY_USER }}" ] && missing="$missing DEPLOY_USER"
+          [ -z "${{ secrets.DEPLOY_KEY }}" ]  && missing="$missing DEPLOY_KEY"
+          [ -z "${{ secrets.GHCR_TOKEN }}" ]  && missing="$missing GHCR_TOKEN"
+          if [ -n "$missing" ]; then
+            echo "::error::Missing required secrets:$missing. Configure them in Settings > Secrets > Actions."
+            exit 1
+          fi
+
+      - name: Verify image exists in GHCR
+        run: |
+          TAG="${{ steps.tag.outputs.ref }}"
+          VERSION="${TAG#v}"
+          echo "Checking ghcr.io/armbian/website/api:${VERSION} ..."
+          if ! docker buildx imagetools inspect "ghcr.io/armbian/website/api:${VERSION}" >/dev/null 2>&1; then
+            echo "::error::Image ghcr.io/armbian/website/api:${VERSION} not found. Run the Release workflow first."
+            exit 1
+          fi
+          echo "::notice title=Images verified::api:${VERSION} and www:${VERSION} found in GHCR"
+        env:
+          DOCKER_CLI_EXPERIMENTAL: enabled
+
+      - name: Deploy via SSH
+        id: ssh
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          envs: GHCR_TOKEN
+          script: |
+            set -euo pipefail
+            TAG="${{ steps.tag.outputs.ref }}"
+
+            echo "==> Switching to $TAG"
+            cd /home/website
+            git fetch --all --tags --quiet
+            git checkout "$TAG" --quiet
+
+            echo "==> Pulling images from GHCR"
+            export GHCR_TOKEN="${GHCR_TOKEN}"
+            ./manage.sh deploy
+
+            echo "==> Deploy complete"
+        env:
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Post-deploy health check
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            cd /home/website
+            STATUS=$(./manage.sh status 2>&1)
+            echo "$STATUS"
+            if echo "$STATUS" | grep -q "unhealthy\|not running"; then
+              echo "::error::One or more services are unhealthy after deploy."
+              exit 1
+            fi
+
+      - name: Deploy summary
+        if: always()
+        run: |
+          TAG="${{ steps.tag.outputs.ref }}"
+
+          echo "## Production deploy" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Property | Value |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|----------|-------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Version | \`$TAG\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Status | **${{ job.status }}** |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Trigger | ${{ github.event_name }} |" >> "$GITHUB_STEP_SUMMARY"

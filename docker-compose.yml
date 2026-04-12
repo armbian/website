@@ -1,5 +1,6 @@
 services:
   api:
+    image: ghcr.io/armbian/website/api:latest
     build:
       context: .
       dockerfile: apps/api/Dockerfile
@@ -40,9 +41,13 @@ services:
       start_period: 10s
 
   www:
+    image: ghcr.io/armbian/website/www:latest
     build:
       context: .
       dockerfile: apps/www/Dockerfile
+      args:
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-}
+        NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING: ${NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING:-false}
     restart: unless-stopped
     environment:
       - NODE_ENV=production
@@ -79,6 +84,10 @@ services:
       - caddy-snippets:/etc/caddy/snippets:ro
       - caddy-data:/data
       - caddy-config:/config
+      # Legacy wp-content (optional). Defaults to the empty
+      # legacy/wp-content placeholder bundled in the repo so nothing
+      # breaks when WP_CONTENT_DIR is unset.
+      - ${WP_CONTENT_DIR:-./legacy/wp-content}:/srv/wp-content:ro
     environment:
       - WWW_HOSTNAME=${WWW_HOSTNAME:-:80}
       - API_HOSTNAME=${API_HOSTNAME:-:8080}

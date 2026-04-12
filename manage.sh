@@ -116,6 +116,26 @@ cmd_up() {
 }
 
 # ---------------------------------------------------------------------------
+# cmd: deploy — pull pre-built images from GHCR and restart
+# ---------------------------------------------------------------------------
+cmd_deploy() {
+  cmd_env_check
+  # GHCR authentication — required for private repos. The token is read
+  # from GHCR_TOKEN env var (set in .env or exported in the shell).
+  if [[ -n "${GHCR_TOKEN:-}" ]]; then
+    info "Logging into GitHub Container Registry..."
+    echo "$GHCR_TOKEN" | docker login ghcr.io -u armbian --password-stdin 2>/dev/null
+  fi
+  info "Pulling latest images from registry..."
+  $COMPOSE pull api www
+  info "Restarting services..."
+  $COMPOSE up -d
+  info "Waiting for health checks..."
+  _wait_healthy 120
+  cmd_status
+}
+
+# ---------------------------------------------------------------------------
 # cmd: down
 # ---------------------------------------------------------------------------
 cmd_down() {
@@ -439,13 +459,35 @@ cmd_env_check() {
 # ---------------------------------------------------------------------------
 
 _load_env_vars() {
-  if [[ -f "$SCRIPT_DIR/.env" ]]; then
-    # Export only valid KEY=VALUE lines, skip comments and blanks
-    set -o allexport
-    # shellcheck source=/dev/null
-    source <(grep -E '^[A-Za-z_][A-Za-z0-9_]*=' "$SCRIPT_DIR/.env" | grep -v '^#')
-    set +o allexport
+  if [[ ! -f "$SCRIPT_DIR/.env" ]]; then
+    return
   fi
+  # Parse KEY=VALUE lines directly instead of sourcing via bash. This is
+  # resilient to values that contain spaces or commas (WWW_HOSTNAME,
+  # CORS_ORIGINS), which bash would otherwise split into separate commands
+  # when the value is not quoted. Also tolerates CRLF line endings and a
+  # UTF-8 BOM on the first line (common when .env is scp'd from Windows).
+  local line key value first=1
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    # Strip trailing CR from CRLF-terminated files.
+    line="${line%$'\r'}"
+    # Strip UTF-8 BOM on the first line only.
+    if (( first )); then
+      line="${line#$'\xef\xbb\xbf'}"
+      first=0
+    fi
+    [[ "$line" =~ ^[[:space:]]*# ]] && continue
+    [[ -z "$line" ]] && continue
+    if [[ "$line" =~ ^([A-Za-z_][A-Za-z0-9_]*)=(.*)$ ]]; then
+      key="${BASH_REMATCH[1]}"
+      value="${BASH_REMATCH[2]}"
+      # Strip matching surrounding single or double quotes.
+      if [[ "$value" =~ ^\"(.*)\"$ ]] || [[ "$value" =~ ^\'(.*)\'$ ]]; then
+        value="${BASH_REMATCH[1]}"
+      fi
+      export "$key=$value"
+    fi
+  done < "$SCRIPT_DIR/.env"
 }
 
 _validate_service() {
@@ -617,6 +659,7 @@ cmd_help() {
   echo ""
   echo -e "${BOLD}Commands:${RESET}"
   echo -e "  ${CYAN}up${RESET}                   Build and start all services, wait for health checks"
+  echo -e "  ${CYAN}deploy${RESET}               Pull pre-built images from GHCR and restart"
   echo -e "  ${CYAN}down${RESET}                 Stop all services"
   echo -e "  ${CYAN}reset${RESET}                Stop all, wipe volumes (DB + cache), rebuild from scratch"
   echo -e "  ${CYAN}rebuild [service]${RESET}    Rebuild a specific service (www, api) or all if unspecified"
@@ -628,7 +671,7 @@ cmd_help() {
   echo -e "  ${CYAN}db:backup${RESET}            Dump the database to backups/ with a timestamp"
   echo -e "  ${CYAN}db:restore <file>${RESET}    Restore a database backup file (.sql or .sql.gz)"
   echo -e "  ${CYAN}pnpm <args...>${RESET}       Run pnpm commands inside Docker (add/remove/update packages)"
-  echo -e "  ${CYAN}quality [check]${RESET}      Run lint + typecheck + test (check: all|lint|typecheck|test|format)"
+  echo -e "  ${CYAN}quality [check]${RESET}      Run typecheck + test (check: all|lint|typecheck|test|format)"
   echo -e "  ${CYAN}cache:clean${RESET}          Wipe ./cache (pnpm store + workspace node_modules)"
   echo -e "  ${CYAN}clean${RESET}                Remove Docker images, volumes, and build cache (with confirmation)"
   echo -e "  ${CYAN}env${RESET}                  Validate .env file and required variables"
@@ -636,13 +679,14 @@ cmd_help() {
   echo ""
   echo -e "${BOLD}Examples:${RESET}"
   echo "  ./manage.sh up"
+  echo "  ./manage.sh deploy              # pull pre-built images + restart"
   echo "  ./manage.sh rebuild www"
   echo "  ./manage.sh logs api"
   echo "  ./manage.sh db:backup"
   echo "  ./manage.sh db:restore backups/payload_20260101_120000.sql.gz"
   echo "  ./manage.sh shell api"
-  echo "  ./manage.sh quality           # run lint + typecheck + test"
-  echo "  ./manage.sh quality typecheck # run only typecheck"
+  echo "  ./manage.sh quality             # run typecheck + test"
+  echo "  ./manage.sh quality typecheck   # run only typecheck"
   echo ""
 }
 
@@ -656,6 +700,7 @@ shift || true
 
 case "$COMMAND" in
   up)          banner; cmd_up ;;
+  deploy)      banner; cmd_deploy ;;
   down)        banner; cmd_down ;;
   reset)       banner; cmd_reset ;;
   rebuild)     banner; cmd_rebuild "$@" ;;

@@ -1,0 +1,90 @@
+name: "Website: Quality checks (push/PR)"
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality:
+    name: Typecheck & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify lockfile is in sync
+        run: |
+          if ! git diff --exit-code pnpm-lock.yaml; then
+            echo "::error::pnpm-lock.yaml is out of sync with package.json. Run 'pnpm install' locally and commit the lockfile."
+            exit 1
+          fi
+
+      - name: Typecheck
+        id: typecheck
+        run: pnpm typecheck
+
+      - name: Test
+        id: test
+        if: always() && steps.typecheck.outcome != 'cancelled'
+        run: pnpm test
+
+      - name: Format check
+        id: format
+        if: always() && steps.typecheck.outcome != 'cancelled'
+        run: |
+          if ! pnpm format:check; then
+            echo "::warning::Code formatting issues detected. Run 'pnpm format' locally to fix."
+            exit 1
+          fi
+
+      - name: Check i18n key parity
+        id: i18n
+        if: always() && steps.typecheck.outcome != 'cancelled'
+        run: |
+          node -e "
+            const fs = require('fs');
+            const path = 'apps/www/src/messages';
+            const en = Object.keys(JSON.parse(fs.readFileSync(path + '/en.json', 'utf8')));
+            const locales = fs.readdirSync(path).filter(f => f.endsWith('.json') && f !== 'en.json');
+            let ok = true;
+            for (const file of locales) {
+              const keys = Object.keys(JSON.parse(fs.readFileSync(path + '/' + file, 'utf8')));
+              const missing = en.filter(k => !keys.includes(k));
+              const extra = keys.filter(k => !en.includes(k));
+              if (missing.length) { console.log('::warning file=' + path + '/' + file + '::Missing top-level keys: ' + missing.join(', ')); ok = false; }
+              if (extra.length) { console.log('::warning file=' + path + '/' + file + '::Extra top-level keys not in en.json: ' + extra.join(', ')); }
+            }
+            if (!ok) { console.log('::error::Some locale files are missing keys present in en.json'); process.exit(1); }
+            console.log('All ' + locales.length + ' locale files match en.json structure');
+          "
+
+      - name: Job summary
+        if: always()
+        run: |
+          echo "## Quality Report" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Check | Result |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|-------|--------|" >> "$GITHUB_STEP_SUMMARY"
+          for step in typecheck test format i18n; do
+            eval "outcome=\${{ steps.${step}.outcome }}"
+          done
+          echo "| Typecheck | ${{ steps.typecheck.outcome == 'success' && 'Passed' || steps.typecheck.outcome == 'skipped' && 'Skipped' || '**Failed**' }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Test | ${{ steps.test.outcome == 'success' && 'Passed' || steps.test.outcome == 'skipped' && 'Skipped' || '**Failed**' }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Format | ${{ steps.format.outcome == 'success' && 'Passed' || steps.format.outcome == 'skipped' && 'Skipped' || '**Failed**' }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| i18n parity | ${{ steps.i18n.outcome == 'success' && 'Passed' || steps.i18n.outcome == 'skipped' && 'Skipped' || '**Failed**' }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Ref:** \`${GITHUB_REF_NAME}\` | **Commit:** \`${GITHUB_SHA::8}\`" >> "$GITHUB_STEP_SUMMARY"

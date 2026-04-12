@@ -1,0 +1,177 @@
+name: "Website: Release (tag)"
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+*'
+
+permissions:
+  contents: write
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  # ── Pre-flight checks ──────────────────────────────────────────
+  preflight:
+    name: Pre-flight checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate tag format
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          if ! [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
+            echo "::error::Tag '$TAG' does not follow semver format (expected vX.Y.Z or vX.Y.Z-label)"
+            exit 1
+          fi
+          echo "::notice title=Release tag::$TAG"
+
+      - name: Verify tag is on main
+        run: |
+          TAG_COMMIT=$(git rev-list -n 1 "$GITHUB_REF_NAME")
+          if ! git merge-base --is-ancestor "$TAG_COMMIT" origin/main 2>/dev/null; then
+            echo "::warning::Tag $GITHUB_REF_NAME points to a commit not on main. This may be intentional (hotfix branch)."
+          fi
+
+      - name: Check no duplicate release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "::error::A GitHub Release for $GITHUB_REF_NAME already exists. Delete it first or use a new tag."
+            exit 1
+          fi
+
+  # ── Quality gate ────────────────────────────────────────────────
+  ci:
+    name: Quality gate
+    needs: preflight
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
+
+  # ── Build Docker images ─────────────────────────────────────────
+  build:
+    name: Build ${{ matrix.name }}
+    needs: ci
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: API
+            image: ghcr.io/armbian/website/api
+            dockerfile: apps/api/Dockerfile
+          - name: WWW
+            image: ghcr.io/armbian/website/www
+            dockerfile: apps/www/Dockerfile
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Setup Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ matrix.image }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}},enable=${{ !contains(github.ref, '-') }}
+            type=raw,value=latest,enable=${{ !contains(github.ref, '-') }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            NEXT_PUBLIC_SITE_URL=https://www.armbian.com
+            NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING=true
+          cache-from: type=gha,scope=${{ matrix.image }}
+          cache-to: type=gha,scope=${{ matrix.image }},mode=max
+
+      - name: Verify image was pushed
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          if ! docker buildx imagetools inspect "${{ matrix.image }}:${TAG}" >/dev/null 2>&1; then
+            echo "::error::Image ${{ matrix.image }}:${TAG} was not found in GHCR after push."
+            exit 1
+          fi
+          echo "::notice title=${{ matrix.name }} image::Pushed ${{ matrix.image }}:${TAG} (amd64 + arm64)"
+
+      - name: Image summary
+        run: |
+          echo "## Docker image: ${{ matrix.name }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Property | Value |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|----------|-------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Image | \`${{ matrix.image }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Tags | \`${{ steps.meta.outputs.tags }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Platforms | linux/amd64, linux/arm64 |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Dockerfile | \`${{ matrix.dockerfile }}\` |" >> "$GITHUB_STEP_SUMMARY"
+
+  # ── GitHub Release ──────────────────────────────────────────────
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+
+      - name: Release summary
+        run: |
+          echo "## Release: ${{ github.ref_name }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Published at: https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}" >> "$GITHUB_STEP_SUMMARY"

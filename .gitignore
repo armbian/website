@@ -43,3 +43,9 @@ apps/api/data/.cache/
 
 # Database backups
 backups/
+
+# Legacy wp-content served by Caddy on armbian.com. Bind-mounted into
+# the caddy container; files are dropped in by the operator, never
+# committed to the repo. Docker auto-creates the directory on first
+# boot if missing.
+legacy/

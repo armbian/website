@@ -16,6 +16,16 @@
 	# Glob pattern tolerates a missing file on first boot.
 	import /etc/caddy/snippets/*.caddy
 
+	# Legacy /wp-content served only on armbian.com + www.armbian.com.
+	@wpContent {
+		path /wp-content/*
+		host www.armbian.com armbian.com
+	}
+	handle @wpContent {
+		root * /srv
+		file_server
+	}
+
 	reverse_proxy www:3000
 
 	log {
