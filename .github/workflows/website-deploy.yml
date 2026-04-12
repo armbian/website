@@ -77,7 +77,7 @@ jobs:
             TAG="${{ steps.tag.outputs.ref }}"
 
             echo "==> Switching to $TAG"
-            cd /home/website
+            cd /home/website/armbian
             git fetch --all --tags --quiet
             git checkout "$TAG" --quiet
 
@@ -96,7 +96,7 @@ jobs:
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
-            cd /home/website
+            cd /home/website/armbian
             STATUS=$(./manage.sh status 2>&1)
             echo "$STATUS"
             if echo "$STATUS" | grep -q "unhealthy\|not running"; then
