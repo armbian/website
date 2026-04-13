@@ -264,7 +264,8 @@
     "consultation_badge": "Płatność z góry",
     "consultation_desc": "Indywidualna płatna konsultacja w zakresie integracji komercyjnych, niestandardowych buildów i wsparcia enterprise. Dostępne dla wszystkich.",
     "consultation_cta": "Zarezerwuj konsultację",
-    "form_captcha_error": "Ukończ reCAPTCHA przed wysłaniem formularza."
+    "form_captcha_error": "Ukończ reCAPTCHA przed wysłaniem formularza.",
+    "form_unavailable": "Formularz kontaktowy jest tymczasowo niedostępny. Napisz do nas na {email}."
   },
   "vendors": {
     "title": "Producenci",

@@ -155,6 +155,17 @@ export class ArmbianApiClient {
     return this.fetch('/api/v1/stats');
   }
 
+  async getContactFormTokens(): Promise<{
+    data: {
+      xnQsjsdp: string;
+      xmIwtLD: string;
+      actionType: string;
+      recaptchaSiteKey: string;
+    };
+  }> {
+    return this.fetch('/api/v1/contact-form-tokens');
+  }
+
   private async fetch<T>(path: string): Promise<T> {
     const url = `${this.baseUrl}${path}`;
     const controller = new AbortController();

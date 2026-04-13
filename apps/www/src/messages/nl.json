@@ -264,7 +264,8 @@
     "consultation_badge": "Vooruitbetaling",
     "consultation_desc": "Individuele betaalde consultatie voor commerciële integraties, aangepaste builds en enterprise-ondersteuning. Beschikbaar voor iedereen.",
     "consultation_cta": "Consultatie boeken",
-    "form_captcha_error": "Voltooi de reCAPTCHA voordat je het formulier verstuurt."
+    "form_captcha_error": "Voltooi de reCAPTCHA voordat je het formulier verstuurt.",
+    "form_unavailable": "Het contactformulier is tijdelijk niet beschikbaar. Stuur ons een e-mail op {email}."
   },
   "vendors": {
     "title": "Fabrikanten",

@@ -229,6 +229,31 @@ export class SyncService {
       this.log.debug('GitHub stars fetch failed — keeping previous value');
     }
 
+    // Fetch Zoho Bigin contact form tokens so the frontend never uses stale values
+    try {
+      const formRes = await fetch(ARMBIAN_URLS.BIGIN_FORM_PAGE, {
+        signal: AbortSignal.timeout(10_000),
+      });
+      if (formRes.ok) {
+        const html = await formRes.text();
+        const xn = html.match(/name='xnQsjsdp' value='([^']+)'/)?.[1];
+        const xm = html.match(/name='xmIwtLD' value='([^']+)'/)?.[1];
+        const at = html.match(/name='actionType' value='([^']+)'/)?.[1];
+        const rc = html.match(/data-sitekey='([^']+)'/)?.[1];
+        if (xn && xm && at && rc) {
+          this.store.metadata.contactFormTokens = {
+            xnQsjsdp: xn,
+            xmIwtLD: xm,
+            actionType: at,
+            recaptchaSiteKey: rc,
+          };
+          this.log.info('Contact form tokens refreshed');
+        }
+      }
+    } catch {
+      this.log.debug('Contact form token fetch failed — keeping previous value');
+    }
+
     this.lastSyncTime = new Date();
 
     // Persist to disk for fast startup next time

@@ -264,7 +264,8 @@
     "consultation_badge": "Pago por adelantado",
     "consultation_desc": "Consulta individual de pago para integraciones comerciales, builds personalizados y soporte empresarial. Disponible para todos.",
     "consultation_cta": "Reservar consulta",
-    "form_captcha_error": "Por favor, completa el reCAPTCHA antes de enviar el formulario."
+    "form_captcha_error": "Por favor, completa el reCAPTCHA antes de enviar el formulario.",
+    "form_unavailable": "El formulario de contacto no está disponible temporalmente. Envíenos un correo a {email}."
   },
   "vendors": {
     "title": "Fabricantes",

@@ -264,7 +264,8 @@
     "consultation_badge": "前払い",
     "consultation_desc": "商用統合、カスタムビルド、エンタープライズサポートのための個別有料コンサルティング。どなたでもご利用いただけます。",
     "consultation_cta": "コンサルティングを予約",
-    "form_captcha_error": "フォームを送信する前にreCAPTCHAを完了してください。"
+    "form_captcha_error": "フォームを送信する前にreCAPTCHAを完了してください。",
+    "form_unavailable": "お問い合わせフォームは一時的に利用できません。{email} までメールでご連絡ください。"
   },
   "vendors": {
     "title": "メーカー",

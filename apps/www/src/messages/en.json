@@ -316,7 +316,8 @@
     "form_submit": "Send Message",
     "form_success_title": "Message Sent",
     "form_success_message": "Thanks for reaching out. We'll get back to you shortly.",
-    "form_captcha_error": "Please complete the reCAPTCHA challenge before submitting."
+    "form_captcha_error": "Please complete the reCAPTCHA challenge before submitting.",
+    "form_unavailable": "Contact form is temporarily unavailable. Please email us at {email}."
   },
   "vendors": {
     "title": "Vendors",

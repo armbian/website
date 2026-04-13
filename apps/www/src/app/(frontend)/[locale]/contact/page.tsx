@@ -1,5 +1,6 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ARMBIAN_URLS } from '@armbian/config';
+import { getApiClient } from '@/lib/api.server';
 import { PageHero } from '@/components/layout/page-hero';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { ContactForm } from '@/components/contact/contact-form';
@@ -66,6 +67,21 @@ export default async function ContactPage({ params }: Props) {
     /* CMS unavailable, use fallbacks */
   }
 
+  // Fetch Zoho Bigin form tokens from the API (refreshed every sync)
+  let formTokens: {
+    xnQsjsdp: string;
+    xmIwtLD: string;
+    actionType: string;
+    recaptchaSiteKey: string;
+  } | null = null;
+  try {
+    const api = await getApiClient();
+    const res = await api.getContactFormTokens();
+    formTokens = res.data;
+  } catch {
+    /* API unavailable — form will be disabled */
+  }
+
   return (
     <div className="min-h-screen">
       <PageHero className="!pb-8">
@@ -99,7 +115,7 @@ export default async function ContactPage({ params }: Props) {
                     </div>
                   </div>
                   <div className="flex-1 flex flex-col">
-                    <ContactForm />
+                    <ContactForm tokens={formTokens} />
                   </div>
                 </div>
               </ScrollReveal>

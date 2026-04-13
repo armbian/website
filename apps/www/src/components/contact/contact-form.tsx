@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, type FormEvent } from 'react';
 import Script from 'next/script';
 import { useTranslations } from 'next-intl';
 import { Send, CheckCircle, Loader2, AlertCircle } from 'lucide-react';
-import { ARMBIAN_URLS, BIGIN_FORM_TOKENS, RECAPTCHA_SITE_KEY } from '@armbian/config';
+import { ARMBIAN_URLS } from '@armbian/config';
 
 // Minimal grecaptcha surface we interact with. The full API is loaded
 // asynchronously by the Google script tag at runtime.
@@ -27,7 +27,16 @@ function isDarkTheme(): boolean {
   return document.documentElement.classList.contains('dark');
 }
 
-export function ContactForm() {
+interface ContactFormProps {
+  tokens: {
+    xnQsjsdp: string;
+    xmIwtLD: string;
+    actionType: string;
+    recaptchaSiteKey: string;
+  } | null;
+}
+
+export function ContactForm({ tokens }: ContactFormProps) {
   const t = useTranslations('contact');
   const [status, setStatus] = useState<'idle' | 'sending' | 'success'>('idle');
   const [captchaError, setCaptchaError] = useState(false);
@@ -57,7 +66,7 @@ export function ContactForm() {
       captchaContainerRef.current.replaceChildren(fresh);
       try {
         widgetIdRef.current = window.grecaptcha.render(fresh, {
-          sitekey: RECAPTCHA_SITE_KEY,
+          sitekey: tokens?.recaptchaSiteKey ?? '',
           theme,
         });
       } catch (err) {
@@ -128,6 +137,19 @@ export function ContactForm() {
     if (status === 'sending') setStatus('success');
   }
 
+  if (!tokens) {
+    return (
+      <div className="py-12 text-center">
+        <div className="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center mx-auto mb-5">
+          <AlertCircle size={28} strokeWidth={1.5} className="text-amber-400" />
+        </div>
+        <p className="text-sm text-[rgb(var(--fg-3))]">
+          {t('form_unavailable', { email: ARMBIAN_URLS.INFO_EMAIL })}
+        </p>
+      </div>
+    );
+  }
+
   if (status === 'success') {
     return (
       <div className="py-12 text-center">
@@ -163,10 +185,10 @@ export function ContactForm() {
         onSubmit={handleSubmit}
         className="space-y-5 flex-1 flex flex-col"
       >
-        <input type="hidden" name="xnQsjsdp" value={BIGIN_FORM_TOKENS.xnQsjsdp} />
+        <input type="hidden" name="xnQsjsdp" value={tokens?.xnQsjsdp ?? ''} />
         <input type="hidden" name="zc_gad" value="" />
-        <input type="hidden" name="xmIwtLD" value={BIGIN_FORM_TOKENS.xmIwtLD} />
-        <input type="hidden" name="actionType" value={BIGIN_FORM_TOKENS.actionType} />
+        <input type="hidden" name="xmIwtLD" value={tokens?.xmIwtLD ?? ''} />
+        <input type="hidden" name="actionType" value={tokens?.actionType ?? ''} />
         <input type="hidden" name="rmsg" value="true" />
         <input type="hidden" name="returnURL" value="null" />
 

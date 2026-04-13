@@ -264,7 +264,8 @@
     "consultation_badge": "预付费",
     "consultation_desc": "一对一付费咨询，涵盖商业集成、定制构建和企业支持。面向所有人开放。",
     "consultation_cta": "预约咨询",
-    "form_captcha_error": "请在提交表单前完成 reCAPTCHA 验证。"
+    "form_captcha_error": "请在提交表单前完成 reCAPTCHA 验证。",
+    "form_unavailable": "联系表单暂时不可用，请发送邮件至 {email}。"
   },
   "vendors": {
     "title": "厂商",

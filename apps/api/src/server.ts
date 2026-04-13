@@ -20,6 +20,7 @@ import { registerHealthRoutes } from './routes/health.js';
 import { registerStatsRoutes } from './routes/stats.js';
 import { registerPageRoutes } from './routes/pages.js';
 import { registerImageRoutes } from './routes/images.js';
+import { registerContactRoutes } from './routes/contact.js';
 import { ImageCache } from './services/image-cache.js';
 
 const PORT = parseInt(process.env['API_PORT'] ?? process.env['PORT'] ?? '3001', 10);
@@ -199,6 +200,7 @@ async function main(): Promise<void> {
   registerStatsRoutes(server);
   registerPageRoutes(server);
   registerImageRoutes(server);
+  registerContactRoutes(server);
 
   // --- Start ---
 

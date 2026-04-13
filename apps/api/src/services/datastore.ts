@@ -10,12 +10,20 @@ import type {
 } from '@armbian/schemas';
 import MiniSearch from 'minisearch';
 
+export interface ContactFormTokens {
+  xnQsjsdp: string;
+  xmIwtLD: string;
+  actionType: string;
+  recaptchaSiteKey: string;
+}
+
 export interface SyncMetadata {
   lastSync: Date | null;
   boardCount: number;
   imageCount: number;
   vendorCount: number;
   githubStars: number | null;
+  contactFormTokens: ContactFormTokens | null;
   sourceStatuses: Record<
     string,
     { status: 'ok' | 'error' | 'stale'; lastFetch: Date | null; error?: string }
@@ -49,6 +57,7 @@ export class DataStore {
     imageCount: 0,
     vendorCount: 0,
     githubStars: null,
+    contactFormTokens: null,
     sourceStatuses: {},
   };
 

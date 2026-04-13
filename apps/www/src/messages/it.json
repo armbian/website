@@ -308,7 +308,8 @@
     "consultation_badge": "A pagamento",
     "consultation_desc": "Consulenza individuale per integrazioni commerciali, build personalizzate e supporto enterprise. Aperta a tutti.",
     "consultation_cta": "Prenota consulenza",
-    "form_captcha_error": "Completa il reCAPTCHA prima di inviare il modulo."
+    "form_captcha_error": "Completa il reCAPTCHA prima di inviare il modulo.",
+    "form_unavailable": "Il modulo di contatto è temporaneamente non disponibile. Scrivici a {email}."
   },
   "vendors": {
     "title": "Produttori",

@@ -264,7 +264,8 @@
     "consultation_badge": "선불",
     "consultation_desc": "상업 통합, 커스텀 빌드 및 엔터프라이즈 지원을 위한 개별 유료 컨설팅. 누구나 이용 가능합니다.",
     "consultation_cta": "컨설팅 예약",
-    "form_captcha_error": "양식을 제출하기 전에 reCAPTCHA를 완료해 주세요."
+    "form_captcha_error": "양식을 제출하기 전에 reCAPTCHA를 완료해 주세요.",
+    "form_unavailable": "문의 양식을 일시적으로 사용할 수 없습니다. {email}로 이메일을 보내주세요."
   },
   "vendors": {
     "title": "제조사",
