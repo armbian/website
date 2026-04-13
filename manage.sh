@@ -134,6 +134,8 @@ cmd_deploy() {
   $COMPOSE up -d
   info "Waiting for health checks..."
   _wait_healthy 120
+  info "Removing unused Docker images..."
+  docker image prune -af --filter "until=168h" 2>/dev/null || true
   cmd_status
 }
 
