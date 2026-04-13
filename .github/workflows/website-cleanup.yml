@@ -1,19 +1,69 @@
-name: "Website: Cleanup old workflow runs"
+name: "Website: Cleanup"
 
 on:
   schedule:
     - cron: "0 3 * * 0" # Every Sunday at 03:00 UTC
   workflow_dispatch:
 
+env:
+  KEEP_TAGS: 10
+  KEEP_IMAGES: 5
+  IMAGE_AGE_DAYS: 30
+
 jobs:
-  cleanup:
-    name: Delete old workflow runs
+  workflow-runs:
+    name: Workflow runs
     runs-on: ubuntu-latest
     steps:
-      - name: Delete workflow runs older than 14 days
+      - name: Delete runs older than 14 days
         uses: Mattraks/delete-workflow-runs@v2
         with:
           token: ${{ github.token }}
           repository: ${{ github.repository }}
           retain_days: 14
           keep_minimum_runs: 3
+
+  tags-and-releases:
+    name: Old tags & releases
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Delete old tags and their releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # List tags sorted by version descending, skip the newest $KEEP_TAGS
+          OLD_TAGS=$(git tag --sort=-version:refname | tail -n +$(( KEEP_TAGS + 1 )))
+
+          if [ -z "$OLD_TAGS" ]; then
+            echo "No tags to delete (keeping last $KEEP_TAGS)"
+            exit 0
+          fi
+
+          for tag in $OLD_TAGS; do
+            echo "Deleting tag $tag"
+            # Delete the GitHub Release if it exists (also deletes release assets)
+            gh release delete "$tag" --yes --cleanup-tag 2>/dev/null || true
+            # Delete the git tag from remote if release didn't clean it up
+            git push origin ":refs/tags/$tag" 2>/dev/null || true
+          done
+
+  docker-images:
+    name: Docker images (GHCR)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image: [api, www]
+    steps:
+      - name: Clean up old container images
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: website/${{ matrix.image }}
+          package-type: container
+          min-versions-to-keep: ${{ env.KEEP_IMAGES }}
+          delete-only-untagged-versions: false
