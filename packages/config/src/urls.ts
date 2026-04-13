@@ -10,10 +10,10 @@
  */
 export const BIGIN_FORM_TOKENS = {
   /** xnQsjsdp — form identity token */
-  xnQsjsdp: '4b101095ef2db02a2c38437ad03463b14ea609c58d774f7bbfb48cc5c062654c',
+  xnQsjsdp: '873aee53a723a271a848de317c7534e4959841a15223cf2500503ee477b2f725',
   /** xmIwtLD — form signature token */
   xmIwtLD:
-    '8f38615d4157bc5814d5217b10a5ab065f0e9fb60f7b58c11965355ce061db9d75c9ce125aa128ba615c4118564959c5',
+    'b7354c824e24c4585da7c0560597b694b48b28dc6217c51c1149b3826954f5d03ab364629f570719e1107f8803f24d12',
   /** actionType — "Contacts" base64-encoded */
   actionType: 'Q29udGFjdHM=',
 } as const;
