@@ -54,13 +54,15 @@ export async function generateMetadata({
       title,
       description,
       locale,
-      images: [{ url: '/armbian-icon.png', width: 1024, height: 1024, alt: 'Armbian' }],
+      images: [
+        { url: '/og-image.png', width: 2000, height: 1050, alt: 'Armbian — Linux for ARM boards' },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: ['/armbian-icon.png'],
+      images: ['/og-image.png'],
     },
   };
 }
