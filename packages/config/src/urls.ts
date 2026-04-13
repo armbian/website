@@ -10,16 +10,16 @@
  */
 export const BIGIN_FORM_TOKENS = {
   /** xnQsjsdp — form identity token */
-  xnQsjsdp: '186a67028d5ca70d52fca2c02d7adaff8e8523ec9f385af05539669a288dcba9',
+  xnQsjsdp: '4b101095ef2db02a2c38437ad03463b14ea609c58d774f7bbfb48cc5c062654c',
   /** xmIwtLD — form signature token */
   xmIwtLD:
-    'e9376129b84a381fd40b781ce9060d4f7013827e6f3c1dcb11c755d4756a7f363f4b086353b6315213bbd9d2f6b46692',
+    '8f38615d4157bc5814d5217b10a5ab065f0e9fb60f7b58c11965355ce061db9d75c9ce125aa128ba615c4118564959c5',
   /** actionType — "Contacts" base64-encoded */
   actionType: 'Q29udGFjdHM=',
 } as const;
 
 /** Public Google reCAPTCHA v2 site key used by the contact form. */
-export const RECAPTCHA_SITE_KEY = '6LdPVaYsAAAAAMQwFsSw4jczXi5_5hrKYcVq8qor';
+export const RECAPTCHA_SITE_KEY = '6LflPxoTAAAAACuIrdeQTm_qyNBFUtS00izOiWcy';
 
 /** External data source URLs */
 export const DATA_SOURCES = {
