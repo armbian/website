@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { KERNEL_BRANCHES } from '@armbian/config';
 import type { ImageFormat, StorageVariant, CompanionFile, DisplayVariant } from '@armbian/schemas';
 import { ScrollReveal } from '@/components/scroll-reveal';
+import { DOWNLOAD_EVENT } from '@/components/board/donation-banner';
 import { Download, Star, ChevronDown } from 'lucide-react';
 import { Monitor, Zap, Server, Package } from 'lucide-react';
 
@@ -33,6 +34,10 @@ interface FormattedImage {
     updated_at: string;
     size_bytes: number;
   };
+}
+
+function fireDownloadEvent() {
+  window.dispatchEvent(new CustomEvent(DOWNLOAD_EVENT));
 }
 
 /** Semantic chip kinds rendered in the per-row extras strip. */
@@ -385,6 +390,7 @@ export function BoardPageDownloads({
                   </div>
                   <a
                     href={img.download.file_url}
+                    onClick={fireDownloadEvent}
                     className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-white text-gray-900 px-4 py-3 text-sm font-bold hover:bg-white/90 transition-all shadow-lg mb-2"
                   >
                     <Download size={16} strokeWidth={2.5} />
@@ -552,6 +558,7 @@ export function BoardPageDownloads({
                             <div className="flex items-center justify-end gap-2.5">
                               <a
                                 href={img.download.file_url}
+                                onClick={fireDownloadEvent}
                                 className="inline-flex items-center gap-1.5 rounded-lg bg-[rgb(var(--brand))] px-3 py-1.5 text-xs font-bold text-white hover:bg-[rgb(var(--brand-hover))] transition-colors shadow-sm"
                               >
                                 <Download size={11} strokeWidth={2.5} />
@@ -715,6 +722,7 @@ export function BoardPageDownloads({
                                 <div className="flex items-center justify-end gap-2.5">
                                   <a
                                     href={img.download.file_url}
+                                    onClick={fireDownloadEvent}
                                     className="inline-flex items-center gap-1.5 rounded-lg bg-[rgb(var(--brand))] px-3 py-1.5 text-xs font-bold text-white hover:bg-[rgb(var(--brand-hover))] transition-colors shadow-sm"
                                   >
                                     <Download size={11} strokeWidth={2.5} />
