@@ -1,0 +1,49 @@
+name: "Website: Trigger data sync"
+
+on:
+  repository_dispatch:
+    types: [sync]
+  workflow_dispatch:
+
+concurrency:
+  group: sync-production
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    name: Sync data on VPS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify secrets are configured
+        run: |
+          missing=""
+          [ -z "${{ secrets.DEPLOY_HOST }}" ] && missing="$missing DEPLOY_HOST"
+          [ -z "${{ secrets.DEPLOY_USER }}" ] && missing="$missing DEPLOY_USER"
+          [ -z "${{ secrets.DEPLOY_KEY }}" ]  && missing="$missing DEPLOY_KEY"
+          if [ -n "$missing" ]; then
+            echo "::error::Missing required secrets:$missing"
+            exit 1
+          fi
+
+      - name: Trigger sync via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            set -euo pipefail
+            cd /home/website/armbian
+            ./manage.sh sync
+            echo "==> Sync complete"
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Data sync" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Property | Value |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|----------|-------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Status | **${{ job.status }}** |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Trigger | ${{ github.event_name }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Source | ${{ github.event.client_payload.repository || 'manual' }} |" >> "$GITHUB_STEP_SUMMARY"
