@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/navigation';
 import { useSearchParams } from 'next/navigation';
 import { SupportBadge } from '@/components/ui/support-badge';
+import { BoardImage } from '@/components/board/board-image';
 import { Pill } from '@/components/ui/pill';
 import { SUPPORT_TIERS } from '@armbian/config';
 import type { BoardSummary, Vendor, SupportTier } from '@armbian/schemas';
@@ -34,60 +35,6 @@ type SortKey = (typeof SORT_OPTIONS)[number];
 const TIER_ORDER = Object.keys(SUPPORT_TIERS).sort(
   (a, b) => SUPPORT_TIERS[a as SupportTier].sortOrder - SUPPORT_TIERS[b as SupportTier].sortOrder,
 ) as SupportTier[];
-
-function BoardImage({ board }: { board: BoardSummary }) {
-  const [failed, setFailed] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-  const imgRef = useRef<HTMLImageElement>(null);
-
-  useEffect(() => {
-    if (imgRef.current?.complete && imgRef.current.naturalWidth > 0) {
-      setLoaded(true);
-    }
-  }, []);
-
-  if (!board.image_url || failed) {
-    return (
-      <>
-        <img
-          src="/armbian-logo-white.png"
-          alt="Armbian"
-          width={120}
-          height={32}
-          className="w-auto h-8 object-contain opacity-20 hidden dark:block"
-        />
-        <img
-          src="/armbian-logo-black.png"
-          alt="Armbian"
-          width={120}
-          height={32}
-          className="w-auto h-8 object-contain opacity-15 block dark:hidden"
-        />
-      </>
-    );
-  }
-
-  return (
-    <>
-      {!loaded && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-6 h-6 rounded-full border-2 border-[rgb(var(--border))] border-t-[rgb(var(--brand))] animate-spin" />
-        </div>
-      )}
-      <img
-        ref={imgRef}
-        src={board.image_url}
-        alt={board.name}
-        width={200}
-        height={128}
-        className={`hw-img h-full w-auto object-contain relative z-10 drop-shadow-lg transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'}`}
-        loading="lazy"
-        onLoad={() => setLoaded(true)}
-        onError={() => setFailed(true)}
-      />
-    </>
-  );
-}
 
 /** Page number buttons: prev ... 3 4 [5] 6 7 ... next */
 function Pagination({
@@ -342,7 +289,7 @@ export function BoardsCatalog({
                   <div className="h-28 w-full flex items-center justify-center relative mb-3 z-10 p-2">
                     <div className="absolute inset-0 bg-white/[0.03] rounded-xl group-hover:bg-[rgb(var(--brand)/0.05)] transition-colors border border-white/5 group-hover:border-[rgb(var(--brand)/0.2)]" />
                     <div className="relative z-10 h-full flex items-center justify-center">
-                      <BoardImage board={board} />
+                      <BoardImage src={board.image_url} alt={board.name} />
                     </div>
                   </div>
                   <div className="mt-auto border-t border-white/10 pt-3 z-10 flex items-end justify-between gap-2">
@@ -524,7 +471,7 @@ export function BoardsCatalog({
                 <div className="h-28 sm:h-32 w-full flex items-center justify-center relative mb-3 z-10 p-2">
                   <div className="absolute inset-0 bg-white/[0.03] rounded-xl group-hover:bg-[rgb(var(--brand)/0.05)] transition-colors border border-white/5 group-hover:border-[rgb(var(--brand)/0.2)]" />
                   <div className="relative z-10 h-full flex items-center justify-center">
-                    <BoardImage board={board} />
+                    <BoardImage src={board.image_url} alt={board.name} />
                   </div>
                 </div>
                 <div className="mt-auto border-t border-white/10 pt-3 z-10 flex items-end justify-between gap-2">

@@ -9,6 +9,7 @@ import { ARMBIAN_URLS, vendorLogoUrl } from '@armbian/config';
 import { ApiClientError } from '@armbian/api-client';
 import { DonationBanner } from '@/components/board/donation-banner';
 import { BoardJsonLd } from '@/components/board/board-jsonld';
+import { BoardImage as BoardImageWithFallback } from '@/components/board/board-image';
 import { Link } from '@/i18n/navigation';
 import type { Image as BoardImage } from '@armbian/schemas';
 import { Download, BookOpen, Code, ArrowRight, ArrowLeft } from 'lucide-react';
@@ -268,32 +269,13 @@ export default async function BoardPage({ params }: Props) {
               <div className="flex flex-col sm:flex-row gap-6 items-start">
                 <div className="hw-card rounded-2xl shrink-0 w-full sm:w-72 overflow-hidden relative">
                   <div className="aspect-square w-full flex items-center justify-center">
-                    {board.image_url ? (
-                      <img
-                        src={board.image_url}
-                        alt={board.name}
-                        width={224}
-                        height={224}
-                        className="w-full h-full object-contain drop-shadow-xl scale-125"
-                      />
-                    ) : (
-                      <>
-                        <img
-                          src="/armbian-logo-white.png"
-                          alt="Armbian"
-                          width={120}
-                          height={32}
-                          className="w-auto h-10 object-contain opacity-20 hidden dark:block"
-                        />
-                        <img
-                          src="/armbian-logo-black.png"
-                          alt="Armbian"
-                          width={120}
-                          height={32}
-                          className="w-auto h-10 object-contain opacity-15 block dark:hidden"
-                        />
-                      </>
-                    )}
+                    <BoardImageWithFallback
+                      src={board.image_url}
+                      alt={board.name}
+                      width={224}
+                      height={224}
+                      className="w-full h-full object-contain drop-shadow-xl scale-125 relative z-10"
+                    />
                   </div>
                   <div className="absolute bottom-3 right-3 w-10 h-10 rounded-lg bg-white shadow-lg flex items-center justify-center overflow-hidden p-1.5">
                     <img

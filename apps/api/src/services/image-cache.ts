@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { mkdir, readFile, writeFile, stat } from 'node:fs/promises';
+import { mkdir, readFile, writeFile, stat, unlink } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { FastifyBaseLogger } from 'fastify';
 import { boardImageUrl, vendorLogoUrl } from '@armbian/config';
@@ -86,10 +86,14 @@ export class ImageCache {
     const subDir = join(this.cacheDir, type, size);
     const filePath = join(subDir, `${slug}.png`);
 
-    // Try local cache first
+    // Try local cache first — validate PNG magic bytes to discard corrupted entries
     try {
       const data = await readFile(filePath);
-      return { data, contentType: 'image/png' };
+      if (data.length > 4 && data[0] === 0x89 && data[1] === 0x50) {
+        return { data, contentType: 'image/png' };
+      }
+      // Corrupted cache entry (e.g. HTML error page) — delete and re-fetch
+      await unlink(filePath).catch(() => {});
     } catch {
       // Not cached — fetch from CDN
     }
@@ -107,7 +111,11 @@ export class ImageCache {
       clearTimeout(timeout);
       if (!res.ok) return null;
 
+      const contentType = res.headers.get('content-type') ?? '';
+      if (!contentType.startsWith('image/')) return null;
+
       const buffer = Buffer.from(await res.arrayBuffer());
+      if (buffer.byteLength === 0) return null;
 
       // Save to cache
       await mkdir(subDir, { recursive: true });

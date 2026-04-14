@@ -3,6 +3,7 @@ import { Link } from '@/i18n/navigation';
 import { getApiClient } from '@/lib/api.server';
 import { ARMBIAN_URLS } from '@armbian/config';
 import { SupportBadge } from '@/components/ui/support-badge';
+import { BoardImage } from '@/components/board/board-image';
 import { TypingHeadline } from '@/components/typing-headline';
 import {
   IconDownload,
@@ -398,8 +399,8 @@ export default async function HomePage({ params }: Props) {
                       </div>
                       <div className="h-56 w-full flex items-center justify-center relative mb-4 z-10 p-4">
                         <div className="absolute inset-0 bg-white/[0.03] rounded-xl group-hover:bg-[rgb(var(--brand)/0.05)] transition-colors border border-white/5 group-hover:border-[rgb(var(--brand)/0.2)]" />
-                        <img
-                          src={board.image_url!}
+                        <BoardImage
+                          src={board.image_url}
                           alt={board.name}
                           width={272}
                           height={224}
