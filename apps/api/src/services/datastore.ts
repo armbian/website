@@ -9,6 +9,7 @@ import type {
   ImageFilterParams,
 } from '@armbian/schemas';
 import MiniSearch from 'minisearch';
+import { OS_RELEASES } from '@armbian/config';
 
 export interface ContactFormTokens {
   xnQsjsdp: string;
@@ -257,8 +258,12 @@ export class DataStore {
 
     const debian: [string, number][] = [];
     const ubuntu: [string, number][] = [];
-    const debianCodenames = new Set(['bullseye', 'bookworm', 'trixie', 'forky', 'sid']);
-    const ubuntuCodenames = new Set(['focal', 'jammy', 'noble', 'oracular', 'plucky']);
+    const debianCodenames = new Set(
+      Object.keys(OS_RELEASES).filter((k) => OS_RELEASES[k]!.family === 'debian'),
+    );
+    const ubuntuCodenames = new Set(
+      Object.keys(OS_RELEASES).filter((k) => OS_RELEASES[k]!.family === 'ubuntu'),
+    );
 
     for (const [distro, count] of Object.entries(counts)) {
       if (distro === 'sid') continue;

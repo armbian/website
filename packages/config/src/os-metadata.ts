@@ -18,6 +18,7 @@ export const OS_RELEASES: Record<string, OsReleaseConfig> = {
   noble: { codename: 'noble', name: 'Ubuntu 24.04', family: 'ubuntu', version: '24.04' },
   oracular: { codename: 'oracular', name: 'Ubuntu 24.10', family: 'ubuntu', version: '24.10' },
   plucky: { codename: 'plucky', name: 'Ubuntu 25.04', family: 'ubuntu', version: '25.04' },
+  resolute: { codename: 'resolute', name: 'Ubuntu 26.04', family: 'ubuntu', version: '26.04' },
 };
 
 export function getOsRelease(codename: string): OsReleaseConfig | undefined {
