@@ -25,25 +25,84 @@ jobs:
             exit 1
           fi
 
-      - name: Trigger sync via SSH
+      - name: Sync and collect results
+        id: result
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
+          command_timeout: 120s
+          capture_stdout: true
           script: |
             set -euo pipefail
             cd /home/website/armbian
-            ./manage.sh sync
-            echo "==> Sync complete"
 
-      - name: Summary
+            CID=$(docker compose ps -q api)
+
+            health() {
+              docker exec "$CID" node -e "
+                fetch('http://localhost:3001/api/v1/health',{headers:{'X-Armbian-Client':'ci'}})
+                  .then(r=>r.text())
+                  .then(t=>{process.stdout.write(t)})
+                  .catch(()=>{process.stdout.write('{}')})
+              " 2>/dev/null || echo "{}"
+            }
+
+            echo "::before::$(health)"
+
+            ./manage.sh sync
+
+            # Wait for sync to complete (lastSync changes)
+            BEFORE_TS=$(health | python3 -c "import sys,json;print(json.load(sys.stdin).get('lastSync',''))" 2>/dev/null || echo "")
+            for i in $(seq 1 30); do
+              sleep 2
+              CURRENT_TS=$(health | python3 -c "import sys,json;print(json.load(sys.stdin).get('lastSync',''))" 2>/dev/null || echo "")
+              if [ "$CURRENT_TS" != "$BEFORE_TS" ] && [ -n "$CURRENT_TS" ]; then
+                break
+              fi
+            done
+
+            echo "::after::$(health)"
+
+      - name: Build summary
         if: always()
         run: |
-          echo "## Data sync" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Property | Value |" >> "$GITHUB_STEP_SUMMARY"
-          echo "|----------|-------|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Status | **${{ job.status }}** |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Trigger | ${{ github.event_name }} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Source | ${{ github.event.client_payload.repository || 'manual' }} |" >> "$GITHUB_STEP_SUMMARY"
+          OUTPUT='${{ steps.result.outputs.stdout }}'
+
+          BEFORE=$(echo "$OUTPUT" | grep "^::before::" | sed 's/^::before:://')
+          AFTER=$(echo "$OUTPUT" | grep "^::after::" | sed 's/^::after:://')
+
+          parse_count() { echo "$1" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('counts',{}).get('$2','--'))" 2>/dev/null || echo "--"; }
+          parse_field() { echo "$1" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('$2','--'))" 2>/dev/null || echo "--"; }
+          parse_source() { echo "$1" | python3 -c "import sys,json; d=json.load(sys.stdin); s=d.get('sources',{}).get('$2',{}); print(s.get('status','--'))" 2>/dev/null || echo "--"; }
+
+          {
+            echo "## Data sync results"
+            echo ""
+            echo "### Counts"
+            echo ""
+            echo "| Metric | Before | After |"
+            echo "|--------|--------|-------|"
+            echo "| Boards | $(parse_count "$BEFORE" boards) | $(parse_count "$AFTER" boards) |"
+            echo "| Images | $(parse_count "$BEFORE" images) | $(parse_count "$AFTER" images) |"
+            echo "| Vendors | $(parse_count "$BEFORE" vendors) | $(parse_count "$AFTER" vendors) |"
+            echo ""
+            echo "### Data sources"
+            echo ""
+            echo "| Source | Status |"
+            echo "|--------|--------|"
+            for src in images partners maintainers kernels; do
+              echo "| $src | $(parse_source "$AFTER" $src) |"
+            done
+            echo ""
+            echo "### Info"
+            echo ""
+            echo "| Property | Value |"
+            echo "|----------|-------|"
+            echo "| Health | $(parse_field "$AFTER" status) |"
+            echo "| Last sync | $(parse_field "$AFTER" lastSync) |"
+            echo "| Next sync | $(parse_field "$AFTER" nextSync) |"
+            echo "| Trigger | ${{ github.event_name }} |"
+            echo "| Source repo | ${{ github.event.client_payload.repository || 'manual' }} |"
+          } >> "$GITHUB_STEP_SUMMARY"
