@@ -7,6 +7,18 @@
 	}
 }
 
+# Canonical host redirect: www.* → apex.
+# Set WWW_REDIRECT_HOSTS in .env to the comma-separated list of www
+# hostnames that must be 301'd to their apex (e.g.
+# "www.armbian.com, www.armbian.cn, www.armbian.de"). Required so that
+# locale-forced domains (armbian.cn → zh, armbian.de → de) resolve
+# correctly when users type the www variant.
+# Leave unset / empty in dev — the placeholder ":0" binds to an ephemeral
+# port with no listener, effectively disabling the block.
+{$WWW_REDIRECT_HOSTS::0} {
+	redir https://{labels.1}.{labels.0}{uri} 301
+}
+
 # Website — defaults to HTTP on :80 for local dev (any host).
 # Override WWW_HOSTNAME in .env with a real domain for automatic HTTPS.
 {$WWW_HOSTNAME::80} {

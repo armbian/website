@@ -99,7 +99,7 @@ Four Docker Compose services:
 | `api`      | Internal only       | Fastify API reached through Caddy (port 8080 for external clients) |
 | `postgres` | Internal only       | Data persisted in Docker volume                                    |
 
-Required environment variables: `POSTGRES_PASSWORD`, `PAYLOAD_SECRET`. For production, set `WWW_HOSTNAME`, `API_HOSTNAME`, and `CADDY_EMAIL` to enable automatic TLS. See `.env.example` for all options.
+Required environment variables: `POSTGRES_PASSWORD`, `PAYLOAD_SECRET`. For production, set `WWW_HOSTNAME`, `API_HOSTNAME`, and `CADDY_EMAIL` to enable automatic TLS, and `WWW_REDIRECT_HOSTS` to 301 `www.*` hostnames to their apex (required so `www.armbian.cn` / `www.armbian.de` resolve to the correct locale). See `.env.example` for all options.
 
 The `docker-compose.yml` includes `image:` references to GHCR. When you run `./manage.sh deploy`, Compose pulls the pre-built images instead of building locally. When you run `./manage.sh up`, Compose uses the `build:` directive and compiles from source.
 
@@ -109,7 +109,7 @@ Payload migrations run automatically on startup — no manual steps needed.
 
 17 locales via `next-intl`: English (default), German, Chinese, French, Spanish, Italian, Russian, Portuguese, Japanese, Korean, Dutch, Polish, Turkish, Ukrainian, Croatian, Slovenian, Swedish.
 
-Domain forcing: `armbian.cn` → Chinese, `armbian.de` → German. The language switcher redirects cross-domain on the official deployment. Self-hosted instances keep all locales on a single host unless `NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING=true` is set (build-time env var, baked into the client bundle).
+Domain forcing: `armbian.cn` → Chinese, `armbian.de` → German. The `www.` variants are 301'd to their apex at the edge via `WWW_REDIRECT_HOSTS`, so next-intl only ever sees the canonical host. The language switcher redirects cross-domain on the official deployment. Self-hosted instances keep all locales on a single host unless `NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING=true` is set (build-time env var, baked into the client bundle).
 
 ## Resources
 

@@ -92,6 +92,7 @@ services:
     environment:
       - WWW_HOSTNAME=${WWW_HOSTNAME:-:80}
       - API_HOSTNAME=${API_HOSTNAME:-:8080}
+      - WWW_REDIRECT_HOSTS=${WWW_REDIRECT_HOSTS:-:0}
       - CADDY_EMAIL=${CADDY_EMAIL:-admin@localhost}
     depends_on:
       www:

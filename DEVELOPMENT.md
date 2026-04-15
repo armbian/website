@@ -364,12 +364,24 @@ The official Armbian deployment serves three domains:
 
 This is configured in `packages/config/src/locales.ts` (`DOMAIN_LOCALE_MAP`) and `apps/www/src/i18n/routing.ts`.
 
+`DOMAIN_LOCALE_MAP` only contains apex hostnames. The `www.` variants of these domains must be 301'd to their apex at the edge, otherwise next-intl won't match the Host header and the page falls back to English. Caddy handles this via `WWW_REDIRECT_HOSTS` (see below).
+
 The language switcher (`language-switcher.tsx`) cross-redirects between domains only when **both** conditions are met:
 
 1. `NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING=true` (build-time env var)
 2. The current browser hostname matches a known Armbian domain
 
 Self-hosted instances and local development always use in-place locale switching via `/<locale>` prefixes, regardless of this setting.
+
+### Canonical host redirects (`WWW_REDIRECT_HOSTS`)
+
+Caddy reads `WWW_REDIRECT_HOSTS` (comma-separated hostnames) and 301's each one to its apex, preserving path and query. Typical production value:
+
+```
+WWW_REDIRECT_HOSTS=www.armbian.com, www.armbian.cn, www.armbian.de
+```
+
+Leave unset in dev — the default placeholder (`:0`) binds the block to an ephemeral port with no listener, effectively disabling it. DNS for each listed hostname must point at the Caddy instance so TLS certificates can be obtained automatically.
 
 ---
 
