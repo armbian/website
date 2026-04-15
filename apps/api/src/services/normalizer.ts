@@ -62,6 +62,7 @@ const VALID_IMAGE_EXTENSIONS: Record<string, ImageFormat> = {
   'boe.img.xz': 'sd',
   'csot.img.xz': 'sd',
   xz: 'rootfs',
+  'tar.xz': 'rootfs',
   'ufs.xz': 'rootfs',
   'img.qcow2': 'qemu',
   'img.qcow2.xz': 'qemu',
