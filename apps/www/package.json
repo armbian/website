@@ -31,7 +31,7 @@
     "pg": "^8.20.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "sanitize-html": "^2.17.2"
+    "sanitize-html": "^2.17.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.2",
