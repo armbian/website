@@ -138,6 +138,7 @@
     "sort_popularity": "Popularite",
     "sort_name": "Ad",
     "sort_support": "Destek",
+    "sort_random": "Rastgele",
     "results_count": "{count} kart",
     "active_filters": "{count} aktif",
     "clear_all": "Tumunu temizle",

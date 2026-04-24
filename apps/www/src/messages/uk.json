@@ -138,6 +138,7 @@
     "sort_popularity": "Популярність",
     "sort_name": "Назва",
     "sort_support": "Підтримка",
+    "sort_random": "Випадковий",
     "results_count": "{count} плат",
     "active_filters": "{count} активних",
     "clear_all": "Скинути все",

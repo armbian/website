@@ -10,6 +10,17 @@ import type { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
 
+function shuffle<T>(arr: readonly T[]): T[] {
+  const out = [...arr];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const tmp = out[i] as T;
+    out[i] = out[j] as T;
+    out[j] = tmp;
+  }
+  return out;
+}
+
 interface Props {
   params: Promise<{ locale: string }>;
 }
@@ -53,7 +64,10 @@ export default async function BoardsPage({ params }: Props) {
     const api = await getApiClient();
     const result = await api.getBoardsInit();
     initialBoards = result.data.boards;
-    platinumBoards = result.data.platinumBoards;
+    // Shuffle platinum boards on every request so the featured strip
+    // below rotates — every paid platinum partner gets a fair chance of
+    // appearing in the top 4 across visits instead of always the same.
+    platinumBoards = shuffle(result.data.platinumBoards);
     vendors = result.data.vendors;
     total = result.data.total;
     tierCounts = result.data.tierCounts;

@@ -138,6 +138,7 @@
     "sort_popularity": "인기순",
     "sort_name": "이름순",
     "sort_support": "지원 수준순",
+    "sort_random": "무작위",
     "results_count": "{count}개 보드",
     "active_filters": "{count}개 활성",
     "clear_all": "모두 지우기",

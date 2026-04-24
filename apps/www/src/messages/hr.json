@@ -138,6 +138,7 @@
     "sort_popularity": "Popularnost",
     "sort_name": "Naziv",
     "sort_support": "Podrška",
+    "sort_random": "Nasumično",
     "results_count": "{count} ploča",
     "active_filters": "{count} aktivnih",
     "clear_all": "Očisti sve",

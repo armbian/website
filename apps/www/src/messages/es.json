@@ -138,6 +138,7 @@
     "sort_popularity": "Popularidad",
     "sort_name": "Nombre",
     "sort_support": "Soporte",
+    "sort_random": "Aleatorio",
     "results_count": "{count} placas",
     "active_filters": "{count} activos",
     "clear_all": "Borrar todo",

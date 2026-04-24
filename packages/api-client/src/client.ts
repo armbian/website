@@ -17,7 +17,7 @@ export interface BoardFilterInput {
   architecture?: string;
   support?: SupportTier;
   search?: string;
-  sort?: 'name' | 'popularity' | 'support';
+  sort?: 'name' | 'popularity' | 'support' | 'random';
   promoted?: boolean;
 }
 

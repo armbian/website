@@ -138,6 +138,7 @@
     "sort_popularity": "Популярность",
     "sort_name": "Название",
     "sort_support": "Поддержка",
+    "sort_random": "Случайный",
     "results_count": "{count} плат",
     "active_filters": "{count} активных",
     "clear_all": "Сбросить всё",

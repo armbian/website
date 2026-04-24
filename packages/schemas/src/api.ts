@@ -29,7 +29,7 @@ export const BoardFilterParamsSchema = z.object({
   architecture: z.string().optional(),
   support: SupportTierEnum.optional(),
   search: z.string().optional(),
-  sort: z.enum(['name', 'popularity', 'support']).default('popularity'),
+  sort: z.enum(['name', 'popularity', 'support', 'random']).default('popularity'),
   promoted: z.coerce.boolean().optional(),
 });
 export type BoardFilterParams = z.infer<typeof BoardFilterParamsSchema>;

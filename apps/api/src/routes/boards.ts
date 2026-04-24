@@ -43,7 +43,7 @@ export function registerBoardRoutes(server: FastifyInstance): void {
       architecture,
       support: support as 'platinum' | 'standard' | 'community' | 'wip' | 'eos' | 'tvb' | undefined,
       search,
-      sort: (sort as 'name' | 'popularity' | 'support') ?? 'popularity',
+      sort: (sort as 'name' | 'popularity' | 'support' | 'random') ?? 'popularity',
       promoted: promoted !== undefined ? promoted === 'true' : undefined,
     });
 

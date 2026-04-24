@@ -138,6 +138,7 @@
     "sort_popularity": "热门",
     "sort_name": "名称",
     "sort_support": "支持",
+    "sort_random": "随机",
     "results_count": "{count} 款开发板",
     "active_filters": "{count} 个已激活",
     "clear_all": "全部清除",

@@ -138,6 +138,7 @@
     "sort_popularity": "Beliebtheit",
     "sort_name": "Name",
     "sort_support": "Support",
+    "sort_random": "Zufällig",
     "results_count": "{count} Boards",
     "active_filters": "{count} aktiv",
     "clear_all": "Alle löschen",

@@ -30,7 +30,7 @@ interface BoardsCatalogProps {
 }
 
 const PAGE_SIZE = 24;
-const SORT_OPTIONS = ['popularity', 'name', 'support'] as const;
+const SORT_OPTIONS = ['popularity', 'name', 'support', 'random'] as const;
 type SortKey = (typeof SORT_OPTIONS)[number];
 const TIER_ORDER = Object.keys(SUPPORT_TIERS).sort(
   (a, b) => SUPPORT_TIERS[a as SupportTier].sortOrder - SUPPORT_TIERS[b as SupportTier].sortOrder,

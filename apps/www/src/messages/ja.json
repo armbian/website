@@ -138,6 +138,7 @@
     "sort_popularity": "人気順",
     "sort_name": "名前順",
     "sort_support": "サポート順",
+    "sort_random": "ランダム",
     "results_count": "{count}ボード",
     "active_filters": "{count}件アクティブ",
     "clear_all": "すべてクリア",

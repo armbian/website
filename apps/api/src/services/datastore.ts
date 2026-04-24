@@ -166,6 +166,12 @@ export class DataStore {
       results.sort((a, b) => a.name.localeCompare(b.name));
     } else if (params?.sort === 'support') {
       results.sort((a, b) => tierSortOrder(a.support_tier) - tierSortOrder(b.support_tier));
+    } else if (params?.sort === 'random') {
+      // Deterministic shuffle keyed to the current hour so paginated
+      // requests within the same hour stay consistent (no duplicates /
+      // gaps when the user clicks Next page). Re-rolls every hour.
+      const seed = Math.floor(Date.now() / 3_600_000);
+      results.sort((a, b) => seededHash(a.slug, seed) - seededHash(b.slug, seed));
     }
     // default sort is by popularity (already sorted)
 
@@ -353,4 +359,13 @@ const TIER_ORDER: Record<string, number> = {
 
 function tierSortOrder(tier: string): number {
   return TIER_ORDER[tier] ?? 99;
+}
+
+/** djb2-style hash seeded by `seed`. Used for deterministic random sort. */
+function seededHash(s: string, seed: number): number {
+  let h = seed | 0;
+  for (let i = 0; i < s.length; i++) {
+    h = (h * 31 + s.charCodeAt(i)) | 0;
+  }
+  return h;
 }

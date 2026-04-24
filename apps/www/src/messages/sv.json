@@ -138,6 +138,7 @@
     "sort_popularity": "Popularitet",
     "sort_name": "Namn",
     "sort_support": "Stöd",
+    "sort_random": "Slumpmässig",
     "results_count": "{count} kort",
     "active_filters": "{count} aktiva",
     "clear_all": "Rensa alla",

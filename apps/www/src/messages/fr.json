@@ -138,6 +138,7 @@
     "sort_popularity": "Popularité",
     "sort_name": "Nom",
     "sort_support": "Support",
+    "sort_random": "Aléatoire",
     "results_count": "{count} cartes",
     "active_filters": "{count} actifs",
     "clear_all": "Tout effacer",

@@ -138,6 +138,7 @@
     "sort_popularity": "Priljubljenost",
     "sort_name": "Ime",
     "sort_support": "Podpora",
+    "sort_random": "Naključno",
     "results_count": "{count} plošč",
     "active_filters": "{count} aktivnih",
     "clear_all": "Počisti vse",

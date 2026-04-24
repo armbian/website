@@ -138,6 +138,7 @@
     "sort_popularity": "Popularnosc",
     "sort_name": "Nazwa",
     "sort_support": "Wsparcie",
+    "sort_random": "Losowo",
     "results_count": "{count} plyt",
     "active_filters": "{count} aktywnych",
     "clear_all": "Wyczysc wszystko",

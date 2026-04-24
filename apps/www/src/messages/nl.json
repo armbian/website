@@ -138,6 +138,7 @@
     "sort_popularity": "Populariteit",
     "sort_name": "Naam",
     "sort_support": "Ondersteuning",
+    "sort_random": "Willekeurig",
     "results_count": "{count} boards",
     "active_filters": "{count} actief",
     "clear_all": "Alles wissen",
