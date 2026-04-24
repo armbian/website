@@ -4,6 +4,11 @@ import '../types.js';
 
 const VALID_IMAGE_SIZES = new Set(['480']);
 
+// 1h fresh + 24h stale-while-revalidate. Keeps the browser revalidating once
+// per hour (via If-None-Match → 304) so vendor/board logo updates propagate
+// within an hour, while still serving stale instantly during SWR.
+const IMAGE_CACHE_CONTROL = 'public, max-age=3600, stale-while-revalidate=86400';
+
 export function registerImageRoutes(server: FastifyInstance): void {
   /**
    * GET /api/v1/images/boards/:size/:slug.png
@@ -21,7 +26,7 @@ export function registerImageRoutes(server: FastifyInstance): void {
         return reply.code(404).send({ error: 'Image not found' });
       }
       void reply.header('Content-Type', result.contentType);
-      void reply.header('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
+      void reply.header('Cache-Control', IMAGE_CACHE_CONTROL);
       return reply.send(result.data);
     },
   );
@@ -42,7 +47,7 @@ export function registerImageRoutes(server: FastifyInstance): void {
         return reply.code(404).send({ error: 'Image not found' });
       }
       void reply.header('Content-Type', result.contentType);
-      void reply.header('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
+      void reply.header('Cache-Control', IMAGE_CACHE_CONTROL);
       return reply.send(result.data);
     },
   );
@@ -64,7 +69,7 @@ export function registerImageRoutes(server: FastifyInstance): void {
         return reply.code(404).send({ error: 'Image not found' });
       }
       void reply.header('Content-Type', result.contentType);
-      void reply.header('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
+      void reply.header('Cache-Control', IMAGE_CACHE_CONTROL);
       return reply.send(result.data);
     },
   );
@@ -87,7 +92,7 @@ export function registerImageRoutes(server: FastifyInstance): void {
       return reply.code(404).send({ error: 'Image not found' });
     }
     void reply.header('Content-Type', result.contentType);
-    void reply.header('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
+    void reply.header('Cache-Control', IMAGE_CACHE_CONTROL);
     return reply.send(result.data);
   });
 }

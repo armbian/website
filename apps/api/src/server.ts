@@ -157,8 +157,8 @@ async function main(): Promise<void> {
   // --- Data Layer ---
 
   const store = new DataStore();
-  const sync = new SyncService(store, server.log);
   const imageCache = new ImageCache(CACHE_DIR, server.log);
+  const sync = new SyncService(store, server.log, imageCache);
 
   // Initial data load — try disk cache first for fast startup, then sync from network
   const cached = await sync.loadFromCache();
@@ -174,15 +174,11 @@ async function main(): Promise<void> {
     'Initial data ready',
   );
 
-  // Schedule periodic sync
+  // Schedule periodic sync. `sync()` itself triggers a conditional-GET
+  // refresh of the image cache at the end of each cycle, so no separate
+  // warmup step is needed — the first sync populates the cache from
+  // scratch, subsequent ones only revalidate against the CDN.
   sync.startCron(SYNC_INTERVAL_MS);
-
-  // Warm up image cache in background (don't block startup)
-  const boardSlugs = store.getBoards({ sort: 'popularity' }).boards.map((b) => b.slug);
-  const vendorSlugs = store.getVendors().map((v) => v.slug);
-  imageCache
-    .warmup(boardSlugs, vendorSlugs)
-    .catch((err) => server.log.warn({ err }, 'Image warmup failed'));
 
   // Decorate Fastify with store and image cache
   server.decorate('store', store);

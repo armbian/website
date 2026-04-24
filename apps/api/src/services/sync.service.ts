@@ -22,6 +22,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { Normalizer } from './normalizer.js';
 import type { DataStore, ZohoFormTokens } from './datastore.js';
+import type { ImageCache } from './image-cache.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = join(__dirname, '..', '..', 'data');
@@ -55,6 +56,7 @@ export class SyncService {
   constructor(
     private store: DataStore,
     private log: FastifyBaseLogger,
+    private imageCache: ImageCache,
   ) {
     this.normalizer = new Normalizer();
   }
@@ -266,6 +268,15 @@ export class SyncService {
 
     // Persist to disk for fast startup next time
     await this.saveToCache();
+
+    // Revalidate board + vendor logos against the CDN using conditional
+    // GETs. Runs in the background — a long CDN scan must not delay the
+    // sync's visible effects (store updates, Caddy reload).
+    const boardSlugs = this.store.getBoards({ sort: 'popularity' }).boards.map((b) => b.slug);
+    const vendorSlugs = this.store.getVendors().map((v) => v.slug);
+    void this.imageCache
+      .refreshImages(boardSlugs, vendorSlugs)
+      .catch((err) => this.log.warn({ err }, 'Image cache refresh failed'));
 
     const duration = Date.now() - start;
     this.log.info(
