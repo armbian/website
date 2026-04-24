@@ -503,6 +503,7 @@ export class Normalizer {
       '/authors',
       '/donate',
       '/contact',
+      '/update-data',
       '/sitemap.xml',
       '/robots.txt',
     ]);

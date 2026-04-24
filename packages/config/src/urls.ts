@@ -36,6 +36,8 @@ export const ARMBIAN_URLS = {
   CALENDLY_CONSULTATION: 'https://calendly.com/armbian/consultation',
   BIGIN_FORM: 'https://bigin.zoho.eu/crm/WebForm',
   BIGIN_FORM_PAGE: 'https://eu.bigin.online/org20084575190/forms/contact-form',
+  UPDATE_DATA_FORM: 'https://bigin.zoho.eu/crm/WebForm',
+  UPDATE_DATA_FORM_PAGE: 'https://eu.bigin.online/org20084575190/forms/update-data',
   INFO_EMAIL: 'info@armbian.com',
   RECAPTCHA_SCRIPT: 'https://www.google.com/recaptcha/api.js',
   TWITTER: 'https://twitter.com/armbian',

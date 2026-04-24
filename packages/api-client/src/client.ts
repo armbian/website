@@ -26,6 +26,15 @@ export interface ApiResponse<T> {
   meta: ApiMeta;
 }
 
+export interface ZohoFormTokensResponse {
+  data: {
+    xnQsjsdp: string;
+    xmIwtLD: string;
+    actionType: string;
+    recaptchaSiteKey: string;
+  };
+}
+
 export interface PaginatedApiResponse<T> extends ApiResponse<T> {
   meta: ApiMeta & { page: number; limit: number };
 }
@@ -155,15 +164,12 @@ export class ArmbianApiClient {
     return this.fetch('/api/v1/stats');
   }
 
-  async getContactFormTokens(): Promise<{
-    data: {
-      xnQsjsdp: string;
-      xmIwtLD: string;
-      actionType: string;
-      recaptchaSiteKey: string;
-    };
-  }> {
+  async getContactFormTokens(): Promise<ZohoFormTokensResponse> {
     return this.fetch('/api/v1/contact-form-tokens');
+  }
+
+  async getUpdateDataFormTokens(): Promise<ZohoFormTokensResponse> {
+    return this.fetch('/api/v1/update-data-form-tokens');
   }
 
   private async fetch<T>(path: string): Promise<T> {

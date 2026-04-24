@@ -21,7 +21,7 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { Normalizer } from './normalizer.js';
-import type { DataStore } from './datastore.js';
+import type { DataStore, ZohoFormTokens } from './datastore.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = join(__dirname, '..', '..', 'data');
@@ -229,29 +229,37 @@ export class SyncService {
       this.log.debug('GitHub stars fetch failed — keeping previous value');
     }
 
-    // Fetch Zoho Bigin contact form tokens so the frontend never uses stale values
-    try {
-      const formRes = await fetch(ARMBIAN_URLS.BIGIN_FORM_PAGE, {
-        signal: AbortSignal.timeout(10_000),
-      });
-      if (formRes.ok) {
-        const html = await formRes.text();
-        const xn = html.match(/name='xnQsjsdp' value='([^']+)'/)?.[1];
-        const xm = html.match(/name='xmIwtLD' value='([^']+)'/)?.[1];
-        const at = html.match(/name='actionType' value='([^']+)'/)?.[1];
-        const rc = html.match(/data-sitekey='([^']+)'/)?.[1];
-        if (xn && xm && at && rc) {
-          this.store.metadata.contactFormTokens = {
-            xnQsjsdp: xn,
-            xmIwtLD: xm,
-            actionType: at,
-            recaptchaSiteKey: rc,
-          };
-          this.log.info('Contact form tokens refreshed');
-        }
-      }
-    } catch {
-      this.log.debug('Contact form token fetch failed — keeping previous value');
+    // Fetch Zoho Bigin form tokens so the frontend never uses stale values.
+    // Both pages live on the same origin so we hit them in parallel.
+    // The update-data form does not embed a reCAPTCHA widget of its own
+    // (Zoho renders it only on the contact form), so we fall back to the
+    // contact form's site-key — same Google key is valid for the whole
+    // armbian.com origin.
+    const [contactTokens, updateDataTokens] = await Promise.all([
+      this.fetchBiginTokens(ARMBIAN_URLS.BIGIN_FORM_PAGE),
+      this.fetchBiginTokens(ARMBIAN_URLS.UPDATE_DATA_FORM_PAGE),
+    ]);
+    if (contactTokens) {
+      this.store.metadata.contactFormTokens = contactTokens;
+    }
+    if (updateDataTokens) {
+      const fallbackKey =
+        updateDataTokens.recaptchaSiteKey ||
+        this.store.metadata.contactFormTokens?.recaptchaSiteKey ||
+        '';
+      this.store.metadata.updateDataFormTokens = {
+        ...updateDataTokens,
+        recaptchaSiteKey: fallbackKey,
+      };
+    }
+
+    if (contactTokens || updateDataTokens) {
+      this.log.info(
+        {
+          forms: [contactTokens && 'contact', updateDataTokens && 'update-data'].filter(Boolean),
+        },
+        'Zoho form tokens refreshed',
+      );
     }
 
     this.lastSyncTime = new Date();
@@ -390,6 +398,29 @@ export class SyncService {
 
   getNextSyncTime(): Date | null {
     return this.nextSyncTime;
+  }
+
+  /**
+   * Scrape a Zoho Bigin Web-to-Record form page for the four values the
+   * frontend needs to replay the form submission. Returns null on network
+   * failure or when the three always-present tokens are missing. The
+   * reCAPTCHA site-key can legitimately be absent (update-data form); the
+   * caller is responsible for falling back to a shared key in that case.
+   */
+  private async fetchBiginTokens(url: string): Promise<ZohoFormTokens | null> {
+    try {
+      const res = await fetch(url, { signal: AbortSignal.timeout(10_000) });
+      if (!res.ok) return null;
+      const html = await res.text();
+      const xn = html.match(/name='xnQsjsdp' value='([^']+)'/)?.[1];
+      const xm = html.match(/name='xmIwtLD' value='([^']+)'/)?.[1];
+      const at = html.match(/name='actionType' value='([^']+)'/)?.[1];
+      const rc = html.match(/data-sitekey='([^']+)'/)?.[1] ?? '';
+      if (!xn || !xm || !at) return null;
+      return { xnQsjsdp: xn, xmIwtLD: xm, actionType: at, recaptchaSiteKey: rc };
+    } catch {
+      return null;
+    }
   }
 
   private async fetchBoardConfigSlugs(): Promise<Set<string>> {

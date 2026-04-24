@@ -11,7 +11,7 @@ import type {
 import MiniSearch from 'minisearch';
 import { OS_RELEASES } from '@armbian/config';
 
-export interface ContactFormTokens {
+export interface ZohoFormTokens {
   xnQsjsdp: string;
   xmIwtLD: string;
   actionType: string;
@@ -24,7 +24,8 @@ export interface SyncMetadata {
   imageCount: number;
   vendorCount: number;
   githubStars: number | null;
-  contactFormTokens: ContactFormTokens | null;
+  contactFormTokens: ZohoFormTokens | null;
+  updateDataFormTokens: ZohoFormTokens | null;
   sourceStatuses: Record<
     string,
     { status: 'ok' | 'error' | 'stale'; lastFetch: Date | null; error?: string }
@@ -59,6 +60,7 @@ export class DataStore {
     vendorCount: 0,
     githubStars: null,
     contactFormTokens: null,
+    updateDataFormTokens: null,
     sourceStatuses: {},
   };
 

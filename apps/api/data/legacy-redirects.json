@@ -1352,11 +1352,6 @@
   {
     "board_id": "__legacy__",
     "canonical": "/",
-    "legacy": ["/update-data"]
-  },
-  {
-    "board_id": "__legacy__",
-    "canonical": "/",
     "legacy": ["/partner-contact-form"]
   },
   {

@@ -28,6 +28,7 @@ export function Footer() {
     { key: 'link_contribute', href: ARMBIAN_URLS.CONTRIBUTE, external: true },
     { key: 'link_donate', href: '/donate', external: false },
     { key: 'link_contact', href: '/contact' },
+    { key: 'link_update_data', href: '/update-data' },
   ] as const;
 
   return (
