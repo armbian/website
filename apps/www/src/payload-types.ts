@@ -94,14 +94,72 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  fallbackLocale: null;
+  fallbackLocale:
+    | ('false' | 'none' | 'null')
+    | false
+    | null
+    | (
+        | 'en'
+        | 'it'
+        | 'de'
+        | 'fr'
+        | 'es'
+        | 'zh'
+        | 'pt'
+        | 'ru'
+        | 'ja'
+        | 'ko'
+        | 'pl'
+        | 'nl'
+        | 'tr'
+        | 'uk'
+        | 'hr'
+        | 'sl'
+        | 'sv'
+      )
+    | (
+        | 'en'
+        | 'it'
+        | 'de'
+        | 'fr'
+        | 'es'
+        | 'zh'
+        | 'pt'
+        | 'ru'
+        | 'ja'
+        | 'ko'
+        | 'pl'
+        | 'nl'
+        | 'tr'
+        | 'uk'
+        | 'hr'
+        | 'sl'
+        | 'sv'
+      )[];
   globals: {
     'company-config': CompanyConfig;
   };
   globalsSelect: {
     'company-config': CompanyConfigSelect<false> | CompanyConfigSelect<true>;
   };
-  locale: null;
+  locale:
+    | 'en'
+    | 'it'
+    | 'de'
+    | 'fr'
+    | 'es'
+    | 'zh'
+    | 'pt'
+    | 'ru'
+    | 'ja'
+    | 'ko'
+    | 'pl'
+    | 'nl'
+    | 'tr'
+    | 'uk'
+    | 'hr'
+    | 'sl'
+    | 'sv';
   widgets: {
     collections: CollectionsWidget;
   };
@@ -198,24 +256,6 @@ export interface FlashGuide {
    * Select a board from the Armbian catalog
    */
   boardSlug: string;
-  locale:
-    | 'en'
-    | 'it'
-    | 'de'
-    | 'fr'
-    | 'es'
-    | 'zh'
-    | 'pt'
-    | 'ru'
-    | 'ja'
-    | 'ko'
-    | 'pl'
-    | 'nl'
-    | 'tr'
-    | 'uk'
-    | 'hr'
-    | 'sl'
-    | 'sv';
   title: string;
   content: {
     root: {
@@ -510,7 +550,6 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface FlashGuidesSelect<T extends boolean = true> {
   boardSlug?: T;
-  locale?: T;
   title?: T;
   content?: T;
   prerequisites?:

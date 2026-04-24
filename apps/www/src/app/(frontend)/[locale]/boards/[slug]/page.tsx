@@ -170,24 +170,19 @@ export default async function BoardPage({ params }: Props) {
     throw err;
   }
 
-  // Fetch flash guide from Payload CMS
+  // Fetch flash guide from Payload CMS. Payload native localization
+  // handles the EN fallback via `fallbackLocale` — no manual two-step.
   let flashGuide: { title: string; content: string; prerequisites: string[] } | null = null;
   try {
     const payload = await getPayload({ config });
     const result = await payload.find({
       collection: 'flash-guides',
-      where: { and: [{ boardSlug: { equals: slug } }, { locale: { equals: locale } }] },
+      where: { boardSlug: { equals: slug } },
+      locale: locale as 'en' | 'it',
+      fallbackLocale: 'en',
       limit: 1,
     });
-    let doc = result.docs[0];
-    if (!doc && locale !== 'en') {
-      const fallback = await payload.find({
-        collection: 'flash-guides',
-        where: { and: [{ boardSlug: { equals: slug } }, { locale: { equals: 'en' } }] },
-        limit: 1,
-      });
-      doc = fallback.docs[0];
-    }
+    const doc = result.docs[0];
     if (doc) {
       const prereqs = Array.isArray(doc.prerequisites)
         ? doc.prerequisites.map((p: { item?: string }) => p.item ?? '')

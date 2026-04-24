@@ -36,6 +36,30 @@ export default buildConfig({
 
   editor: lexicalEditor(),
 
+  localization: {
+    locales: [
+      'en',
+      'it',
+      'de',
+      'fr',
+      'es',
+      'zh',
+      'pt',
+      'ru',
+      'ja',
+      'ko',
+      'pl',
+      'nl',
+      'tr',
+      'uk',
+      'hr',
+      'sl',
+      'sv',
+    ],
+    defaultLocale: 'en',
+    fallback: true,
+  },
+
   db: postgresAdapter({
     prodMigrations: migrations,
     pool: {
