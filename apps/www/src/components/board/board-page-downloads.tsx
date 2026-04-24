@@ -6,7 +6,7 @@ import { KERNEL_BRANCHES } from '@armbian/config';
 import type { ImageFormat, StorageVariant, CompanionFile, DisplayVariant } from '@armbian/schemas';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { DOWNLOAD_EVENT } from '@/components/board/donation-banner';
-import { Download, Star, ChevronDown, HardDrive } from 'lucide-react';
+import { Download, Star, ChevronDown } from 'lucide-react';
 import { Monitor, Zap, Server, Package } from 'lucide-react';
 
 interface FormattedImage {
@@ -62,7 +62,7 @@ const CHIP_STYLE: Record<ChipKind, string> = {
     'bg-amber-500/15 text-amber-700 ring-amber-500/30 dark:text-amber-300 dark:ring-amber-500/25',
   // Cyan info: special storage hardware (UFS).
   storage: 'bg-cyan-500/15 text-cyan-700 ring-cyan-500/30 dark:text-cyan-300 dark:ring-cyan-500/25',
-  // Violet: pre-bundled app overlay (Home Assistant / Kali / OMV / openHAB / UFS).
+  // Violet: pre-bundled app overlay (Home Assistant / Kali / OMV / openHAB).
   app: 'bg-violet-500/15 text-violet-700 ring-violet-500/30 dark:text-violet-300 dark:ring-violet-500/25',
   // Fuchsia: variant modifier (Mesa, backported stacks).
   modifier:
@@ -73,10 +73,7 @@ const CHIP_STYLE: Record<ChipKind, string> = {
 function deriveChips(img: FormattedImage, hideAppChip = false): Chip[] {
   const chips: Chip[] = [];
   if (img.format !== 'sd') chips.push({ kind: 'format', label: FORMAT_LABEL[img.format] });
-  // When UFS is the dedicated app, the variant column already carries the label; skip duplicate chip.
-  if (img.storage === 'ufs' && img.application !== 'ufs') {
-    chips.push({ kind: 'storage', label: 'UFS' });
-  }
+  if (img.storage === 'ufs') chips.push({ kind: 'storage', label: 'UFS' });
   if (!hideAppChip && img.appMeta?.label) chips.push({ kind: 'app', label: img.appMeta.label });
   if (img.variantExtension) {
     // parseVariant emits labels like "(Backported Mesa)" — strip the parens.
@@ -279,22 +276,9 @@ export function BoardPageDownloads({
   const t = useTranslations('board');
   const tDownload = useTranslations('download');
 
-  // Separate UFS images from other groups
-  const ufsImages = formattedGroups
-    .flatMap((group) => group.images.filter((img) => img.application === 'ufs'))
-    .sort((a, b) => new Date(b.download.updated_at).getTime() - new Date(a.download.updated_at).getTime());
-
-  const nonUfsGroups = formattedGroups.map((group) => ({
-    ...group,
-    images: group.images.filter((img) => img.application !== 'ufs'),
-  })).filter((group) => group.images.length > 0);
-
-  // Filter out UFS images from promoted carousel — they belong in the dedicated UFS section
-  const nonUfsPromotedImages = formattedPromotedImages.filter((img) => img.application !== 'ufs');
-
   return (
     <section id="downloads" className="mb-12 mt-8">
-      {nonUfsPromotedImages.length > 0 && (
+      {formattedPromotedImages.length > 0 && (
         <ScrollReveal>
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center">
@@ -308,18 +292,18 @@ export function BoardPageDownloads({
         </ScrollReveal>
       )}
 
-      {nonUfsPromotedImages.length > 0 && (
+      {formattedPromotedImages.length > 0 && (
         <ScrollReveal>
           <div
             className={`grid gap-4 mb-10 ${
-              nonUfsPromotedImages.length === 1
+              formattedPromotedImages.length === 1
                 ? 'grid-cols-1'
-                : nonUfsPromotedImages.length === 2
+                : formattedPromotedImages.length === 2
                   ? 'sm:grid-cols-2'
                   : 'sm:grid-cols-2 lg:grid-cols-3'
             }`}
           >
-            {nonUfsPromotedImages.map((img) => (
+            {formattedPromotedImages.map((img) => (
               <div
                 key={img.id}
                 className={`group relative rounded-2xl overflow-hidden transition-all hover:-translate-y-1 shadow-lg hover:shadow-2xl ${
@@ -448,7 +432,7 @@ export function BoardPageDownloads({
       )}
 
       <div className="space-y-8">
-        {nonUfsGroups.map((group, groupIdx) => (
+        {formattedGroups.map((group, groupIdx) => (
           <ScrollReveal key={group.category} delay={groupIdx * 0.05}>
             <div className="rounded-2xl border border-[rgb(var(--border)/0.5)] overflow-hidden bg-[rgb(var(--bg-el)/0.3)]">
               <div
@@ -618,157 +602,6 @@ export function BoardPageDownloads({
             </div>
           </ScrollReveal>
         ))}
-
-        {/* UFS Dedicated Applications */}
-        {ufsImages.length > 0 && (
-          <ScrollReveal>
-            <div className="rounded-2xl border border-[rgb(var(--border)/0.5)] overflow-hidden bg-[rgb(var(--bg-el)/0.3)]">
-              <div
-                className="flex items-center gap-3 px-5 py-4 border-b border-[rgb(var(--border)/0.3)]"
-                style={{ borderLeftWidth: 3, borderLeftColor: '#3b82f6' }}
-              >
-                <div
-                  className="w-8 h-8 rounded-lg flex items-center justify-center"
-                  style={{ backgroundColor: '#3b82f615' }}
-                >
-                  <HardDrive size={16} strokeWidth={2} stroke="#3b82f6" />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold">UFS</h3>
-                  <p className="text-[11px] text-[rgb(var(--fg-3))]">
-                    {tDownload('build_date')}:{' '}
-                    {(() => {
-                      try {
-                        return new Date(
-                          Math.max(
-                            ...ufsImages.map((img) =>
-                              new Date(img.download.updated_at).getTime(),
-                            ),
-                          ),
-                        ).toLocaleDateString(locale, {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric',
-                        });
-                      } catch {
-                        return '--';
-                      }
-                    })()}
-                  </p>
-                </div>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm min-w-[640px]">
-                  <thead>
-                    <tr className="text-[rgb(var(--fg-3))] text-[11px] uppercase tracking-wider">
-                      <th className="text-left py-2.5 px-5 font-semibold">
-                        {tDownload('distribution')}
-                      </th>
-                      <th className="text-left py-2.5 px-5 font-semibold">
-                        {tDownload('variant')}
-                      </th>
-                      <th className="text-left py-2.5 px-5 font-semibold">{tDownload('type')}</th>
-                      <th className="text-left py-2.5 px-5 font-semibold">{tDownload('kernel')}</th>
-                      <th className="text-left py-2.5 px-5 font-semibold">{tDownload('size')}</th>
-                      <th className="text-right py-2.5 px-5 font-semibold">
-                        {tDownload('download')}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[rgb(var(--border)/0.2)]">
-                    {ufsImages.map((img) => (
-                      <Fragment key={img.id}>
-                        <tr className="hover:bg-[rgb(var(--bg-sub)/0.5)] transition-colors">
-                          <td className="py-3 px-5">
-                            <div className="flex items-center gap-2.5">
-                              <img
-                                src={img.os?.family === 'ubuntu' ? '/ubuntu.png' : '/debian.svg'}
-                                alt={img.os?.family ?? 'linux'}
-                                width={20}
-                                height={20}
-                                className="w-5 h-5 object-contain shrink-0"
-                              />
-                              <div className="flex flex-col leading-tight">
-                                <span className="font-semibold whitespace-nowrap">
-                                  {img.os ? img.os.name : img.distribution}
-                                </span>
-                                {img.os && (
-                                  <span className="text-[10px] uppercase tracking-wider text-[rgb(var(--fg-3))]">
-                                    {img.distribution}
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                          </td>
-                          <td className="py-3 px-5 text-[rgb(var(--fg-2))]">
-                            {img.variantLabel}
-                          </td>
-                          <td className="py-3 px-5">
-                            <TypeCell img={img} />
-                          </td>
-                          <td className="py-3 px-5">
-                            <span
-                              className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold text-white"
-                              style={{
-                                background: `linear-gradient(135deg, ${kernelColor(img.kernel_branch)} 0%, ${kernelColor(img.kernel_branch)}cc 100%)`,
-                                boxShadow: `0 2px 6px ${kernelColor(img.kernel_branch)}44`,
-                              }}
-                            >
-                              {img.kernel_branch}
-                              <span style={{ opacity: 0.85 }}>{img.kernel_version}</span>
-                            </span>
-                          </td>
-                          <td className="py-3 px-5 text-xs font-medium text-[rgb(var(--fg-2))] tabular-nums whitespace-nowrap">
-                            {img.formattedSize}
-                          </td>
-                          <td className="py-3 px-5">
-                            <div className="flex items-center justify-end gap-2.5">
-                              <a
-                                href={img.download.file_url}
-                                onClick={fireDownloadEvent}
-                                className="inline-flex items-center gap-1.5 rounded-lg bg-[rgb(var(--brand))] px-3 py-1.5 text-xs font-bold text-white hover:bg-[rgb(var(--brand-hover))] transition-colors shadow-sm"
-                              >
-                                <Download size={11} strokeWidth={2.5} />
-                                {t('direct_download')}
-                              </a>
-                              <div className="flex items-center gap-1.5">
-                                {img.download.sha_url && (
-                                  <a
-                                    href={img.download.sha_url}
-                                    className="text-[10px] font-semibold text-[rgb(var(--fg-3))] hover:text-[rgb(var(--fg))] transition-colors px-1"
-                                  >
-                                    SHA
-                                  </a>
-                                )}
-                                {img.download.asc_url && (
-                                  <a
-                                    href={img.download.asc_url}
-                                    className="text-[10px] font-semibold text-[rgb(var(--fg-3))] hover:text-[rgb(var(--fg))] transition-colors px-1"
-                                  >
-                                    ASC
-                                  </a>
-                                )}
-                                {img.download.torrent_url && (
-                                  <a
-                                    href={img.download.torrent_url}
-                                    className="text-[10px] font-semibold text-[rgb(var(--fg-3))] hover:text-[rgb(var(--fg))] transition-colors px-1"
-                                  >
-                                    {tDownload('torrent')}
-                                  </a>
-                                )}
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                        <ExtrasStrip img={img} colSpan={6} />
-                      </Fragment>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </ScrollReveal>
-        )}
 
         {/* Rolling Release — same style as other category tables */}
         {formattedRollingGroups.length > 0 &&

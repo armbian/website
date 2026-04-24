@@ -298,6 +298,13 @@ export class Normalizer {
     for (const { asset, classification } of classified) {
       if (classification.kind !== 'primary') continue;
 
+      // UFS is a storage-hardware dimension, not an application overlay.
+      // Upstream occasionally tags these images with application='ufs';
+      // promote to storage='ufs' so the UI treats them uniformly with
+      // other storage/format variants (QEMU, rootfs, QDL).
+      const rawApplication = asset.file_application || null;
+      const isUfsApp = rawApplication === 'ufs';
+
       const key = `${asset.board_slug}::${classification.baseName}`;
       const image: Image = {
         id: hashString(asset.file_url),
@@ -307,11 +314,11 @@ export class Normalizer {
         release: asset.armbian_version,
         kernel_branch: asset.branch,
         kernel_version: asset.kernel_version,
-        application: asset.file_application || null,
+        application: isUfsApp ? null : rawApplication,
         promoted: asset.promoted === 'true',
         stability: asset.branch === 'edge' ? 'edge' : 'stable',
         format: classification.format,
-        storage: classification.storage,
+        storage: classification.storage ?? (isUfsApp ? 'ufs' : null),
         companions: [],
         display_variants: [],
         download: {
