@@ -40,6 +40,12 @@ COPY --from=build --chown=appuser:appgroup /app/apps/www/.next/standalone ./
 COPY --from=build --chown=appuser:appgroup /app/apps/www/.next/static ./apps/www/.next/static
 COPY --from=build --chown=appuser:appgroup /app/apps/www/public ./apps/www/public
 
+# Pre-create the media upload target with the right ownership so the
+# named volume `media-uploads`, which is mounted over this path at
+# runtime, inherits appuser:appgroup instead of defaulting to root:root.
+# Without this, Payload cannot write uploaded files (EACCES).
+RUN mkdir -p /app/apps/www/media && chown -R 1001:1001 /app/apps/www/media
+
 USER appuser
 EXPOSE 3000
 ENV PORT=3000
