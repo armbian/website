@@ -118,6 +118,24 @@ function extractStorageVariant(variant: string): {
   return { variant, storage: null };
 }
 
+/**
+ * Application tokens that upstream `file_application` is supposed to carry,
+ * used to recover the field from the filename when upstream leaves it empty.
+ * Upstream's parser misses app tokens that sit after an `-rcN` kernel RC
+ * suffix (radxa-nio-12l collabora) or before a `.burn.img.xz` flash target
+ * (jethubj* current); the 4 tokens below match the set actually emitted.
+ */
+const KNOWN_APPLICATIONS = ['kali', 'omv', 'homeassistant', 'openhab'] as const;
+const APPLICATION_FROM_FILENAME_REGEX = new RegExp(
+  `-(${KNOWN_APPLICATIONS.join('|')})(?=[._]|$)`,
+  'i',
+);
+
+function detectApplicationFromFilename(filename: string): string | null {
+  const m = filename.match(APPLICATION_FROM_FILENAME_REGEX);
+  return m ? m[1]!.toLowerCase() : null;
+}
+
 /** Strip a known primary suffix to obtain the shared base filename. */
 function extractPrimaryBaseName(filename: string): string {
   const suffixes = [
@@ -302,7 +320,9 @@ export class Normalizer {
       // Upstream occasionally tags these images with application='ufs';
       // promote to storage='ufs' so the UI treats them uniformly with
       // other storage/format variants (QEMU, rootfs, QDL).
-      const rawApplication = asset.file_application || null;
+      const filename = (asset.file_url.split('/').pop() ?? '').toLowerCase();
+      const rawApplication =
+        asset.file_application || detectApplicationFromFilename(filename) || null;
       const isUfsApp = rawApplication === 'ufs';
 
       const key = `${asset.board_slug}::${classification.baseName}`;
