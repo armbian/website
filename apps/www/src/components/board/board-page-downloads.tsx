@@ -109,7 +109,6 @@ interface BoardPageDownloadsProps {
   formattedRollingGroups?: FormattedGroup[];
   locale: string;
   tBoard?: unknown;
-  boardBuildCommand?: string;
   boardGithubUrl?: string;
 }
 

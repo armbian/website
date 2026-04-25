@@ -301,7 +301,10 @@ export class Normalizer {
           !enrichment.boardConfigSlugs?.size || enrichment.boardConfigSlugs.has(slug)
             ? boardGithubUrl(slug, supportTier)
             : null,
-        build_command: buildCommand(slug),
+        build_command:
+          !enrichment.boardConfigSlugs?.size || enrichment.boardConfigSlugs.has(slug)
+            ? buildCommand(slug)
+            : null,
         legacy_paths: this.getLegacyPaths(slug, enrichment.redirects),
         maintainers: boardMaintainers,
         kernel_branches: kernelBranches,

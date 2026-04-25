@@ -400,53 +400,54 @@ export default async function BoardPage({ params }: Props) {
           formattedGroups={formattedGroups}
           formattedRollingGroups={formattedRollingGroups}
           locale={locale}
-          boardBuildCommand={board.build_command}
           boardGithubUrl={board.github_url ?? undefined}
         />
 
-        <ScrollReveal>
-          <section className="mb-20">
-            <div className="rounded-2xl border border-[rgb(var(--border)/0.5)] overflow-hidden bg-[rgb(var(--bg-el)/0.3)]">
-              <div className="flex items-center gap-3 px-6 py-5 border-b border-[rgb(var(--border)/0.3)]">
-                <div className="w-10 h-10 rounded-xl bg-[rgb(var(--brand)/0.1)] flex items-center justify-center">
-                  <Code size={18} strokeWidth={2} stroke="rgb(var(--brand))" />
+        {board.build_command && (
+          <ScrollReveal>
+            <section className="mb-20">
+              <div className="rounded-2xl border border-[rgb(var(--border)/0.5)] overflow-hidden bg-[rgb(var(--bg-el)/0.3)]">
+                <div className="flex items-center gap-3 px-6 py-5 border-b border-[rgb(var(--border)/0.3)]">
+                  <div className="w-10 h-10 rounded-xl bg-[rgb(var(--brand)/0.1)] flex items-center justify-center">
+                    <Code size={18} strokeWidth={2} stroke="rgb(var(--brand))" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold">{t('build_from_source')}</h2>
+                    <p className="text-xs text-[rgb(var(--fg-3))]">{t('build_description')}</p>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-lg font-bold">{t('build_from_source')}</h2>
-                  <p className="text-xs text-[rgb(var(--fg-3))]">{t('build_description')}</p>
+                <div className="bg-[rgb(10_10_12)] p-5">
+                  <pre className="text-sm font-mono text-gray-300 overflow-x-auto whitespace-pre-wrap break-all">
+                    <span className="text-green-400 select-none">$ </span>
+                    {board.build_command}
+                  </pre>
                 </div>
-              </div>
-              <div className="bg-[rgb(10_10_12)] p-5">
-                <pre className="text-sm font-mono text-gray-300 overflow-x-auto whitespace-pre-wrap break-all">
-                  <span className="text-green-400 select-none">$ </span>
-                  {board.build_command}
-                </pre>
-              </div>
-              <div className="px-6 py-4 flex gap-4 border-t border-[rgb(var(--border)/0.2)]">
-                <a
-                  href={ARMBIAN_URLS.BUILD_DOCS}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm font-medium text-[rgb(var(--brand))] hover:underline inline-flex items-center gap-1.5"
-                >
-                  <BookOpen size={14} strokeWidth={2} />
-                  {t('build_docs')}
-                </a>
-                {board.github_url && (
+                <div className="px-6 py-4 flex gap-4 border-t border-[rgb(var(--border)/0.2)]">
                   <a
-                    href={board.github_url}
+                    href={ARMBIAN_URLS.BUILD_DOCS}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm font-medium text-[rgb(var(--brand))] hover:underline inline-flex items-center gap-1.5"
                   >
-                    <SiGithub size={14} />
-                    {t('board_config')}
+                    <BookOpen size={14} strokeWidth={2} />
+                    {t('build_docs')}
                   </a>
-                )}
+                  {board.github_url && (
+                    <a
+                      href={board.github_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm font-medium text-[rgb(var(--brand))] hover:underline inline-flex items-center gap-1.5"
+                    >
+                      <SiGithub size={14} />
+                      {t('board_config')}
+                    </a>
+                  )}
+                </div>
               </div>
-            </div>
-          </section>
-        </ScrollReveal>
+            </section>
+          </ScrollReveal>
+        )}
 
         {siblingBoards.length > 0 && (
           <ScrollReveal>
