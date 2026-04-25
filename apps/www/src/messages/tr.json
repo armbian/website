@@ -190,7 +190,11 @@
     "files": "dosya",
     "flash_alongside_main": "Ana görüntüyle birlikte yaz",
     "display_panel": "Ekran paneli",
-    "boot_for_display": "{label} için önyükleme"
+    "boot_for_display": "{label} için önyükleme",
+    "more_from": "<v>{vendor}</v>'den daha fazla",
+    "see_all_vendor": "Tüm {count} kartı gör",
+    "carousel_prev": "Önceki kartlar",
+    "carousel_next": "Sonraki kartlar"
   },
   "support": {
     "platinum": "Platin",

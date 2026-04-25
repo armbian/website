@@ -190,7 +190,11 @@
     "files": "filer",
     "flash_alongside_main": "Flasha tillsammans med huvudbilden",
     "display_panel": "Bildskärmspanel",
-    "boot_for_display": "Boot för {label}"
+    "boot_for_display": "Boot för {label}",
+    "more_from": "Mer från <v>{vendor}</v>",
+    "see_all_vendor": "Se alla {count} kort",
+    "carousel_prev": "Föregående kort",
+    "carousel_next": "Nästa kort"
   },
   "support": {
     "platinum": "Platina",

@@ -190,7 +190,11 @@
     "files": "Dateien",
     "flash_alongside_main": "Zusammen mit dem Hauptimage flashen",
     "display_panel": "Displaypanel",
-    "boot_for_display": "Boot für {label}"
+    "boot_for_display": "Boot für {label}",
+    "more_from": "Mehr von <v>{vendor}</v>",
+    "see_all_vendor": "Alle {count} Boards ansehen",
+    "carousel_prev": "Vorherige Boards",
+    "carousel_next": "Nächste Boards"
   },
   "support": {
     "platinum": "Platin",

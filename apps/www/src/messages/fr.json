@@ -190,7 +190,11 @@
     "files": "fichiers",
     "flash_alongside_main": "Flasher avec l'image principale",
     "display_panel": "Panneau d'affichage",
-    "boot_for_display": "Démarrage pour {label}"
+    "boot_for_display": "Démarrage pour {label}",
+    "more_from": "Plus de <v>{vendor}</v>",
+    "see_all_vendor": "Voir les {count} cartes",
+    "carousel_prev": "Cartes précédentes",
+    "carousel_next": "Cartes suivantes"
   },
   "support": {
     "platinum": "Platine",

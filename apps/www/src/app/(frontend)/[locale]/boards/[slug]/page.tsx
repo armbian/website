@@ -11,12 +11,13 @@ import { DonationBanner } from '@/components/board/donation-banner';
 import { BoardJsonLd } from '@/components/board/board-jsonld';
 import { BoardImage as BoardImageWithFallback } from '@/components/board/board-image';
 import { Link } from '@/i18n/navigation';
-import type { Image as BoardImage } from '@armbian/schemas';
+import type { BoardSummary, Image as BoardImage } from '@armbian/schemas';
 import { Download, BookOpen, Code, ArrowRight, ArrowLeft } from 'lucide-react';
 import { SiGithub } from '@icons-pack/react-simple-icons';
 import type { Metadata } from 'next';
 import { BoardPageDownloads } from '@/components/board/board-page-downloads';
 import { FlashGuideModal } from '@/components/board/flash-guide-modal';
+import { SiblingBoardsCarousel } from '@/components/board/sibling-boards-carousel';
 import { getPayload } from 'payload';
 import config from '@payload-config';
 import { sanitizeCmsHtml } from '@/lib/sanitize';
@@ -170,19 +171,39 @@ export default async function BoardPage({ params }: Props) {
     throw err;
   }
 
-  // Fetch flash guide from Payload CMS. Payload native localization
-  // handles the EN fallback via `fallbackLocale` — no manual two-step.
+  // Sibling boards (for the "More from X" carousel) and the Payload flash
+  // guide both depend only on `board` and are independent — fire them in
+  // parallel to save a round trip on every page render.
+  const [siblingResult, flashGuideResult] = await Promise.allSettled([
+    api.getBoards({
+      vendor: board.vendor_slug,
+      sort: 'popularity',
+      // 13 = 12 siblings the carousel can show + room to filter out the
+      // current board if it appears in the popularity ordering.
+      limit: 13,
+    }),
+    (async () => {
+      const payload = await getPayload({ config });
+      return payload.find({
+        collection: 'flash-guides',
+        where: { boardSlug: { equals: slug } },
+        locale: locale as 'en' | 'it',
+        fallbackLocale: 'en',
+        limit: 1,
+      });
+    })(),
+  ]);
+
+  let siblingBoards: BoardSummary[] = [];
+  let vendorBoardCount = 0;
+  if (siblingResult.status === 'fulfilled') {
+    vendorBoardCount = siblingResult.value.meta.total ?? 0;
+    siblingBoards = siblingResult.value.data.filter((b) => b.slug !== board.slug).slice(0, 12);
+  }
+
   let flashGuide: { title: string; content: string; prerequisites: string[] } | null = null;
-  try {
-    const payload = await getPayload({ config });
-    const result = await payload.find({
-      collection: 'flash-guides',
-      where: { boardSlug: { equals: slug } },
-      locale: locale as 'en' | 'it',
-      fallbackLocale: 'en',
-      limit: 1,
-    });
-    const doc = result.docs[0];
+  if (flashGuideResult.status === 'fulfilled') {
+    const doc = flashGuideResult.value.docs[0];
     if (doc) {
       const prereqs = Array.isArray(doc.prerequisites)
         ? doc.prerequisites.map((p: { item?: string }) => p.item ?? '')
@@ -202,8 +223,6 @@ export default async function BoardPage({ params }: Props) {
         prerequisites: prereqs.filter(Boolean),
       };
     }
-  } catch {
-    /* Payload not available — skip flash guide */
   }
 
   const isTrunk = (img: BoardImage) => img.release.toLowerCase().includes('trunk');
@@ -284,9 +303,12 @@ export default async function BoardPage({ params }: Props) {
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <span className="text-[11px] text-[rgb(var(--brand))] font-mono font-bold uppercase tracking-widest mb-2 block">
+                  <Link
+                    href={`/vendors/${board.vendor_slug}`}
+                    className="text-[11px] text-[rgb(var(--brand))] font-mono font-bold uppercase tracking-widest mb-2 inline-block hover:underline"
+                  >
                     {board.vendor_name}
-                  </span>
+                  </Link>
                   <div className="flex flex-wrap items-center gap-3 mb-3">
                     <h1 className="text-fluid-2xl font-black tracking-tight">{board.name}</h1>
                     <SupportBadge tier={board.support_tier} />
@@ -425,6 +447,19 @@ export default async function BoardPage({ params }: Props) {
             </div>
           </section>
         </ScrollReveal>
+
+        {siblingBoards.length > 0 && (
+          <ScrollReveal>
+            <section className="mb-20">
+              <SiblingBoardsCarousel
+                boards={siblingBoards}
+                vendorName={board.vendor_name}
+                vendorSlug={board.vendor_slug}
+                vendorBoardCount={vendorBoardCount}
+              />
+            </section>
+          </ScrollReveal>
+        )}
 
         <DonationBanner />
       </div>

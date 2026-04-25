@@ -200,7 +200,11 @@
     "files": "file",
     "flash_alongside_main": "Da flashare insieme all'immagine principale",
     "display_panel": "Pannello del display",
-    "boot_for_display": "Avvio per {label}"
+    "boot_for_display": "Avvio per {label}",
+    "more_from": "Altre di <v>{vendor}</v>",
+    "see_all_vendor": "Vedi tutte le {count} board",
+    "carousel_prev": "Board precedenti",
+    "carousel_next": "Board successive"
   },
   "support": {
     "platinum": "Platino",

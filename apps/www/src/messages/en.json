@@ -200,7 +200,11 @@
     "files": "files",
     "flash_alongside_main": "Flash alongside the main image",
     "display_panel": "Display panel",
-    "boot_for_display": "Boot for {label}"
+    "boot_for_display": "Boot for {label}",
+    "more_from": "More from <v>{vendor}</v>",
+    "see_all_vendor": "See all {count} boards",
+    "carousel_prev": "Previous boards",
+    "carousel_next": "Next boards"
   },
   "support": {
     "platinum": "Platinum",

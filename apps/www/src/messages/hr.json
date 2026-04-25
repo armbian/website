@@ -190,7 +190,11 @@
     "files": "datoteka",
     "flash_alongside_main": "Ispiši zajedno s glavnom slikom",
     "display_panel": "Ploča zaslona",
-    "boot_for_display": "Pokretanje za {label}"
+    "boot_for_display": "Pokretanje za {label}",
+    "more_from": "Više od <v>{vendor}</v>",
+    "see_all_vendor": "Prikaži svih {count} ploča",
+    "carousel_prev": "Prethodne ploče",
+    "carousel_next": "Sljedeće ploče"
   },
   "support": {
     "platinum": "Platinasta",

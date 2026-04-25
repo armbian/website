@@ -190,7 +190,11 @@
     "files": "ファイル",
     "flash_alongside_main": "メインイメージと一緒に書き込む",
     "display_panel": "ディスプレイパネル",
-    "boot_for_display": "{label} 用ブート"
+    "boot_for_display": "{label} 用ブート",
+    "more_from": "<v>{vendor}</v> の他のボード",
+    "see_all_vendor": "{count} 件すべて表示",
+    "carousel_prev": "前のボード",
+    "carousel_next": "次のボード"
   },
   "support": {
     "platinum": "プラチナ",

@@ -190,7 +190,11 @@
     "files": "plików",
     "flash_alongside_main": "Wgraj razem z obrazem głównym",
     "display_panel": "Panel wyświetlacza",
-    "boot_for_display": "Rozruch dla {label}"
+    "boot_for_display": "Rozruch dla {label}",
+    "more_from": "Więcej od <v>{vendor}</v>",
+    "see_all_vendor": "Zobacz wszystkie {count} płytki",
+    "carousel_prev": "Poprzednie płytki",
+    "carousel_next": "Następne płytki"
   },
   "support": {
     "platinum": "Platynowe",

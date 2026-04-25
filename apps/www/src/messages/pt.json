@@ -190,7 +190,11 @@
     "files": "arquivos",
     "flash_alongside_main": "Gravar junto com a imagem principal",
     "display_panel": "Painel de exibição",
-    "boot_for_display": "Boot para {label}"
+    "boot_for_display": "Boot para {label}",
+    "more_from": "Mais de <v>{vendor}</v>",
+    "see_all_vendor": "Ver todas as {count} placas",
+    "carousel_prev": "Placas anteriores",
+    "carousel_next": "Próximas placas"
   },
   "support": {
     "platinum": "Platina",

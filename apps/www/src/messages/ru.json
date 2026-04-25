@@ -190,7 +190,11 @@
     "files": "файлов",
     "flash_alongside_main": "Прошить вместе с основным образом",
     "display_panel": "Панель дисплея",
-    "boot_for_display": "Загрузка для {label}"
+    "boot_for_display": "Загрузка для {label}",
+    "more_from": "Ещё от <v>{vendor}</v>",
+    "see_all_vendor": "Показать все {count} платы",
+    "carousel_prev": "Предыдущие платы",
+    "carousel_next": "Следующие платы"
   },
   "support": {
     "platinum": "Платиновая",

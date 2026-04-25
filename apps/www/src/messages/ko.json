@@ -190,7 +190,11 @@
     "files": "파일",
     "flash_alongside_main": "메인 이미지와 함께 플래시",
     "display_panel": "디스플레이 패널",
-    "boot_for_display": "{label} 용 부트"
+    "boot_for_display": "{label} 용 부트",
+    "more_from": "<v>{vendor}</v>의 다른 보드",
+    "see_all_vendor": "{count}개 모두 보기",
+    "carousel_prev": "이전 보드",
+    "carousel_next": "다음 보드"
   },
   "support": {
     "platinum": "플래티넘",

@@ -190,7 +190,11 @@
     "files": "файлів",
     "flash_alongside_main": "Прошити разом з основним образом",
     "display_panel": "Панель дисплея",
-    "boot_for_display": "Завантаження для {label}"
+    "boot_for_display": "Завантаження для {label}",
+    "more_from": "Більше від <v>{vendor}</v>",
+    "see_all_vendor": "Показати всі {count} плати",
+    "carousel_prev": "Попередні плати",
+    "carousel_next": "Наступні плати"
   },
   "support": {
     "platinum": "Платинова",

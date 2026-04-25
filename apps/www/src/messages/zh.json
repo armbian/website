@@ -190,7 +190,11 @@
     "files": "文件",
     "flash_alongside_main": "与主镜像一起烧录",
     "display_panel": "显示面板",
-    "boot_for_display": "{label} 启动"
+    "boot_for_display": "{label} 启动",
+    "more_from": "更多 <v>{vendor}</v> 产品",
+    "see_all_vendor": "查看全部 {count} 块板子",
+    "carousel_prev": "上一组板子",
+    "carousel_next": "下一组板子"
   },
   "support": {
     "platinum": "铂金",

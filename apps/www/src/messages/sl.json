@@ -190,7 +190,11 @@
     "files": "datotek",
     "flash_alongside_main": "Zapiši skupaj z glavno sliko",
     "display_panel": "Zaslonska plošča",
-    "boot_for_display": "Zagon za {label}"
+    "boot_for_display": "Zagon za {label}",
+    "more_from": "Več iz <v>{vendor}</v>",
+    "see_all_vendor": "Poglej vseh {count} plošč",
+    "carousel_prev": "Prejšnje plošče",
+    "carousel_next": "Naslednje plošče"
   },
   "support": {
     "platinum": "Platinasta",

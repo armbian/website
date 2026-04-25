@@ -190,7 +190,11 @@
     "files": "archivos",
     "flash_alongside_main": "Flashear junto con la imagen principal",
     "display_panel": "Panel de pantalla",
-    "boot_for_display": "Arranque para {label}"
+    "boot_for_display": "Arranque para {label}",
+    "more_from": "Más de <v>{vendor}</v>",
+    "see_all_vendor": "Ver las {count} placas",
+    "carousel_prev": "Placas anteriores",
+    "carousel_next": "Placas siguientes"
   },
   "support": {
     "platinum": "Platino",

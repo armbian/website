@@ -190,7 +190,11 @@
     "files": "bestanden",
     "flash_alongside_main": "Samen met het hoofdimage flashen",
     "display_panel": "Displaypaneel",
-    "boot_for_display": "Boot voor {label}"
+    "boot_for_display": "Boot voor {label}",
+    "more_from": "Meer van <v>{vendor}</v>",
+    "see_all_vendor": "Bekijk alle {count} borden",
+    "carousel_prev": "Vorige borden",
+    "carousel_next": "Volgende borden"
   },
   "support": {
     "platinum": "Platina",
