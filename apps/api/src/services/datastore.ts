@@ -301,6 +301,13 @@ export class DataStore {
     return this.partnerLogoSources.get(slug);
   }
 
+  getPartnerLogoSourceEntries(): Array<{ slug: string; sourceUrl: string }> {
+    return [...this.partnerLogoSources.entries()].map(([slug, sourceUrl]) => ({
+      slug,
+      sourceUrl,
+    }));
+  }
+
   getMaintainers(): Maintainer[] {
     return this.maintainersList;
   }

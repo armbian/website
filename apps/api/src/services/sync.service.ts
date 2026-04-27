@@ -269,13 +269,17 @@ export class SyncService {
     // Persist to disk for fast startup next time
     await this.saveToCache();
 
-    // Revalidate board + vendor logos against the CDN using conditional
-    // GETs. Runs in the background — a long CDN scan must not delay the
-    // sync's visible effects (store updates, Caddy reload).
+    // Revalidate board, vendor and partner logos against their upstream
+    // using conditional GETs. Runs in the background — a long CDN scan
+    // must not delay the sync's visible effects (store updates, Caddy
+    // reload). Partner logos come from variable hosts (Zoho CRM
+    // attachments, partner CDNs) and would otherwise stay cached
+    // indefinitely after the first lazy fetch.
     const boardSlugs = this.store.getBoards({ sort: 'popularity' }).boards.map((b) => b.slug);
     const vendorSlugs = this.store.getVendors().map((v) => v.slug);
+    const partnerEntries = this.store.getPartnerLogoSourceEntries();
     void this.imageCache
-      .refreshImages(boardSlugs, vendorSlugs)
+      .refreshImages(boardSlugs, vendorSlugs, partnerEntries)
       .catch((err) => this.log.warn({ err }, 'Image cache refresh failed'));
 
     const duration = Date.now() - start;

@@ -86,7 +86,19 @@ const SAFE_SLUG_RE = /^[a-z0-9][a-z0-9._-]*$/;
 const STANDARD_IMAGE_SIZE = '480';
 const REFRESH_CONCURRENCY = 10;
 
-type ImageType = 'board' | 'vendor';
+type ImageType = 'board' | 'vendor' | 'partner';
+
+/** Partner logo entry — slug + upstream source URL from partners.json `logo_url` */
+export interface PartnerLogoEntry {
+  slug: string;
+  sourceUrl: string;
+}
+
+interface ImageRefreshTask {
+  type: ImageType;
+  slug: string;
+  sourceUrl?: string;
+}
 
 type CdnFetchResult =
   | { kind: 'unchanged' }
@@ -130,7 +142,9 @@ export class ImageCache {
       // Not cached — fetch from CDN
     }
 
-    const fetched = await this.fetchFromCdn(this.cdnUrlFor(type, slug, size));
+    const url = this.cdnUrlFor(type, slug, { size });
+    if (!url) return null;
+    const fetched = await this.fetchFromCdn(url);
     if (fetched.kind !== 'ok') return null;
 
     await this.persistImage(filePath, fetched.buffer, fetched.etag, fetched.lastModified);
@@ -139,15 +153,19 @@ export class ImageCache {
   }
 
   /**
-   * Revalidate every cached board + vendor image against the CDN using
-   * conditional GETs (If-None-Match / If-Modified-Since). Files the CDN
-   * reports as unchanged (304) are kept; changed files (200) are rewritten
-   * on disk. Missing slugs are fetched fresh. Called at the end of every
-   * sync so `./manage.sh sync` picks up upstream logo updates without
-   * re-downloading the whole catalogue. Re-entrant calls are skipped so
-   * a long refresh can't overlap with the next cron cycle.
+   * Revalidate every cached board, vendor and partner image against its
+   * upstream using conditional GETs (If-None-Match / If-Modified-Since).
+   * Files the upstream reports as unchanged (304) are kept; changed files
+   * (200) are rewritten on disk. Missing slugs are fetched fresh. Called
+   * at the end of every sync so `./manage.sh sync` picks up upstream logo
+   * updates without re-downloading the whole catalogue. Re-entrant calls
+   * are skipped so a long refresh can't overlap with the next cron cycle.
    */
-  async refreshImages(boards: string[], vendors: string[]): Promise<void> {
+  async refreshImages(
+    boards: string[],
+    vendors: string[],
+    partners: PartnerLogoEntry[] = [],
+  ): Promise<void> {
     if (this.isRefreshing) {
       this.log.debug('Image cache refresh already in progress — skipping');
       return;
@@ -155,9 +173,10 @@ export class ImageCache {
     this.isRefreshing = true;
 
     try {
-      const tasks: Array<{ type: ImageType; slug: string }> = [
+      const tasks: ImageRefreshTask[] = [
         ...boards.map((slug) => ({ type: 'board' as const, slug })),
         ...vendors.map((slug) => ({ type: 'vendor' as const, slug })),
+        ...partners.map(({ slug, sourceUrl }) => ({ type: 'partner' as const, slug, sourceUrl })),
       ];
       const counts: Record<'unchanged' | 'updated' | 'fetched' | 'failed', number> = {
         unchanged: 0,
@@ -165,8 +184,8 @@ export class ImageCache {
         fetched: 0,
         failed: 0,
       };
-      const results = await runBatched(tasks, REFRESH_CONCURRENCY, ({ type, slug }) =>
-        this.revalidateOne(type, slug),
+      const results = await runBatched(tasks, REFRESH_CONCURRENCY, (task) =>
+        this.revalidateOne(task),
       );
       for (const r of results) {
         counts[r.status === 'fulfilled' ? r.value : 'failed']++;
@@ -178,11 +197,13 @@ export class ImageCache {
   }
 
   private async revalidateOne(
-    type: ImageType,
-    slug: string,
+    task: ImageRefreshTask,
   ): Promise<'unchanged' | 'updated' | 'fetched' | 'failed'> {
+    const { type, slug, sourceUrl } = task;
     if (!SAFE_SLUG_RE.test(slug)) return 'failed';
-    const filePath = this.imagePath(type, slug, STANDARD_IMAGE_SIZE);
+    const url = this.cdnUrlFor(type, slug, { sourceUrl });
+    if (!url) return 'failed';
+    const filePath = this.imagePath(type, slug);
 
     const onDisk = await this.readMeta(filePath);
     const headers: Record<string, string> = {};
@@ -190,10 +211,7 @@ export class ImageCache {
     if (onDisk?.lastModified) headers['If-Modified-Since'] = onDisk.lastModified;
     const wasCached = onDisk !== null;
 
-    const result = await this.fetchFromCdn(
-      this.cdnUrlFor(type, slug, STANDARD_IMAGE_SIZE),
-      headers,
-    );
+    const result = await this.fetchFromCdn(url, headers);
     switch (result.kind) {
       case 'unchanged':
         return 'unchanged';
@@ -206,14 +224,30 @@ export class ImageCache {
     }
   }
 
-  private imagePath(type: ImageType, slug: string, size: string): string {
+  private imagePath(type: ImageType, slug: string, size: string = STANDARD_IMAGE_SIZE): string {
+    if (type === 'partner') return join(this.cacheDir, 'partner', `${slug}.png`);
     return join(this.cacheDir, type, size, `${slug}.png`);
   }
 
-  private cdnUrlFor(type: ImageType, slug: string, size: string): string {
-    return type === 'board'
-      ? boardImageUrl(slug, size, { cdn: true })
-      : vendorLogoUrl(slug, size, { cdn: true });
+  /**
+   * Resolve the upstream URL for a cached asset.
+   * - board/vendor: derived from slug + size against the Armbian CDN.
+   * - partner: passed through from `partners.json` `logo_url` (variable host).
+   */
+  private cdnUrlFor(
+    type: ImageType,
+    slug: string,
+    opts: { size?: string; sourceUrl?: string } = {},
+  ): string | null {
+    const size = opts.size ?? STANDARD_IMAGE_SIZE;
+    switch (type) {
+      case 'board':
+        return boardImageUrl(slug, size, { cdn: true });
+      case 'vendor':
+        return vendorLogoUrl(slug, size, { cdn: true });
+      case 'partner':
+        return opts.sourceUrl ?? null;
+    }
   }
 
   private async persistImage(
@@ -328,37 +362,34 @@ export class ImageCache {
     }
   }
 
-  /** Get cached partner logo or fetch from source URL and cache it by slug */
+  /**
+   * Serve cached partner logo (lazy fetch on cold cache).
+   * Background revalidation against the upstream source is handled by
+   * `refreshImages` after every sync — same conditional-GET path used for
+   * board and vendor logos.
+   */
   async getPartnerImage(
     slug: string,
     sourceUrl: string,
   ): Promise<{ data: Buffer; contentType: string } | null> {
     if (!SAFE_SLUG_RE.test(slug)) return null;
-    const subDir = join(this.cacheDir, 'partner');
-    const filePath = join(subDir, `${slug}.png`);
+    const filePath = this.imagePath('partner', slug);
 
     try {
       const data = await readFile(filePath);
-      return { data, contentType: 'image/png' };
+      if (data.length > 4 && data[0] === 0x89 && data[1] === 0x50) {
+        return { data, contentType: 'image/png' };
+      }
+      await unlink(filePath).catch(() => {});
     } catch {
       // Not cached
     }
 
-    try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
-      const res = await fetch(sourceUrl, { signal: controller.signal, redirect: 'follow' });
-      clearTimeout(timeout);
-      if (!res.ok) return null;
+    const fetched = await this.fetchFromCdn(sourceUrl);
+    if (fetched.kind !== 'ok') return null;
+    if (fetched.buffer.byteLength > MAX_PROXY_RESPONSE_BYTES) return null;
 
-      const buffer = Buffer.from(await res.arrayBuffer());
-      if (buffer.byteLength > MAX_PROXY_RESPONSE_BYTES) return null;
-
-      await mkdir(subDir, { recursive: true });
-      await writeFile(filePath, buffer);
-      return { data: buffer, contentType: res.headers.get('content-type') ?? 'image/png' };
-    } catch {
-      return null;
-    }
+    await this.persistImage(filePath, fetched.buffer, fetched.etag, fetched.lastModified);
+    return { data: fetched.buffer, contentType: fetched.contentType };
   }
 }
