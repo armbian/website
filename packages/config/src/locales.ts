@@ -73,3 +73,20 @@ export const LOCALE_COUNTRY_MAP: Record<Locale, string> = {
   sl: 'SI',
   sv: 'SE',
 };
+
+/** Country code → Twemoji SVG URL on jsDelivr. Loads only after the user
+ *  grants functional cookie consent — see ConsentGate usage. */
+export function twemojiFlagUrl(countryCode: string): string {
+  const codepoints = [...countryCode.toUpperCase()]
+    .map((c) => (0x1f1e6 + c.charCodeAt(0) - 65).toString(16))
+    .join('-');
+  return `https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/${codepoints}.svg`;
+}
+
+/** Country code → native unicode flag emoji (no CDN). Used as the
+ *  pre-consent fallback. */
+export function flagEmoji(countryCode: string): string {
+  return [...countryCode.toUpperCase()]
+    .map((c) => String.fromCodePoint(0x1f1e6 + c.charCodeAt(0) - 65))
+    .join('');
+}

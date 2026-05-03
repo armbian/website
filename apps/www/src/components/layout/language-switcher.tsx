@@ -8,9 +8,12 @@ import {
   LOCALE_COUNTRY_MAP,
   DOMAIN_LOCALE_MAP,
   DEFAULT_LOCALE,
+  flagEmoji,
+  twemojiFlagUrl,
 } from '@armbian/config';
 import { useRouter, usePathname } from '@/i18n/navigation';
 import { ChevronDown } from 'lucide-react';
+import { ConsentGate } from '@/components/consent/consent-gate';
 
 /** Reverse map: locale → its dedicated domain (if any). */
 const LOCALE_DOMAIN_MAP = Object.fromEntries(
@@ -41,28 +44,32 @@ function isProductionHost(): boolean {
   return KNOWN_DOMAINS.has(host);
 }
 
-/** Get Twemoji CDN URL for a country code flag */
-function getFlagUrl(countryCode: string): string {
-  // Country code → regional indicator symbols → codepoints
-  const codepoints = [...countryCode.toUpperCase()]
-    .map((c) => (0x1f1e6 + c.charCodeAt(0) - 65).toString(16))
-    .join('-');
-  return `https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/${codepoints}.svg`;
-}
-
 function FlagIcon({ locale, size = 18 }: { locale: string; size?: number }) {
   const country = LOCALE_COUNTRY_MAP[locale as keyof typeof LOCALE_COUNTRY_MAP];
   if (!country) return null;
+
+  const fallback = (
+    <span
+      aria-hidden="true"
+      className="inline-flex items-center justify-center leading-none"
+      style={{ width: size, height: size, fontSize: Math.round(size * 0.95) }}
+    >
+      {flagEmoji(country)}
+    </span>
+  );
+
   return (
-    <img
-      src={getFlagUrl(country)}
-      alt=""
-      width={size}
-      height={size}
-      className="inline-block"
-      style={{ width: size, height: size }}
-      loading="lazy"
-    />
+    <ConsentGate category="functional" fallback={fallback}>
+      <img
+        src={twemojiFlagUrl(country)}
+        alt=""
+        width={size}
+        height={size}
+        className="inline-block"
+        style={{ width: size, height: size }}
+        loading="lazy"
+      />
+    </ConsentGate>
   );
 }
 

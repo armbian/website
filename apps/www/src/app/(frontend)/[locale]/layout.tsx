@@ -9,6 +9,8 @@ import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { ScrollToTop } from '@/components/layout/scroll-to-top';
 import { AnnouncementsBanner } from '@/components/announcements-banner';
+import { CookieBanner } from '@/components/consent/cookie-banner';
+import { ConsentProvider } from '@/components/consent/consent-provider';
 import type { Metadata } from 'next';
 
 interface LocaleLayoutProps {
@@ -92,11 +94,14 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
       <body className="min-h-screen antialiased font-sans">
         <NextIntlClientProvider messages={messages} locale={locale}>
           <ThemeProvider>
-            <Navbar />
-            <AnnouncementsBanner readMoreLabel={tAnnouncements('read_more')} />
-            <main>{children}</main>
-            <Footer />
-            <ScrollToTop />
+            <ConsentProvider>
+              <Navbar />
+              <AnnouncementsBanner readMoreLabel={tAnnouncements('read_more')} />
+              <main>{children}</main>
+              <Footer />
+              <ScrollToTop />
+              <CookieBanner />
+            </ConsentProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>
