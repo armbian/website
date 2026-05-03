@@ -45,10 +45,11 @@ const config: NextConfig = {
     ];
   },
   async rewrites() {
+    const apiUrl = process.env['API_URL'] ?? 'http://localhost:3001';
     return [
       {
-        source: '/api/v1/images/:path*',
-        destination: `${process.env['API_URL'] ?? 'http://localhost:3001'}/api/v1/images/:path*`,
+        source: '/api/v1/:path*',
+        destination: `${apiUrl}/api/v1/:path*`,
       },
     ];
   },

@@ -54,7 +54,7 @@ docker compose logs www | grep "Default admin user created"
 apps/
   api/                Fastify 5 REST API (boards, images, vendors, search)
   www/                Next.js 16 + Payload CMS 3 (SSR, 17 locales)
-  imager/             Next.js 16 standalone — imager.armbian.com landing page
+                      Also serves imager.armbian.com via host-rewrite to /imager
 
 packages/
   schemas/            Zod schemas — single source of truth for types
@@ -63,11 +63,15 @@ packages/
   theme/              CSS variables + Tailwind preset
 ```
 
-The `imager` app consumes the same API as `www` via `@armbian/api-client`
-(method `apiClient.getBoards()` for the demo manufacturer carousel and
-`apiClient.getImagerRepo()` for the GitHub release info — proxied
-through `/api/v1/imager/repo`). It does not depend on Payload, Postgres,
-or any locale infrastructure.
+The `/imager` route lives at `apps/www/src/app/(frontend)/imager/`. It
+reuses www's Navbar/Footer/ThemeProvider but stays EN-only (excluded from
+the next-intl matcher). `imager.armbian.com` resolves there via two
+pieces: Caddy proxies the hostname to `www:3000` with a forced `Host`
+header, and `apps/www/middleware.ts` rewrites `/` to `/imager` when the
+host matches. The interactive app-mockup consumes
+`apiClient.getBoards()` and `apiClient.getImagerRepo()` from the same
+`@armbian/api-client` everything else uses — no separate runtime, no
+Payload or Postgres dependency.
 
 Turborepo + pnpm workspaces. All code runs in Docker containers.
 
@@ -94,7 +98,8 @@ CSS isolation between the website and Payload admin:
 ```
 apps/www/src/app/
 ├── (frontend)/           Armbian website — imports globals.css (Tailwind)
-│   └── [locale]/         i18n pages
+│   ├── [locale]/         i18n pages (17 locales)
+│   └── imager/           imager.armbian.com landing (EN-only, no locale prefix)
 └── (payload)/            Payload admin — uses its own CSS
     ├── admin/            Admin UI at /admin
     └── api/              Payload REST API
@@ -495,7 +500,7 @@ Common causes: upstream JSON changed format, Zod schema mismatch, rate limiting 
 
 ### Port Conflicts
 
-The www service uses port 3000. The API and PostgreSQL are internal only (no host ports). If 3000 is in use:
+Caddy publishes 80, 443, 8080 (API), 8081 (imager hostname). The www, api, and postgres containers are internal only. If one of the published ports is in use:
 
 ```bash
 lsof -i :80

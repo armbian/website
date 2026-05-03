@@ -20,7 +20,11 @@ const externalLinks = [
   { key: 'community', href: ARMBIAN_URLS.FORUM },
 ] as const;
 
-export function Navbar() {
+interface NavbarProps {
+  showLanguageSwitcher?: boolean;
+}
+
+export function Navbar({ showLanguageSwitcher = true }: NavbarProps = {}) {
   const t = useTranslations('nav');
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
@@ -116,7 +120,7 @@ export function Navbar() {
 
           <div className="ml-2 flex items-center gap-1.5 border-l border-[rgb(var(--border))] pl-4">
             <ThemeToggle />
-            <LanguageSwitcher />
+            {showLanguageSwitcher && <LanguageSwitcher />}
           </div>
         </div>
 
@@ -164,9 +168,11 @@ export function Navbar() {
                 <IconExternalLink size={12} className="opacity-40" />
               </a>
             ))}
-            <div className="pt-3 mt-2 border-t border-[rgb(var(--border)/0.3)]">
-              <LanguageSwitcher />
-            </div>
+            {showLanguageSwitcher && (
+              <div className="pt-3 mt-2 border-t border-[rgb(var(--border)/0.3)]">
+                <LanguageSwitcher />
+              </div>
+            )}
           </div>
         </div>
       )}

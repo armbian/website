@@ -41,7 +41,12 @@ export function HeroBoards({ boards }: { boards: Board[] }) {
     const pool = available.length >= 3 ? available : boards;
     const next = shuffle(pool).slice(0, 3);
 
-    // Fade out, swap, fade in
+    // Warm the browser cache during the fade-out so the swap is instant.
+    next.forEach((b) => {
+      const img = new window.Image();
+      img.src = b.image_url;
+    });
+
     setFading(true);
     setTimeout(() => {
       setGroup(next);

@@ -73,27 +73,6 @@ services:
       retries: 5
       start_period: 15s
 
-  imager:
-    image: ghcr.io/armbian/website/imager:latest
-    build:
-      context: .
-      dockerfile: apps/imager/Dockerfile
-      args:
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-}
-    restart: unless-stopped
-    environment:
-      - NODE_ENV=production
-      - API_URL=http://api:3001
-    depends_on:
-      api:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://localhost:3002/').then(r=>{if(!r.ok)throw 1})"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 15s
-
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
@@ -101,7 +80,6 @@ services:
       - "80:80"
       - "443:443"
       - "${API_HOST_PORT:-8080}:8080"
-      - "${IMAGER_HOST_PORT:-8081}:8081"
     volumes:
       - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy-snippets:/etc/caddy/snippets:ro
@@ -121,8 +99,6 @@ services:
       www:
         condition: service_healthy
       api:
-        condition: service_healthy
-      imager:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:2019/config/"]

@@ -24,19 +24,18 @@ cp .env.example .env
 ./manage.sh up
 ```
 
-The site is available at `http://localhost`. The CMS admin panel is at `http://localhost/admin`. The Imager landing site is at `http://localhost:8081`. The API is exposed at `http://localhost:8080/api/v1/` for Imager and third-party clients.
+The site is available at `http://localhost` (or `http://localhost/imager`). The CMS admin panel is at `http://localhost/admin`. The imager landing is also reachable at `http://localhost:8081` — the same www container, host-routed to `/imager`. The API is exposed at `http://localhost:8080/api/v1/` for third-party clients.
 
 ## Architecture
 
-| Component             | Tech                                            | Purpose                                              |
-| --------------------- | ----------------------------------------------- | ---------------------------------------------------- |
-| `apps/www`            | Next.js 16, React 19, Payload CMS 3, Tailwind 4 | Public website — SSR, 17 locales, CMS admin          |
-| `apps/api`            | Fastify 5, Node 22                              | REST API — boards, images, vendors, partners, search |
-| `apps/imager`         | Next.js 16, React 19, Tailwind 4                | `imager.armbian.com` landing site                    |
-| `packages/schemas`    | Zod                                             | Shared type definitions and validation               |
-| `packages/config`     | TypeScript                                      | URLs, constants, support tiers, locale config        |
-| `packages/api-client` | TypeScript                                      | Typed HTTP client for the API                        |
-| `packages/theme`      | CSS / Tailwind                                  | Design tokens and Tailwind preset                    |
+| Component             | Tech                                            | Purpose                                                                    |
+| --------------------- | ----------------------------------------------- | -------------------------------------------------------------------------- |
+| `apps/www`            | Next.js 16, React 19, Payload CMS 3, Tailwind 4 | Public website + `imager.armbian.com` landing — SSR, 17 locales, CMS admin |
+| `apps/api`            | Fastify 5, Node 22                              | REST API — boards, images, vendors, partners, search                       |
+| `packages/schemas`    | Zod                                             | Shared type definitions and validation                                     |
+| `packages/config`     | TypeScript                                      | URLs, constants, support tiers, locale config                              |
+| `packages/api-client` | TypeScript                                      | Typed HTTP client for the API                                              |
+| `packages/theme`      | CSS / Tailwind                                  | Design tokens and Tailwind preset                                          |
 
 ### How Data Flows
 
@@ -85,21 +84,20 @@ Three GitHub Actions workflows form a gated pipeline:
 | **Release** (`release.yml`) | Tag `v*.*.*`                  | CI gate, build multi-arch Docker images, push to GHCR, create GitHub Release |
 | **Deploy** (`deploy.yml`)   | Release completes (or manual) | SSH into production, `git checkout <tag>`, `./manage.sh deploy`              |
 
-To release: tag a commit (`git tag v0.5.0 && git push --tags`). CI runs first; if it passes, Docker images are built for `linux/amd64` and `linux/arm64`, pushed to `ghcr.io/armbian/website/{api,www,imager}`, and a GitHub Release with auto-generated notes is created. The deploy workflow then pulls the new images on the server.
+To release: tag a commit (`git tag v0.5.0 && git push --tags`). CI runs first; if it passes, Docker images are built for `linux/amd64` and `linux/arm64`, pushed to `ghcr.io/armbian/website/{api,www}`, and a GitHub Release with auto-generated notes is created. The deploy workflow then pulls the new images on the server.
 
 Required GitHub secrets for deploy: `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_KEY` (SSH private key), `GHCR_TOKEN`.
 
 ## Deployment
 
-Five Docker Compose services:
+Four Docker Compose services:
 
-| Service    | Port                        | Notes                                                              |
-| ---------- | --------------------------- | ------------------------------------------------------------------ |
-| `caddy`    | `80`, `443`, `8080`, `8081` | Reverse proxy — automatic HTTPS when real domains are set          |
-| `www`      | Internal only               | Next.js app reached through Caddy                                  |
-| `imager`   | Internal only               | Next.js app for `imager.armbian.com` (port 8081 in dev)            |
-| `api`      | Internal only               | Fastify API reached through Caddy (port 8080 for external clients) |
-| `postgres` | Internal only               | Data persisted in Docker volume                                    |
+| Service    | Port                        | Notes                                                                                             |
+| ---------- | --------------------------- | ------------------------------------------------------------------------------------------------- |
+| `caddy`    | `80`, `443`, `8080`, `8081` | Reverse proxy — automatic HTTPS when real domains are set                                         |
+| `www`      | Internal only               | Next.js app reached through Caddy. Also serves `imager.armbian.com` via host-rewrite to `/imager` |
+| `api`      | Internal only               | Fastify API reached through Caddy (port 8080 for external clients)                                |
+| `postgres` | Internal only               | Data persisted in Docker volume                                                                   |
 
 Required environment variables: `POSTGRES_PASSWORD`, `PAYLOAD_SECRET`. For production, set `WWW_HOSTNAME`, `API_HOSTNAME`, `IMAGER_HOSTNAME`, and `CADDY_EMAIL` to enable automatic TLS, and `WWW_REDIRECT_HOSTS` to 301 `www.*` hostnames to their apex (required so `www.armbian.cn` / `www.armbian.de` resolve to the correct locale). See `.env.example` for all options.
 

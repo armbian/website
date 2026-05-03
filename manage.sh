@@ -59,7 +59,6 @@ NM_VOLUMES=(
   "armbian_nm_root:/app/node_modules"
   "armbian_nm_api:/app/apps/api/node_modules"
   "armbian_nm_www:/app/apps/www/node_modules"
-  "armbian_nm_imager:/app/apps/imager/node_modules"
   "armbian_nm_schemas:/app/packages/schemas/node_modules"
   "armbian_nm_config:/app/packages/config/node_modules"
   "armbian_nm_api_client:/app/packages/api-client/node_modules"
@@ -92,7 +91,6 @@ _cleanup_mount_placeholders() {
     "$SCRIPT_DIR/node_modules"
     "$SCRIPT_DIR/apps/api/node_modules"
     "$SCRIPT_DIR/apps/www/node_modules"
-    "$SCRIPT_DIR/apps/imager/node_modules"
     "$SCRIPT_DIR/packages/schemas/node_modules"
     "$SCRIPT_DIR/packages/config/node_modules"
     "$SCRIPT_DIR/packages/api-client/node_modules"
@@ -131,7 +129,7 @@ cmd_deploy() {
     fi
   fi
   info "Pulling latest images from registry..."
-  $COMPOSE pull api www imager
+  $COMPOSE pull api www
   info "Restarting services..."
   $COMPOSE up -d
   info "Waiting for health checks..."
@@ -212,7 +210,7 @@ cmd_status() {
   echo -e "${BOLD}Health checks:${RESET}"
   local all_healthy=true
 
-  for svc in api postgres www imager caddy; do
+  for svc in api postgres www caddy; do
     local cid
     cid=$($COMPOSE ps -q "$svc" 2>/dev/null || true)
     if [[ -z "$cid" ]]; then
@@ -247,8 +245,6 @@ cmd_status() {
     echo -e "  ${RED}API (internal)${RESET}: container not running"
   fi
   _http_check "http://localhost/" "WWW (Caddy)"
-  # API and imager may be on custom ports (:8080, :8081) in dev or on
-  # real domains (443 via Caddy) in production.
   _load_env_vars
   local api_host="${API_HOSTNAME:-:8080}"
   if [[ "$api_host" == :* ]]; then
@@ -256,10 +252,10 @@ cmd_status() {
   else
     _http_check "https://${api_host}/api/v1/health" "API (${api_host})"
   fi
-  local imager_host="${IMAGER_HOSTNAME:-:8081}"
-  if [[ "$imager_host" == :* ]]; then
-    _http_check "http://localhost${imager_host}/" "Imager (Caddy ${imager_host})"
-  else
+  # Imager hostname only exposed in production. In dev the imager is
+  # reachable at http://localhost/imager (covered by the WWW check above).
+  local imager_host="${IMAGER_HOSTNAME:-}"
+  if [[ -n "$imager_host" && "$imager_host" != :* ]]; then
     _http_check "https://${imager_host}/" "Imager (${imager_host})"
   fi
   echo ""
@@ -513,8 +509,8 @@ _load_env_vars() {
 _validate_service() {
   local service="$1"
   case "$service" in
-    api|postgres|www|imager|caddy) ;;
-    *) die "Unknown service: '$service'. Valid services: api, postgres, www, imager, caddy" ;;
+    api|postgres|www|caddy) ;;
+    *) die "Unknown service: '$service'. Valid services: api, postgres, www, caddy" ;;
   esac
 }
 
@@ -542,7 +538,7 @@ _wait_healthy() {
   local timeout="${1:-120}"
   local elapsed=0
   local interval=5
-  local services=("api" "postgres" "www" "imager" "caddy")
+  local services=("api" "postgres" "www" "caddy")
 
   while (( elapsed < timeout )); do
     local all_healthy=true
@@ -682,7 +678,7 @@ cmd_help() {
   echo -e "  ${CYAN}deploy${RESET}               Pull pre-built images from GHCR and restart"
   echo -e "  ${CYAN}down${RESET}                 Stop all services"
   echo -e "  ${CYAN}reset${RESET}                Stop all, wipe volumes (DB + cache), rebuild from scratch"
-  echo -e "  ${CYAN}rebuild [service]${RESET}    Rebuild a specific service (www, api, imager) or all if unspecified"
+  echo -e "  ${CYAN}rebuild [service]${RESET}    Rebuild a specific service (www, api) or all if unspecified"
   echo -e "  ${CYAN}logs [service]${RESET}       Follow logs — defaults to all services"
   echo -e "  ${CYAN}status${RESET}               Show container status, health, and endpoint checks"
   echo -e "  ${CYAN}sync${RESET}                 Force an immediate upstream sync and Caddy redirect reload"

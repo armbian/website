@@ -117,18 +117,6 @@ jobs:
             site_url: https://www.armbian.com
             platform: linux/arm64
             runner: ubuntu-24.04-arm
-          - name: Imager
-            image: ghcr.io/armbian/website/imager
-            dockerfile: apps/imager/Dockerfile
-            site_url: https://imager.armbian.com
-            platform: linux/amd64
-            runner: ubuntu-latest
-          - name: Imager
-            image: ghcr.io/armbian/website/imager
-            dockerfile: apps/imager/Dockerfile
-            site_url: https://imager.armbian.com
-            platform: linux/arm64
-            runner: ubuntu-24.04-arm
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -161,7 +149,6 @@ jobs:
             NEXT_PUBLIC_SITE_URL=${{ matrix.site_url }}
             NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING=true
             NEXT_PUBLIC_PRIMARY_DOMAIN=armbian.com
-            NEXT_PUBLIC_API_URL=https://api.armbian.com
           cache-from: type=gha,scope=${{ matrix.image }}-${{ matrix.platform }}
           cache-to: type=gha,scope=${{ matrix.image }}-${{ matrix.platform }},mode=max
           outputs: type=image,name=${{ matrix.image }},push-by-digest=true,name-canonical=true,push=true
@@ -192,8 +179,6 @@ jobs:
             image: ghcr.io/armbian/website/api
           - name: WWW
             image: ghcr.io/armbian/website/www
-          - name: Imager
-            image: ghcr.io/armbian/website/imager
     steps:
       - name: Download digests
         uses: actions/download-artifact@v4

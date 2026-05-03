@@ -55,13 +55,18 @@
 	}
 }
 
-# Imager — defaults to HTTP on :8081 for local dev.
-# Override IMAGER_HOSTNAME in .env with a real domain (e.g. imager.armbian.com)
-# for automatic HTTPS in production.
+# Imager hostname — proxies to www; non-root paths 301 to apex.
+# Dev fallback `:8081` is listened on internally but not exposed to the
+# host (no port mapping in docker-compose), so it's effectively dormant.
 {$IMAGER_HOSTNAME::8081} {
 	encode zstd gzip
 
-	reverse_proxy imager:3002
+	@notRoot not path /
+	redir @notRoot https://www.armbian.com{uri} 301
+
+	reverse_proxy www:3000 {
+		header_up Host imager.armbian.com
+	}
 
 	log {
 		output stdout
