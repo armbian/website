@@ -31,6 +31,12 @@ export function Footer() {
     { key: 'link_update_data', href: '/update-data' },
   ] as const;
 
+  const legalLinks = [
+    { key: 'link_privacy', href: '/privacy' },
+    { key: 'link_terms', href: '/terms' },
+    { key: 'link_imprint', href: '/imprint' },
+  ] as const;
+
   return (
     <footer className="border-t border-[rgb(var(--border))]">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -173,8 +179,20 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-10 border-t border-[rgb(var(--border))] pt-6">
-          <p className="text-center text-xs text-[rgb(var(--fg-3))]">
+        <div className="mt-10 flex flex-col items-center gap-3 border-t border-[rgb(var(--border))] pt-6">
+          <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+            {legalLinks.map((link) => (
+              <li key={link.key}>
+                <Link
+                  href={link.href}
+                  className="text-xs text-[rgb(var(--fg-3))] transition-colors hover:text-[rgb(var(--fg))]"
+                >
+                  {t(link.key)}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <p className="text-xs text-[rgb(var(--fg-3))]">
             {t('copyright', { year: new Date().getFullYear() })}
           </p>
         </div>

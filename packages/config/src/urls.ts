@@ -12,6 +12,19 @@ export const IMAGE_SIZES = {
   VENDOR: '480',
 } as const;
 
+/**
+ * CMS slugs that have a canonical top-level route on www. Pages live in
+ * the Payload `pages` collection but are served from these URLs (and
+ * /p/<slug> redirects to them) so external consumers — Google/FB
+ * Developer Console, search engines — see one canonical URL.
+ */
+export const LEGAL_PAGES = {
+  privacy: '/privacy',
+  terms: '/terms',
+  imprint: '/imprint',
+} as const;
+export type LegalSlug = keyof typeof LEGAL_PAGES;
+
 /** Armbian external service URLs */
 export const ARMBIAN_URLS = {
   DOCS: 'https://docs.armbian.com',
