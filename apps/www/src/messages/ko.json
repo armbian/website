@@ -216,6 +216,7 @@
     "build_date": "빌드 날짜",
     "category_desktop": "데스크톱",
     "category_minimal": "최소 / IOT",
+    "category_cloud": "클라우드",
     "category_server": "서버",
     "category_apps": "전용 애플리케이션",
     "download": "다운로드",

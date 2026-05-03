@@ -216,6 +216,7 @@
     "build_date": "Date de build",
     "category_desktop": "Bureau",
     "category_minimal": "Minimal / IOT",
+    "category_cloud": "Cloud",
     "category_server": "Serveur",
     "category_apps": "Applications dédiées",
     "download": "Télécharger",

@@ -216,6 +216,7 @@
     "build_date": "Datum gradnje",
     "category_desktop": "Namizje",
     "category_minimal": "Minimalno / IOT",
+    "category_cloud": "Oblak",
     "category_server": "Strežnik",
     "category_apps": "Namenske aplikacije",
     "download": "Prenesi",

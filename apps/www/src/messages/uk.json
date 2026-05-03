@@ -216,6 +216,7 @@
     "build_date": "Дата збірки",
     "category_desktop": "Робочий стіл",
     "category_minimal": "Мінімальний / IOT",
+    "category_cloud": "Хмара",
     "category_server": "Сервер",
     "category_apps": "Спеціалізовані застосунки",
     "download": "Завантажити",

@@ -216,6 +216,7 @@
     "build_date": "Datum izgradnje",
     "category_desktop": "Radna površina",
     "category_minimal": "Minimalno / IOT",
+    "category_cloud": "Oblak",
     "category_server": "Poslužitelj",
     "category_apps": "Namjenske aplikacije",
     "download": "Preuzmi",

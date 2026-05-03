@@ -216,6 +216,7 @@
     "build_date": "Data kompilacji",
     "category_desktop": "Pulpit",
     "category_minimal": "Minimalny / IOT",
+    "category_cloud": "Chmura",
     "category_server": "Serwer",
     "category_apps": "Dedykowane aplikacje",
     "download": "Pobierz",

@@ -216,6 +216,7 @@
     "build_date": "Fecha de compilación",
     "category_desktop": "Escritorio",
     "category_minimal": "Mínimo / IOT",
+    "category_cloud": "Nube",
     "category_server": "Servidor",
     "category_apps": "Aplicaciones dedicadas",
     "download": "Descargar",

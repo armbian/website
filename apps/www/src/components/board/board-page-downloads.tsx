@@ -7,7 +7,7 @@ import type { ImageFormat, StorageVariant, CompanionFile, DisplayVariant } from 
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { DOWNLOAD_EVENT } from '@/components/board/donation-banner';
 import { Download, Star, ChevronDown } from 'lucide-react';
-import { Monitor, Zap, Server, Package } from 'lucide-react';
+import { Monitor, Zap, Server, Package, Cloud } from 'lucide-react';
 
 interface FormattedImage {
   id: string;
@@ -119,6 +119,8 @@ function CategoryIcon({ category, color }: { category: string; color: string }) 
       return <Monitor {...props} />;
     case 'minimal':
       return <Zap {...props} />;
+    case 'cloud':
+      return <Cloud {...props} />;
     case 'server':
       return <Server {...props} />;
     case 'apps':

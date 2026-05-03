@@ -35,6 +35,7 @@ function kernelColor(branch: string): string {
 const CATEGORY_META: Record<string, { color: string; translationKey: string }> = {
   desktop: { color: '#3b82f6', translationKey: 'desktop' },
   minimal: { color: '#10b981', translationKey: 'minimal' },
+  cloud: { color: '#0ea5e9', translationKey: 'cloud' },
   server: { color: '#8b5cf6', translationKey: 'server' },
   apps: { color: '#f59e0b', translationKey: 'apps' },
 };
@@ -47,11 +48,13 @@ function groupImages(images: BoardImage[]) {
   for (const img of images) {
     const categoryKey = img.application
       ? 'apps'
-      : img.variant === 'minimal'
-        ? 'minimal'
-        : img.variant === 'server'
-          ? 'server'
-          : 'desktop';
+      : img.kernel_branch === 'cloud'
+        ? 'cloud'
+        : img.variant === 'minimal'
+          ? 'minimal'
+          : img.variant === 'server'
+            ? 'server'
+            : 'desktop';
     if (!groups[categoryKey]) {
       const meta = CATEGORY_META[categoryKey] ?? CATEGORY_META['apps']!;
       groups[categoryKey] = { ...meta!, categoryKey, images: [] };

@@ -216,6 +216,7 @@
     "build_date": "Byggdatum",
     "category_desktop": "Skrivbord",
     "category_minimal": "Minimal / IOT",
+    "category_cloud": "Moln",
     "category_server": "Server",
     "category_apps": "Dedikerade applikationer",
     "download": "Ladda ner",

@@ -216,6 +216,7 @@
     "build_date": "构建日期",
     "category_desktop": "桌面",
     "category_minimal": "精简 / IOT",
+    "category_cloud": "云端",
     "category_server": "服务器",
     "category_apps": "专用应用",
     "download": "下载",

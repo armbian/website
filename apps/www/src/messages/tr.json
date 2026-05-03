@@ -216,6 +216,7 @@
     "build_date": "Derleme tarihi",
     "category_desktop": "Masaüstü",
     "category_minimal": "Minimal / IOT",
+    "category_cloud": "Bulut",
     "category_server": "Sunucu",
     "category_apps": "Özel uygulamalar",
     "download": "İndir",

@@ -216,6 +216,7 @@
     "build_date": "Дата сборки",
     "category_desktop": "Рабочий стол",
     "category_minimal": "Минимальный / IOT",
+    "category_cloud": "Облако",
     "category_server": "Сервер",
     "category_apps": "Специализированные приложения",
     "download": "Загрузить",

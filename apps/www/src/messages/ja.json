@@ -216,6 +216,7 @@
     "build_date": "ビルド日",
     "category_desktop": "デスクトップ",
     "category_minimal": "ミニマル / IOT",
+    "category_cloud": "クラウド",
     "category_server": "サーバー",
     "category_apps": "専用アプリケーション",
     "download": "ダウンロード",

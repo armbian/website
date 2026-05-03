@@ -216,6 +216,7 @@
     "build_date": "Builddatum",
     "category_desktop": "Bureaublad",
     "category_minimal": "Minimaal / IOT",
+    "category_cloud": "Cloud",
     "category_server": "Server",
     "category_apps": "Toegewijde toepassingen",
     "download": "Downloaden",
