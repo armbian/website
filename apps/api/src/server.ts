@@ -21,6 +21,7 @@ import { registerStatsRoutes } from './routes/stats.js';
 import { registerPageRoutes } from './routes/pages.js';
 import { registerImageRoutes } from './routes/images.js';
 import { registerContactRoutes } from './routes/contact.js';
+import { registerImagerRoutes } from './routes/imager.js';
 import { ImageCache } from './services/image-cache.js';
 
 const PORT = parseInt(process.env['API_PORT'] ?? process.env['PORT'] ?? '3001', 10);
@@ -104,11 +105,14 @@ async function main(): Promise<void> {
 
   // Extra CORS origins from env (e.g. PUBLIC_API_URL origin for Docker)
   const extraOrigins = process.env['CORS_ORIGINS']?.split(',').filter(Boolean) ?? [];
-  const devOrigins = IS_DEV ? ['http://localhost:3000', 'http://localhost:3001'] : [];
-  const allOrigins = [...CORS_ALLOWED_ORIGINS, ...extraOrigins, ...devOrigins];
+  const allOrigins = [...CORS_ALLOWED_ORIGINS, ...extraOrigins];
 
+  // Dev mode: allow any origin so local hosts (127.0.0.1, the
+  // Caddy-mapped imager port, dev tunnels, etc.) can reach the API
+  // without us maintaining an exhaustive list. Production uses the
+  // explicit allowlist above.
   await server.register(cors, {
-    origin: allOrigins,
+    origin: IS_DEV ? true : allOrigins,
     methods: ['GET', 'OPTIONS'],
     credentials: false,
   });
@@ -197,6 +201,7 @@ async function main(): Promise<void> {
   registerPageRoutes(server);
   registerImageRoutes(server);
   registerContactRoutes(server);
+  registerImagerRoutes(server);
 
   // --- Start ---
 

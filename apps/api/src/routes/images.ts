@@ -1,8 +1,9 @@
 import type { FastifyInstance } from 'fastify';
+import { IMAGE_SIZES } from '@armbian/config';
 import { validateProxyUrl } from '../services/image-cache.js';
 import '../types.js';
 
-const VALID_IMAGE_SIZES = new Set(['480']);
+const VALID_IMAGE_SIZES = new Set<string>([IMAGE_SIZES.BOARD, IMAGE_SIZES.VENDOR]);
 
 // 1h fresh + 24h stale-while-revalidate. Keeps the browser revalidating once
 // per hour (via If-None-Match → 304) so vendor/board logo updates propagate
