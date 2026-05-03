@@ -397,8 +397,9 @@
     "link_contact": "お問い合わせ",
     "link_update_data": "データを更新",
     "copyright": "© {year} Armbian. ARMボード向けオープンソースLinux。",
-    "privacy": "プライバシー",
-    "terms": "利用規約"
+    "link_privacy": "プライバシーポリシー",
+    "link_terms": "利用規約",
+    "link_imprint": "運営者情報"
   },
   "error": {
     "generic_title": "問題が発生しました",
@@ -417,5 +418,23 @@
     "download": "ダウンロード",
     "github_release": "GitHubリリース",
     "back": "全リリース"
+  },
+  "cookie_banner": {
+    "title": "プライバシーを尊重します",
+    "description": "サイトの運営に厳密に必要なクッキーのみを使用します。同意をいただいた場合、エクスペリエンス向上のためサードパーティ CDN から機能的なリソース（国旗アイコンなど）も読み込みます。",
+    "accept_all": "すべて許可",
+    "essential_only": "必須のみ",
+    "customize": "カスタマイズ",
+    "save": "設定を保存",
+    "read_more": "プライバシーポリシーを読む",
+    "category_necessary": "厳密に必要",
+    "category_necessary_desc": "コア機能（言語設定、テーマ、管理者認証）に必要です。無効にできません。",
+    "category_functional": "機能的",
+    "category_functional_desc": "国旗アイコンなどの非必須なサードパーティリソースを公開 CDN から読み込みます。",
+    "always_on": "常時有効",
+    "close": "閉じる"
+  },
+  "forms": {
+    "privacy_disclaimer": "このフォームを送信することで、当社の<pp>プライバシーポリシー</pp>に同意したものとみなされます。"
   }
 }

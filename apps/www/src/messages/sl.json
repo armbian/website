@@ -397,8 +397,9 @@
     "link_contact": "Kontakt",
     "link_update_data": "Posodobi podatke",
     "copyright": "© {year} Armbian. Odprtokodni Linux za ARM plošče.",
-    "privacy": "Zasebnost",
-    "terms": "Pogoji"
+    "link_privacy": "Politika zasebnosti",
+    "link_terms": "Pogoji uporabe",
+    "link_imprint": "Kolofon"
   },
   "error": {
     "generic_title": "Nekaj je šlo narobe",
@@ -417,5 +418,23 @@
     "download": "Prenesi",
     "github_release": "GitHub izdaja",
     "back": "Vse izdaje"
+  },
+  "cookie_banner": {
+    "title": "Spoštujemo vašo zasebnost",
+    "description": "Uporabljamo izključno nujne piškotke za delovanje te strani. Z vašim soglasjem nalagamo tudi funkcionalne vire iz omrežij tretjih oseb (kot so ikone zastav), da izboljšamo vašo izkušnjo.",
+    "accept_all": "Sprejmi vse",
+    "essential_only": "Samo nujne",
+    "customize": "Prilagodi",
+    "save": "Shrani nastavitve",
+    "read_more": "Preberite politiko zasebnosti",
+    "category_necessary": "Strogo nujni",
+    "category_necessary_desc": "Potrebni so za osnovne funkcije (jezik, tema, skrbniška avtentikacija). Ni jih mogoče onemogočiti.",
+    "category_functional": "Funkcionalni",
+    "category_functional_desc": "Naloži nepomembne vire tretjih oseb, kot so ikone zastav, iz javnega CDN-ja.",
+    "always_on": "Vedno vklopljeno",
+    "close": "Zapri"
+  },
+  "forms": {
+    "privacy_disclaimer": "S pošiljanjem tega obrazca soglašate z našo <pp>politiko zasebnosti</pp>."
   }
 }

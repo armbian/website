@@ -397,8 +397,9 @@
     "link_contact": "联系我们",
     "link_update_data": "更新数据",
     "copyright": "© {year} Armbian。面向 ARM 开发板的开源 Linux。",
-    "privacy": "隐私政策",
-    "terms": "使用条款"
+    "link_privacy": "隐私政策",
+    "link_terms": "服务条款",
+    "link_imprint": "法律声明"
   },
   "error": {
     "generic_title": "出了点问题",
@@ -417,5 +418,23 @@
     "download": "下载",
     "github_release": "GitHub 发行版",
     "back": "所有版本"
+  },
+  "cookie_banner": {
+    "title": "我们尊重您的隐私",
+    "description": "我们仅使用网站运行所必需的 Cookie。在您同意的情况下，我们还会从第三方 CDN 加载功能性资源（例如国旗图标）以提升您的体验。",
+    "accept_all": "全部接受",
+    "essential_only": "仅必要",
+    "customize": "自定义",
+    "save": "保存偏好",
+    "read_more": "阅读我们的隐私政策",
+    "category_necessary": "严格必要",
+    "category_necessary_desc": "核心功能所需（语言偏好、主题、管理员身份验证）。无法禁用。",
+    "category_functional": "功能性",
+    "category_functional_desc": "从公共 CDN 加载非必要的第三方资源，例如国旗图标。",
+    "always_on": "始终启用",
+    "close": "关闭"
+  },
+  "forms": {
+    "privacy_disclaimer": "提交此表单即表示您同意我们的<pp>隐私政策</pp>。"
   }
 }

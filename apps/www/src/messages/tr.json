@@ -397,8 +397,9 @@
     "link_contact": "Iletisim",
     "link_update_data": "Veri güncelle",
     "copyright": "© {year} Armbian. ARM kartlar icin acik kaynak Linux.",
-    "privacy": "Gizlilik",
-    "terms": "Sartlar"
+    "link_privacy": "Gizlilik politikası",
+    "link_terms": "Kullanım koşulları",
+    "link_imprint": "Künye"
   },
   "error": {
     "generic_title": "Bir şeyler ters gitti",
@@ -417,5 +418,23 @@
     "download": "İndir",
     "github_release": "GitHub Sürümü",
     "back": "Tüm sürümler"
+  },
+  "cookie_banner": {
+    "title": "Gizliliğinize değer veriyoruz",
+    "description": "Bu siteyi çalıştırmak için yalnızca kesinlikle gerekli çerezleri kullanıyoruz. İzninizle, deneyiminizi geliştirmek için üçüncü taraf CDN'lerinden işlevsel kaynakları (bayrak simgeleri gibi) da yüklüyoruz.",
+    "accept_all": "Tümünü kabul et",
+    "essential_only": "Yalnızca gerekli",
+    "customize": "Özelleştir",
+    "save": "Tercihleri kaydet",
+    "read_more": "Gizlilik Politikamızı okuyun",
+    "category_necessary": "Kesinlikle gerekli",
+    "category_necessary_desc": "Temel işlevler için gereklidir (dil, tema, yönetici kimlik doğrulaması). Devre dışı bırakılamaz.",
+    "category_functional": "İşlevsel",
+    "category_functional_desc": "Bayrak simgeleri gibi temel olmayan üçüncü taraf kaynakları herkese açık bir CDN'den yükler.",
+    "always_on": "Her zaman aktif",
+    "close": "Kapat"
+  },
+  "forms": {
+    "privacy_disclaimer": "Bu formu göndererek <pp>Gizlilik Politikamızı</pp> kabul etmiş olursunuz."
   }
 }

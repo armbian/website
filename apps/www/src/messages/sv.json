@@ -397,8 +397,9 @@
     "link_contact": "Kontakt",
     "link_update_data": "Uppdatera data",
     "copyright": "© {year} Armbian. Linux med öppen källkod för ARM-kort.",
-    "privacy": "Integritet",
-    "terms": "Villkor"
+    "link_privacy": "Integritetspolicy",
+    "link_terms": "Användarvillkor",
+    "link_imprint": "Juridisk information"
   },
   "error": {
     "generic_title": "Något gick fel",
@@ -417,5 +418,23 @@
     "download": "Ladda ner",
     "github_release": "GitHub Release",
     "back": "Alla releaser"
+  },
+  "cookie_banner": {
+    "title": "Vi respekterar din integritet",
+    "description": "Vi använder enbart strikt nödvändiga cookies för att driva denna webbplats. Med ditt samtycke laddar vi även funktionella resurser från tredjeparts-CDN (som flaggikoner) för att förbättra din upplevelse.",
+    "accept_all": "Acceptera alla",
+    "essential_only": "Endast nödvändiga",
+    "customize": "Anpassa",
+    "save": "Spara inställningar",
+    "read_more": "Läs vår integritetspolicy",
+    "category_necessary": "Strikt nödvändiga",
+    "category_necessary_desc": "Krävs för grundläggande funktionalitet (språk, tema, admin-autentisering). Kan inte inaktiveras.",
+    "category_functional": "Funktionella",
+    "category_functional_desc": "Laddar icke-väsentliga tredjepartsresurser såsom flaggikoner från en publik CDN.",
+    "always_on": "Alltid på",
+    "close": "Stäng"
+  },
+  "forms": {
+    "privacy_disclaimer": "Genom att skicka in detta formulär godkänner du vår <pp>integritetspolicy</pp>."
   }
 }

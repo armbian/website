@@ -397,8 +397,9 @@
     "link_contact": "Kontakt",
     "link_update_data": "Ažuriraj podatke",
     "copyright": "© {year} Armbian. Linux otvorenog koda za ARM ploče.",
-    "privacy": "Privatnost",
-    "terms": "Uvjeti"
+    "link_privacy": "Pravila privatnosti",
+    "link_terms": "Uvjeti korištenja",
+    "link_imprint": "Impresum"
   },
   "error": {
     "generic_title": "Nešto je pošlo po krivu",
@@ -417,5 +418,23 @@
     "download": "Preuzmi",
     "github_release": "GitHub izdanje",
     "back": "Sva izdanja"
+  },
+  "cookie_banner": {
+    "title": "Poštujemo vašu privatnost",
+    "description": "Koristimo isključivo nužne kolačiće za rad ove stranice. Uz vaš pristanak učitavamo i funkcionalne resurse iz CDN-ova trećih strana (poput ikona zastava) kako bismo poboljšali vaše iskustvo.",
+    "accept_all": "Prihvati sve",
+    "essential_only": "Samo nužne",
+    "customize": "Prilagodi",
+    "save": "Spremi postavke",
+    "read_more": "Pročitajte naša pravila privatnosti",
+    "category_necessary": "Strogo nužni",
+    "category_necessary_desc": "Potrebni su za osnovne funkcije (jezik, tema, administracijska autentikacija). Ne mogu se onemogućiti.",
+    "category_functional": "Funkcionalni",
+    "category_functional_desc": "Učitava nebitne resurse trećih strana kao što su ikone zastava s javnog CDN-a.",
+    "always_on": "Uvijek uključeno",
+    "close": "Zatvori"
+  },
+  "forms": {
+    "privacy_disclaimer": "Slanjem ovog obrasca prihvaćate našu <pp>politiku privatnosti</pp>."
   }
 }

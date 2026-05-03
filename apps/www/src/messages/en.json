@@ -415,7 +415,26 @@
     "link_contact": "Contact",
     "link_update_data": "Update data",
     "copyright": "© {year} Armbian. Open source Linux for ARM boards.",
-    "privacy": "Privacy",
-    "terms": "Terms"
+    "link_privacy": "Privacy Policy",
+    "link_terms": "Terms of Service",
+    "link_imprint": "Imprint"
+  },
+  "cookie_banner": {
+    "title": "We value your privacy",
+    "description": "We use strictly necessary cookies to operate this site. With your consent we also load functional resources from third-party CDNs (such as flag icons) to improve your experience.",
+    "accept_all": "Accept all",
+    "essential_only": "Essential only",
+    "customize": "Customize",
+    "save": "Save preferences",
+    "read_more": "Read our Privacy Policy",
+    "category_necessary": "Strictly necessary",
+    "category_necessary_desc": "Required for core functionality (language preference, theme, admin authentication). Cannot be disabled.",
+    "category_functional": "Functional",
+    "category_functional_desc": "Loads non-essential third-party resources such as country flag icons from a public CDN.",
+    "always_on": "Always on",
+    "close": "Close"
+  },
+  "forms": {
+    "privacy_disclaimer": "By submitting this form you agree to our <pp>Privacy Policy</pp>."
   }
 }

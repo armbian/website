@@ -397,8 +397,9 @@
     "link_contact": "Kontakt",
     "link_update_data": "Daten aktualisieren",
     "copyright": "© {year} Armbian. Open-Source-Linux für ARM-Boards.",
-    "privacy": "Datenschutz",
-    "terms": "AGB"
+    "link_privacy": "Datenschutz",
+    "link_terms": "Nutzungsbedingungen",
+    "link_imprint": "Impressum"
   },
   "error": {
     "generic_title": "Etwas ist schiefgelaufen",
@@ -417,5 +418,23 @@
     "download": "Download",
     "github_release": "GitHub Release",
     "back": "Alle Releases"
+  },
+  "cookie_banner": {
+    "title": "Wir respektieren deine Privatsphäre",
+    "description": "Wir verwenden ausschließlich notwendige Cookies für den Betrieb dieser Seite. Mit deiner Zustimmung laden wir auch funktionale Ressourcen von Drittanbieter-CDNs (z. B. Flaggensymbole), um dein Erlebnis zu verbessern.",
+    "accept_all": "Alle akzeptieren",
+    "essential_only": "Nur notwendige",
+    "customize": "Anpassen",
+    "save": "Einstellungen speichern",
+    "read_more": "Datenschutzerklärung lesen",
+    "category_necessary": "Unbedingt erforderlich",
+    "category_necessary_desc": "Erforderlich für Kernfunktionen (Sprache, Theme, Admin-Authentifizierung). Nicht deaktivierbar.",
+    "category_functional": "Funktional",
+    "category_functional_desc": "Lädt nicht essentielle Drittanbieter-Ressourcen wie Flaggensymbole von einem öffentlichen CDN.",
+    "always_on": "Immer aktiv",
+    "close": "Schließen"
+  },
+  "forms": {
+    "privacy_disclaimer": "Mit dem Absenden dieses Formulars stimmst du unserer <pp>Datenschutzerklärung</pp> zu."
   }
 }

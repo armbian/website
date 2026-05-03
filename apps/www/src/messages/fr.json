@@ -397,8 +397,9 @@
     "link_contact": "Contact",
     "link_update_data": "Mettre à jour",
     "copyright": "© {year} Armbian. Linux open source pour cartes ARM.",
-    "privacy": "Confidentialité",
-    "terms": "Conditions"
+    "link_privacy": "Confidentialité",
+    "link_terms": "Conditions d'utilisation",
+    "link_imprint": "Mentions légales"
   },
   "error": {
     "generic_title": "Une erreur est survenue",
@@ -417,5 +418,23 @@
     "download": "Télécharger",
     "github_release": "Release GitHub",
     "back": "Toutes les releases"
+  },
+  "cookie_banner": {
+    "title": "Nous respectons votre vie privée",
+    "description": "Nous utilisons uniquement des cookies strictement nécessaires au fonctionnement du site. Avec votre consentement, nous chargeons également des ressources fonctionnelles depuis des CDN tiers (comme les icônes de drapeaux) pour améliorer votre expérience.",
+    "accept_all": "Tout accepter",
+    "essential_only": "Essentiels uniquement",
+    "customize": "Personnaliser",
+    "save": "Enregistrer les préférences",
+    "read_more": "Lire notre politique de confidentialité",
+    "category_necessary": "Strictement nécessaires",
+    "category_necessary_desc": "Requis pour les fonctionnalités de base (langue, thème, authentification admin). Non désactivables.",
+    "category_functional": "Fonctionnels",
+    "category_functional_desc": "Charge des ressources tierces non essentielles comme les icônes de drapeaux depuis un CDN public.",
+    "always_on": "Toujours actifs",
+    "close": "Fermer"
+  },
+  "forms": {
+    "privacy_disclaimer": "En soumettant ce formulaire vous acceptez notre <pp>politique de confidentialité</pp>."
   }
 }

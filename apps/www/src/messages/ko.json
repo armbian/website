@@ -397,8 +397,9 @@
     "link_contact": "연락처",
     "link_update_data": "데이터 업데이트",
     "copyright": "© {year} Armbian. ARM 보드용 오픈소스 Linux.",
-    "privacy": "개인정보",
-    "terms": "이용약관"
+    "link_privacy": "개인정보 처리방침",
+    "link_terms": "이용약관",
+    "link_imprint": "운영자 정보"
   },
   "error": {
     "generic_title": "문제가 발생했습니다",
@@ -417,5 +418,23 @@
     "download": "다운로드",
     "github_release": "GitHub 릴리스",
     "back": "모든 릴리스"
+  },
+  "cookie_banner": {
+    "title": "귀하의 개인정보를 존중합니다",
+    "description": "이 사이트 운영에 반드시 필요한 쿠키만 사용합니다. 동의 시 환경 개선을 위해 제3자 CDN에서 기능적 리소스(국기 아이콘 등)도 로드합니다.",
+    "accept_all": "모두 수락",
+    "essential_only": "필수만",
+    "customize": "사용자 정의",
+    "save": "설정 저장",
+    "read_more": "개인정보 처리방침 읽기",
+    "category_necessary": "엄격히 필요",
+    "category_necessary_desc": "핵심 기능(언어 설정, 테마, 관리자 인증)에 필요합니다. 비활성화할 수 없습니다.",
+    "category_functional": "기능적",
+    "category_functional_desc": "공개 CDN에서 국기 아이콘 같은 비필수 제3자 리소스를 로드합니다.",
+    "always_on": "항상 활성",
+    "close": "닫기"
+  },
+  "forms": {
+    "privacy_disclaimer": "이 양식을 제출하면 당사의 <pp>개인정보 처리방침</pp>에 동의하는 것입니다."
   }
 }

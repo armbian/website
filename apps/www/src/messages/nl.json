@@ -397,8 +397,9 @@
     "link_contact": "Contact",
     "link_update_data": "Gegevens bijwerken",
     "copyright": "© {year} Armbian. Open source Linux voor ARM-boards.",
-    "privacy": "Privacy",
-    "terms": "Voorwaarden"
+    "link_privacy": "Privacybeleid",
+    "link_terms": "Servicevoorwaarden",
+    "link_imprint": "Colofon"
   },
   "error": {
     "generic_title": "Er ging iets mis",
@@ -417,5 +418,23 @@
     "download": "Download",
     "github_release": "GitHub Release",
     "back": "Alle releases"
+  },
+  "cookie_banner": {
+    "title": "We respecteren uw privacy",
+    "description": "We gebruiken strikt noodzakelijke cookies om deze site te laten werken. Met uw toestemming laden we ook functionele bronnen van CDN's van derden (zoals vlagiconen) om uw ervaring te verbeteren.",
+    "accept_all": "Alles accepteren",
+    "essential_only": "Alleen essentieel",
+    "customize": "Aanpassen",
+    "save": "Voorkeuren opslaan",
+    "read_more": "Lees ons privacybeleid",
+    "category_necessary": "Strikt noodzakelijk",
+    "category_necessary_desc": "Vereist voor kernfunctionaliteit (taal, thema, admin-authenticatie). Kan niet worden uitgeschakeld.",
+    "category_functional": "Functioneel",
+    "category_functional_desc": "Laadt niet-essentiële bronnen van derden, zoals vlagiconen, van een openbaar CDN.",
+    "always_on": "Altijd aan",
+    "close": "Sluiten"
+  },
+  "forms": {
+    "privacy_disclaimer": "Door dit formulier in te dienen gaat u akkoord met ons <pp>privacybeleid</pp>."
   }
 }
