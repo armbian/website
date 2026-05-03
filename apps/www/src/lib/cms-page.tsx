@@ -34,9 +34,8 @@ export const loadCmsPage = cache(async (slug: string): Promise<LoadedCmsPage | n
 
     let htmlContent = '';
     if (page.content && typeof page.content === 'object') {
-      const { convertLexicalToHTMLAsync, defaultHTMLConvertersAsync } = await import(
-        '@payloadcms/richtext-lexical/html-async'
-      );
+      const { convertLexicalToHTMLAsync, defaultHTMLConvertersAsync } =
+        await import('@payloadcms/richtext-lexical/html-async');
       htmlContent = await convertLexicalToHTMLAsync({
         converters: defaultHTMLConvertersAsync,
         data: page.content as Parameters<typeof convertLexicalToHTMLAsync>[0]['data'],

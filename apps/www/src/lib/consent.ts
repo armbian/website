@@ -66,9 +66,7 @@ export function clearConsent(): void {
 function consentEquals(a: Consent | null, b: Consent | null): boolean {
   if (a === b) return true;
   if (!a || !b) return false;
-  return (
-    a.functional === b.functional && a.timestamp === b.timestamp && a.version === b.version
-  );
+  return a.functional === b.functional && a.timestamp === b.timestamp && a.version === b.version;
 }
 
 export interface ConsentSnapshot {

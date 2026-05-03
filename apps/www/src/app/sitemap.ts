@@ -59,10 +59,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const apiUrl = process.env['API_URL'] ?? 'http://localhost:3001';
   const now = new Date();
 
-  const [boardData, cmsDocs] = await Promise.all([
-    fetchBoardsAndVendors(apiUrl),
-    fetchCmsPages(),
-  ]);
+  const [boardData, cmsDocs] = await Promise.all([fetchBoardsAndVendors(apiUrl), fetchCmsPages()]);
 
   const boardSlugs = boardData?.data.boards.map((b) => b.slug) ?? [];
   const vendorSlugs = boardData?.data.vendors.map((v) => v.slug) ?? [];
@@ -141,8 +138,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   for (const doc of cmsDocs) {
     const slug = typeof doc.slug === 'string' ? doc.slug : '';
     if (!slug) continue;
-    const lastModified =
-      typeof doc.updatedAt === 'string' ? new Date(doc.updatedAt) : now;
+    const lastModified = typeof doc.updatedAt === 'string' ? new Date(doc.updatedAt) : now;
     const canonical = LEGAL_PAGES[slug as keyof typeof LEGAL_PAGES];
 
     if (canonical) {
