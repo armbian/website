@@ -18,7 +18,7 @@ export function Preview() {
           />
         </ScrollReveal>
 
-        <ScrollReveal delay={0.2} distance={50} className="hidden sm:block relative">
+        <ScrollReveal delay={0.2} distance={50} className="relative">
           <div
             aria-hidden
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[110%] rounded-full bg-[rgb(var(--brand))] blur-[140px] opacity-25 pointer-events-none"
@@ -33,8 +33,8 @@ export function Preview() {
           />
 
           {/* Scaled wrapper: mockup is fixed at 1024px; height tracks scale. */}
-          <div className="relative z-10 w-full overflow-hidden h-[400px] sm:h-[460px] md:h-[540px] lg:h-[640px] xl:h-[666px]">
-            <div className="absolute left-1/2 top-0 -translate-x-1/2 origin-top scale-[0.6] sm:scale-[0.69] md:scale-[0.81] lg:scale-[0.96] xl:scale-100 w-[1024px] max-w-none">
+          <div className="relative z-10 w-full overflow-hidden h-[300px] sm:h-[460px] md:h-[540px] lg:h-[640px] xl:h-[666px]">
+            <div className="absolute left-1/2 top-0 -translate-x-1/2 origin-top scale-[0.45] sm:scale-[0.69] md:scale-[0.81] lg:scale-[0.96] xl:scale-100 w-[1024px] max-w-none">
               <SectionErrorBoundary sectionName="App preview">
                 <AppMockup />
               </SectionErrorBoundary>
