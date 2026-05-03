@@ -58,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        image: [api, www]
+        image: [api, www, imager]
     steps:
       - name: Clean up old container images
         uses: actions/delete-package-versions@v5

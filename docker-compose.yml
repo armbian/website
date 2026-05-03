@@ -10,7 +10,7 @@ services:
       - PORT=3001
       - DATA_SYNC_INTERVAL_MS=${DATA_SYNC_INTERVAL_MS:-14400000}
       - CACHE_DIR=/app/cache
-      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000}
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000,http://localhost:8081}
       - PUBLIC_API_URL=${PUBLIC_API_URL:-http://localhost:3001}
       - LOG_LEVEL=${LOG_LEVEL:-info}
     volumes:
@@ -73,6 +73,27 @@ services:
       retries: 5
       start_period: 15s
 
+  imager:
+    image: ghcr.io/armbian/website/imager:latest
+    build:
+      context: .
+      dockerfile: apps/imager/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-}
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - API_URL=http://api:3001
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3002/').then(r=>{if(!r.ok)throw 1})"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
@@ -80,6 +101,7 @@ services:
       - "80:80"
       - "443:443"
       - "${API_HOST_PORT:-8080}:8080"
+      - "${IMAGER_HOST_PORT:-8081}:8081"
     volumes:
       - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy-snippets:/etc/caddy/snippets:ro
@@ -92,12 +114,15 @@ services:
     environment:
       - WWW_HOSTNAME=${WWW_HOSTNAME:-:80}
       - API_HOSTNAME=${API_HOSTNAME:-:8080}
+      - IMAGER_HOSTNAME=${IMAGER_HOSTNAME:-:8081}
       - WWW_REDIRECT_HOSTS=${WWW_REDIRECT_HOSTS:-:0}
       - CADDY_EMAIL=${CADDY_EMAIL:-admin@localhost}
     depends_on:
       www:
         condition: service_healthy
       api:
+        condition: service_healthy
+      imager:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:2019/config/"]

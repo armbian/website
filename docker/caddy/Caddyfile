@@ -54,3 +54,17 @@
 		format console
 	}
 }
+
+# Imager — defaults to HTTP on :8081 for local dev.
+# Override IMAGER_HOSTNAME in .env with a real domain (e.g. imager.armbian.com)
+# for automatic HTTPS in production.
+{$IMAGER_HOSTNAME::8081} {
+	encode zstd gzip
+
+	reverse_proxy imager:3002
+
+	log {
+		output stdout
+		format console
+	}
+}

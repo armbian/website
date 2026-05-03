@@ -54,6 +54,7 @@ docker compose logs www | grep "Default admin user created"
 apps/
   api/                Fastify 5 REST API (boards, images, vendors, search)
   www/                Next.js 16 + Payload CMS 3 (SSR, 17 locales)
+  imager/             Next.js 16 standalone — imager.armbian.com landing page
 
 packages/
   schemas/            Zod schemas — single source of truth for types
@@ -61,6 +62,12 @@ packages/
   api-client/         Typed HTTP client wrapping fetch()
   theme/              CSS variables + Tailwind preset
 ```
+
+The `imager` app consumes the same API as `www` via `@armbian/api-client`
+(method `apiClient.getBoards()` for the demo manufacturer carousel and
+`apiClient.getImagerRepo()` for the GitHub release info — proxied
+through `/api/v1/imager/repo`). It does not depend on Payload, Postgres,
+or any locale infrastructure.
 
 Turborepo + pnpm workspaces. All code runs in Docker containers.
 
