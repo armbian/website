@@ -37,6 +37,8 @@ export const DESKTOP_VARIANTS: Record<string, string> = {
   lxqt: 'LXQt',
   i3: 'i3wm',
   sway: 'Sway',
+  bianbu: 'Bianbu',
+  'bianbu-gnome': 'Bianbu GNOME',
   minimal: 'Minimal (CLI)',
   server: 'Server',
 };
