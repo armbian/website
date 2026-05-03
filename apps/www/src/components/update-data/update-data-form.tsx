@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { SiGithub } from '@icons-pack/react-simple-icons';
 import { ARMBIAN_URLS, CORE_COMPETENCES, CORE_COMPETENCE_I18N_KEYS } from '@armbian/config';
+import { PrivacyDisclaimer } from '@/components/forms/privacy-disclaimer';
 import { MultiSelect } from './multi-select';
 
 // Minimal grecaptcha surface we interact with. The full API is loaded
@@ -474,28 +475,31 @@ export function UpdateDataForm({ tokens }: UpdateDataFormProps) {
           </section>
         </div>
 
-        <div className="lg:col-span-2 flex flex-col gap-4 pt-6 sm:flex-row sm:items-center sm:justify-between border-t border-[rgb(var(--border))]">
-          <div className="flex flex-col items-start gap-1.5">
-            <div ref={captchaContainerRef} />
-            {captchaError && (
-              <p className="inline-flex items-center gap-1.5 text-[11px] font-medium text-red-400">
-                <AlertCircle size={13} strokeWidth={2} />
-                {t('form_captcha_error')}
-              </p>
-            )}
+        <div className="lg:col-span-2 flex flex-col gap-4 pt-6 border-t border-[rgb(var(--border))]">
+          <PrivacyDisclaimer />
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col items-start gap-1.5">
+              <div ref={captchaContainerRef} />
+              {captchaError && (
+                <p className="inline-flex items-center gap-1.5 text-[11px] font-medium text-red-400">
+                  <AlertCircle size={13} strokeWidth={2} />
+                  {t('form_captcha_error')}
+                </p>
+              )}
+            </div>
+            <button
+              type="submit"
+              disabled={status === 'sending'}
+              className="inline-flex items-center justify-center gap-2.5 rounded-xl bg-[rgb(var(--brand))] px-7 py-3.5 text-sm font-bold text-white hover:bg-[rgb(var(--brand-hover))] transition-all shadow-lg shadow-[rgb(var(--brand)/0.25)] disabled:opacity-50 disabled:shadow-none w-full sm:w-auto"
+            >
+              {status === 'sending' ? (
+                <Loader2 size={16} strokeWidth={2.5} className="animate-spin" />
+              ) : (
+                <Save size={16} strokeWidth={2} />
+              )}
+              {t('form_submit')}
+            </button>
           </div>
-          <button
-            type="submit"
-            disabled={status === 'sending'}
-            className="inline-flex items-center justify-center gap-2.5 rounded-xl bg-[rgb(var(--brand))] px-7 py-3.5 text-sm font-bold text-white hover:bg-[rgb(var(--brand-hover))] transition-all shadow-lg shadow-[rgb(var(--brand)/0.25)] disabled:opacity-50 disabled:shadow-none w-full sm:w-auto"
-          >
-            {status === 'sending' ? (
-              <Loader2 size={16} strokeWidth={2.5} className="animate-spin" />
-            ) : (
-              <Save size={16} strokeWidth={2} />
-            )}
-            {t('form_submit')}
-          </button>
         </div>
       </form>
     </>

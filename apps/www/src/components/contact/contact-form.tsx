@@ -5,6 +5,7 @@ import Script from 'next/script';
 import { useTranslations } from 'next-intl';
 import { Send, CheckCircle, Loader2, AlertCircle } from 'lucide-react';
 import { ARMBIAN_URLS } from '@armbian/config';
+import { PrivacyDisclaimer } from '@/components/forms/privacy-disclaimer';
 
 // Minimal grecaptcha surface we interact with. The full API is loaded
 // asynchronously by the Google script tag at runtime.
@@ -264,7 +265,9 @@ export function ContactForm({ tokens }: ContactFormProps) {
           />
         </div>
 
-        <div className="flex flex-col gap-4 pt-2 sm:flex-row sm:items-center sm:justify-between">
+        <PrivacyDisclaimer className="pt-2 text-[11px] leading-relaxed text-[rgb(var(--fg-3))]" />
+
+        <div className="flex flex-col gap-4 pt-1 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-col items-start gap-1.5">
             <div ref={captchaContainerRef} />
             {captchaError && (
