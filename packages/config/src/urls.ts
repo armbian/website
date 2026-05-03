@@ -25,6 +25,18 @@ export const LEGAL_PAGES = {
 } as const;
 export type LegalSlug = keyof typeof LEGAL_PAGES;
 
+/**
+ * Identifying values for the X-Armbian-Client header. The API requires
+ * this header on every non-image, non-health route to deter casual
+ * scraping and to tag log lines by client. Each client app sets its
+ * value once when constructing ArmbianApiClient.
+ */
+export const API_CLIENT_IDS = {
+  WEBSITE: 'armbian-website',
+  IMAGER: 'armbian-imager',
+} as const;
+export type ApiClientId = (typeof API_CLIENT_IDS)[keyof typeof API_CLIENT_IDS];
+
 /** Armbian external service URLs */
 export const ARMBIAN_URLS = {
   DOCS: 'https://docs.armbian.com',
