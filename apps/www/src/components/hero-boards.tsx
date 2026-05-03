@@ -26,9 +26,15 @@ export function HeroBoards({ boards }: { boards: Board[] }) {
   const [fading, setFading] = useState(false);
   const currentSlugsRef = useRef(new Set<string>());
 
-  // Only mount on desktop — saves images, GPU, and timers on mobile
+  // Only mount on desktop — saves images, GPU, and timers on mobile.
+  // Listen for breakpoint crossings so resizing back to desktop
+  // re-renders the scene (instead of waiting for a page refresh).
   useEffect(() => {
-    setIsMobile(window.innerWidth < 768);
+    const mq = window.matchMedia('(max-width: 767px)');
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
   }, []);
 
   // Track current slugs
