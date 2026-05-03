@@ -43,6 +43,25 @@ export interface VendorWithBoards extends Vendor {
   boards: BoardSummary[];
 }
 
+export interface ImagerRepoPayload {
+  stargazers_count: number;
+  forks_count: number;
+  open_issues_count: number;
+  html_url: string;
+  description: string | null;
+  pushed_at: string | null;
+  tag_name: string | null;
+  release_name: string | null;
+  release_url: string | null;
+  published_at: string | null;
+  assets: Array<{
+    name: string;
+    browser_download_url: string;
+    size: number;
+    content_type: string | null;
+  }>;
+}
+
 export class ArmbianApiClient {
   private baseUrl: string;
   private timeout: number;
@@ -61,7 +80,10 @@ export class ArmbianApiClient {
   ) {
     this.baseUrl = baseUrl.replace(/\/$/, '');
     this.timeout = options?.timeout ?? 10_000;
-    this.fetchImpl = options?.fetch ?? globalThis.fetch;
+    // globalThis.fetch in the browser is a method on `Window` and throws
+    // "Illegal invocation" if called with a different `this`. Bind once
+    // here so storing it on the instance is safe regardless of host.
+    this.fetchImpl = options?.fetch ?? globalThis.fetch.bind(globalThis);
     this.clientId = options?.clientId ?? 'armbian-website';
     this.forwardedFor = options?.forwardedFor;
   }
@@ -162,6 +184,10 @@ export class ArmbianApiClient {
     };
   }> {
     return this.fetch('/api/v1/stats');
+  }
+
+  async getImagerRepo(): Promise<ApiResponse<ImagerRepoPayload>> {
+    return this.fetch('/api/v1/imager/repo');
   }
 
   async getContactFormTokens(): Promise<ZohoFormTokensResponse> {
