@@ -63,11 +63,13 @@
 
 	# 301 only human-facing routes to apex; assets, API endpoints and
 	# anything with a file extension must keep loading on this hostname.
+	# Redirect target is the apex (no www) — www.* is itself in
+	# WWW_REDIRECT_HOSTS, so going via www would chain two 301s.
 	@redirectable {
 		not path / /_next/* /api/* /imager/*
 		not path_regexp staticAsset \.[A-Za-z0-9]+$
 	}
-	redir @redirectable https://www.armbian.com{uri} 301
+	redir @redirectable https://armbian.com{uri} 301
 
 	reverse_proxy www:3000 {
 		header_up Host imager.armbian.com
