@@ -38,7 +38,7 @@ export function Preview() {
             className="relative z-10 w-full overflow-hidden"
             style={
               {
-                '--mockup-scale': 'min(1, calc((100vw - 48px) / 1024))',
+                '--mockup-scale': 'min(1, calc((100vw - 48px) / 1024px))',
                 height: 'calc(var(--mockup-scale) * 666px)',
               } as React.CSSProperties
             }
