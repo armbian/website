@@ -18,6 +18,8 @@ export const metadata: Metadata = {
   title: siteMetadata.title,
   description: siteMetadata.description,
   alternates: { canonical: siteMetadata.url },
+  // og/twitter images are auto-injected by Next.js from the colocated
+  // opengraph-image.png file — no manual override needed.
   openGraph: {
     type: 'website',
     siteName: 'Armbian Imager',
@@ -25,13 +27,11 @@ export const metadata: Metadata = {
     description: siteMetadata.description,
     url: siteMetadata.url,
     locale: 'en_US',
-    images: [{ url: siteMetadata.ogImage, width: 1200, height: 630, alt: siteMetadata.title }],
   },
   twitter: {
     card: 'summary_large_image',
     title: siteMetadata.title,
     description: siteMetadata.description,
-    images: [siteMetadata.ogImage],
   },
 };
 
@@ -52,7 +52,7 @@ const jsonLd = [
     '@type': 'Organization',
     name: 'Armbian',
     url: ARMBIAN_URLS.WEBSITE,
-    logo: `${siteMetadata.url}/icon-512.png`,
+    logo: `${siteMetadata.url}/armbian-imager-icon.png`,
     sameAs: [ARMBIAN_URLS.GITHUB_ORG, ARMBIAN_URLS.FORUM, ARMBIAN_URLS.DISCORD],
   },
   {
