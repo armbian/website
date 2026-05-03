@@ -32,9 +32,21 @@ export function Preview() {
             className="absolute bottom-[10%] right-[10%] w-[35%] h-[60%] rounded-full bg-purple-500 blur-[120px] opacity-20 pointer-events-none"
           />
 
-          {/* Scaled wrapper: mockup is fixed at 1024px; height tracks scale. */}
-          <div className="relative z-10 w-full overflow-hidden h-[300px] sm:h-[460px] md:h-[540px] lg:h-[640px] xl:h-[666px]">
-            <div className="absolute left-1/2 top-0 -translate-x-1/2 origin-top scale-[0.45] sm:scale-[0.69] md:scale-[0.81] lg:scale-[0.96] xl:scale-100 w-[1024px] max-w-none">
+          {/* Mockup is fixed at 1024px wide; --mockup-scale shrinks it to
+              fit any viewport without horizontal overflow. */}
+          <div
+            className="relative z-10 w-full overflow-hidden"
+            style={
+              {
+                '--mockup-scale': 'min(1, calc((100vw - 48px) / 1024))',
+                height: 'calc(var(--mockup-scale) * 666px)',
+              } as React.CSSProperties
+            }
+          >
+            <div
+              className="absolute left-1/2 top-0 origin-top w-[1024px] max-w-none"
+              style={{ transform: 'translateX(-50%) scale(var(--mockup-scale, 1))' }}
+            >
               <SectionErrorBoundary sectionName="App preview">
                 <AppMockup />
               </SectionErrorBoundary>
