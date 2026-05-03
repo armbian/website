@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { headers } from 'next/headers';
 import { NextIntlClientProvider } from 'next-intl';
 import { ThemeProvider } from '@/components/layout/theme-provider';
 import { ConsentProvider } from '@/components/consent/consent-provider';
@@ -15,7 +16,16 @@ const imagerMessages = {
   cookie_banner: enMessages.cookie_banner,
 };
 
-export default function ImagerLayout({ children }: { children: ReactNode }) {
+export default async function ImagerLayout({ children }: { children: ReactNode }) {
+  // Internal nav/footer links must jump to the apex site only when the user
+  // is actually on the imager sub-host (e.g. imager.armbian.com). On localhost
+  // or any other host the imager is just /imager on the main site — keep
+  // links local so dev navigation works.
+  const host = (await headers()).get('host') ?? '';
+  const apexBaseUrl = host.startsWith('imager.')
+    ? `https://${process.env['NEXT_PUBLIC_PRIMARY_DOMAIN'] ?? 'armbian.com'}`
+    : undefined;
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -31,9 +41,9 @@ export default function ImagerLayout({ children }: { children: ReactNode }) {
         <NextIntlClientProvider locale="en" messages={imagerMessages}>
           <ThemeProvider>
             <ConsentProvider>
-              <Navbar showLanguageSwitcher={false} />
+              <Navbar showLanguageSwitcher={false} apexBaseUrl={apexBaseUrl} />
               <main>{children}</main>
-              <Footer />
+              <Footer apexBaseUrl={apexBaseUrl} />
               <ScrollToTop />
               <CookieBanner />
             </ConsentProvider>

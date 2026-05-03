@@ -1,5 +1,6 @@
 'use client';
 
+import { type ReactNode } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { ARMBIAN_URLS } from '@armbian/config';
@@ -7,8 +8,25 @@ import { SiGithub, SiDiscord, SiMastodon } from '@icons-pack/react-simple-icons'
 import { MessageSquare } from 'lucide-react';
 import { IconExternalLink } from '@/components/ui/icons';
 
-export function Footer() {
+interface FooterProps {
+  /** When set, internal links resolve to this absolute URL instead of the
+   *  current host. Used on imager.armbian.com so links point to apex. */
+  apexBaseUrl?: string;
+}
+
+export function Footer({ apexBaseUrl }: FooterProps = {}) {
   const t = useTranslations('footer');
+
+  const renderInternal = (href: string, className: string, key: string, children: ReactNode) =>
+    apexBaseUrl ? (
+      <a key={key} href={`${apexBaseUrl}${href}`} className={className}>
+        {children}
+      </a>
+    ) : (
+      <Link key={key} href={href} className={className}>
+        {children}
+      </Link>
+    );
 
   const projectLinks = [
     { key: 'link_boards', href: '/boards' },
@@ -111,12 +129,12 @@ export function Footer() {
             <ul className="mt-3 space-y-2">
               {projectLinks.map((link) => (
                 <li key={link.key}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-[rgb(var(--fg-2))] transition-colors hover:text-[rgb(var(--fg))]"
-                  >
-                    {t(link.key)}
-                  </Link>
+                  {renderInternal(
+                    link.href,
+                    'text-sm text-[rgb(var(--fg-2))] transition-colors hover:text-[rgb(var(--fg))]',
+                    link.key,
+                    t(link.key),
+                  )}
                 </li>
               ))}
             </ul>
@@ -165,12 +183,12 @@ export function Footer() {
                   </li>
                 ) : (
                   <li key={link.key}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-[rgb(var(--fg-2))] transition-colors hover:text-[rgb(var(--fg))]"
-                    >
-                      {t(link.key)}
-                    </Link>
+                    {renderInternal(
+                      link.href,
+                      'text-sm text-[rgb(var(--fg-2))] transition-colors hover:text-[rgb(var(--fg))]',
+                      link.key,
+                      t(link.key),
+                    )}
                   </li>
                 ),
               )}
@@ -183,12 +201,12 @@ export function Footer() {
           <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
             {legalLinks.map((link) => (
               <li key={link.key}>
-                <Link
-                  href={link.href}
-                  className="text-xs text-[rgb(var(--fg-3))] transition-colors hover:text-[rgb(var(--fg))]"
-                >
-                  {t(link.key)}
-                </Link>
+                {renderInternal(
+                  link.href,
+                  'text-xs text-[rgb(var(--fg-3))] transition-colors hover:text-[rgb(var(--fg))]',
+                  link.key,
+                  t(link.key),
+                )}
               </li>
             ))}
           </ul>

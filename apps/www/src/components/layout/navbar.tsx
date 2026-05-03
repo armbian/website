@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/navigation';
 import { ARMBIAN_URLS } from '@armbian/config';
@@ -22,9 +22,12 @@ const externalLinks = [
 
 interface NavbarProps {
   showLanguageSwitcher?: boolean;
+  /** When set, internal links resolve to this absolute URL instead of the
+   *  current host. Used on imager.armbian.com so nav/logo point to apex. */
+  apexBaseUrl?: string;
 }
 
-export function Navbar({ showLanguageSwitcher = true }: NavbarProps = {}) {
+export function Navbar({ showLanguageSwitcher = true, apexBaseUrl }: NavbarProps = {}) {
   const t = useTranslations('nav');
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
@@ -68,6 +71,17 @@ export function Navbar({ showLanguageSwitcher = true }: NavbarProps = {}) {
     };
   }, [mobileOpen]);
 
+  const renderInternal = (href: string, className: string, key: string, children: ReactNode) =>
+    apexBaseUrl ? (
+      <a key={key} href={`${apexBaseUrl}${href}`} className={className}>
+        {children}
+      </a>
+    ) : (
+      <Link key={key} href={href} className={className}>
+        {children}
+      </Link>
+    );
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
@@ -77,34 +91,38 @@ export function Navbar({ showLanguageSwitcher = true }: NavbarProps = {}) {
       }`}
     >
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-2.5">
-          <img
-            src="/armbian-logo-white.png"
-            alt="Armbian"
-            width={400}
-            height={60}
-            className="h-6 sm:h-7 w-auto max-w-[140px] object-contain hidden dark:block"
-          />
-          <img
-            src="/armbian-logo-black.png"
-            alt="Armbian"
-            width={400}
-            height={60}
-            className="h-6 sm:h-7 w-auto max-w-[140px] object-contain block dark:hidden"
-          />
-        </Link>
+        {renderInternal(
+          '/',
+          'flex items-center gap-2.5',
+          'logo',
+          <>
+            <img
+              src="/armbian-logo-white.png"
+              alt="Armbian"
+              width={400}
+              height={60}
+              className="h-6 sm:h-7 w-auto max-w-[140px] object-contain hidden dark:block"
+            />
+            <img
+              src="/armbian-logo-black.png"
+              alt="Armbian"
+              width={400}
+              height={60}
+              className="h-6 sm:h-7 w-auto max-w-[140px] object-contain block dark:hidden"
+            />
+          </>,
+        )}
 
         {/* Desktop nav */}
         <div className="hidden items-center gap-1 md:flex">
-          {internalLinks.map((link) => (
-            <Link
-              key={link.key}
-              href={link.href}
-              className="rounded-md px-3 py-2 text-sm font-medium text-[rgb(var(--fg-2))] transition-colors hover:bg-[rgb(var(--bg-sub))] hover:text-[rgb(var(--fg))]"
-            >
-              {t(link.key)}
-            </Link>
-          ))}
+          {internalLinks.map((link) =>
+            renderInternal(
+              link.href,
+              'rounded-md px-3 py-2 text-sm font-medium text-[rgb(var(--fg-2))] transition-colors hover:bg-[rgb(var(--bg-sub))] hover:text-[rgb(var(--fg))]',
+              link.key,
+              t(link.key),
+            ),
+          )}
           {externalLinks.map((link) => (
             <a
               key={link.key}
@@ -147,15 +165,14 @@ export function Navbar({ showLanguageSwitcher = true }: NavbarProps = {}) {
           className="md:hidden border-t border-[rgb(var(--border)/0.3)] bg-[rgb(var(--bg)/0.95)] backdrop-blur-2xl animate-slide-up"
         >
           <div className="max-w-7xl mx-auto px-4 py-4 space-y-1">
-            {internalLinks.map((link) => (
-              <Link
-                key={link.key}
-                href={link.href}
-                className="block rounded-lg px-4 py-3 text-sm font-medium text-[rgb(var(--fg-2))] transition-colors hover:bg-[rgb(var(--bg-sub))] hover:text-[rgb(var(--fg))]"
-              >
-                {t(link.key)}
-              </Link>
-            ))}
+            {internalLinks.map((link) =>
+              renderInternal(
+                link.href,
+                'block rounded-lg px-4 py-3 text-sm font-medium text-[rgb(var(--fg-2))] transition-colors hover:bg-[rgb(var(--bg-sub))] hover:text-[rgb(var(--fg))]',
+                link.key,
+                t(link.key),
+              ),
+            )}
             {externalLinks.map((link) => (
               <a
                 key={link.key}
