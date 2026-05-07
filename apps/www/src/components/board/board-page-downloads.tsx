@@ -435,7 +435,16 @@ export function BoardPageDownloads({
       <div className="space-y-8">
         {formattedGroups.map((group, groupIdx) => (
           <ScrollReveal key={group.category} delay={groupIdx * 0.05}>
-            <div className="rounded-2xl border border-[rgb(var(--border)/0.5)] overflow-hidden bg-[rgb(var(--bg-el)/0.3)]">
+            <div
+              id={group.categoryKey}
+              className="rounded-2xl border border-[rgb(var(--border)/0.5)] overflow-hidden bg-[rgb(var(--bg-el)/0.3)] scroll-mt-24"
+            >
+              {/*
+                Pagewide deep-link alias: the "Minimal / IOT" category
+                is reachable both via #minimal (canonical key) and via
+                #iot (the legacy IOT label users learn from the catalog).
+              */}
+              {group.categoryKey === 'minimal' && <span id="iot" aria-hidden className="sr-only" />}
               <div
                 className="flex items-center gap-3 px-5 py-4 border-b border-[rgb(var(--border)/0.3)]"
                 style={{ borderLeftWidth: 3, borderLeftColor: group.color }}
@@ -612,7 +621,10 @@ export function BoardPageDownloads({
             const rollingColor = '#06b6d4';
             return (
               <ScrollReveal>
-                <div className="rounded-2xl border border-[rgb(var(--border)/0.5)] overflow-hidden bg-[rgb(var(--bg-el)/0.3)]">
+                <div
+                  id="rolling"
+                  className="rounded-2xl border border-[rgb(var(--border)/0.5)] overflow-hidden bg-[rgb(var(--bg-el)/0.3)] scroll-mt-24"
+                >
                   <div
                     className="flex items-center gap-3 px-5 py-4 border-b border-[rgb(var(--border)/0.3)]"
                     style={{ borderLeftWidth: 3, borderLeftColor: rollingColor }}
