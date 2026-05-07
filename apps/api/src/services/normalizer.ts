@@ -328,7 +328,12 @@ export class Normalizer {
         asset.file_application || detectApplicationFromFilename(filename) || null;
       const isUfsApp = rawApplication === 'ufs';
 
-      const key = `${asset.board_slug}::${classification.baseName}`;
+      // Key MUST include format + storage so multiple primaries that share
+      // the same baseName (e.g. uefi-x86 noble cloud minimal published as
+      // .img.xz, .img.qcow2.xz AND .hyperv.zip.xz) don't overwrite each
+      // other in the Map. Same goes for UFS vs eMMC variants when upstream
+      // doesn't differentiate them in the filename.
+      const key = `${asset.board_slug}::${classification.baseName}::${classification.format}::${classification.storage ?? (isUfsApp ? 'ufs' : 'none')}`;
       const image: Image = {
         id: hashString(asset.file_url),
         board_slug: asset.board_slug,
