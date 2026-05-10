@@ -135,6 +135,34 @@ function kernelColor(branch: string): string {
 }
 
 /**
+ * Per-row metadata link (SHA / ASC / Torrent). When the URL is missing
+ * — typical for external/cloud assets that don't ship a torrent — renders
+ * an em dash inside a width-preserving slot so adjacent rows stay aligned.
+ */
+function MetaLink({ href, label }: { href: string | null | undefined; label: string }) {
+  const base = 'text-[10px] font-semibold px-1';
+  if (href) {
+    return (
+      <a
+        href={href}
+        className={`${base} text-[rgb(var(--fg-3))] hover:text-[rgb(var(--fg))] transition-colors`}
+      >
+        {label}
+      </a>
+    );
+  }
+  return (
+    <span
+      aria-hidden
+      className={`${base} inline-grid place-items-center select-none text-[rgb(var(--fg-4))]`}
+    >
+      <span className="invisible col-start-1 row-start-1">{label}</span>
+      <span className="col-start-1 row-start-1">—</span>
+    </span>
+  );
+}
+
+/**
  * Renders the "Type" column cell: a stack of color-coded chips for every
  * non-default property (format, storage, app overlay, variant modifier).
  * Shows an em dash when the image has nothing special.
@@ -575,30 +603,12 @@ export function BoardPageDownloads({
                                 {t('direct_download')}
                               </a>
                               <div className="flex items-center gap-1.5">
-                                {img.download.sha_url && (
-                                  <a
-                                    href={img.download.sha_url}
-                                    className="text-[10px] font-semibold text-[rgb(var(--fg-3))] hover:text-[rgb(var(--fg))] transition-colors px-1"
-                                  >
-                                    SHA
-                                  </a>
-                                )}
-                                {img.download.asc_url && (
-                                  <a
-                                    href={img.download.asc_url}
-                                    className="text-[10px] font-semibold text-[rgb(var(--fg-3))] hover:text-[rgb(var(--fg))] transition-colors px-1"
-                                  >
-                                    ASC
-                                  </a>
-                                )}
-                                {img.download.torrent_url && (
-                                  <a
-                                    href={img.download.torrent_url}
-                                    className="text-[10px] font-semibold text-[rgb(var(--fg-3))] hover:text-[rgb(var(--fg))] transition-colors px-1"
-                                  >
-                                    {tDownload('torrent')}
-                                  </a>
-                                )}
+                                <MetaLink href={img.download.sha_url} label="SHA" />
+                                <MetaLink href={img.download.asc_url} label="ASC" />
+                                <MetaLink
+                                  href={img.download.torrent_url}
+                                  label={tDownload('torrent')}
+                                />
                               </div>
                             </div>
                           </td>
@@ -742,30 +752,12 @@ export function BoardPageDownloads({
                                     {tDownload('direct_download')}
                                   </a>
                                   <div className="flex items-center gap-1.5">
-                                    {img.download.sha_url && (
-                                      <a
-                                        href={img.download.sha_url}
-                                        className="text-[10px] font-semibold text-[rgb(var(--fg-3))] hover:text-[rgb(var(--fg))] transition-colors px-1"
-                                      >
-                                        SHA
-                                      </a>
-                                    )}
-                                    {img.download.asc_url && (
-                                      <a
-                                        href={img.download.asc_url}
-                                        className="text-[10px] font-semibold text-[rgb(var(--fg-3))] hover:text-[rgb(var(--fg))] transition-colors px-1"
-                                      >
-                                        ASC
-                                      </a>
-                                    )}
-                                    {img.download.torrent_url && (
-                                      <a
-                                        href={img.download.torrent_url}
-                                        className="text-[10px] font-semibold text-[rgb(var(--fg-3))] hover:text-[rgb(var(--fg))] transition-colors px-1"
-                                      >
-                                        {tDownload('torrent')}
-                                      </a>
-                                    )}
+                                    <MetaLink href={img.download.sha_url} label="SHA" />
+                                    <MetaLink href={img.download.asc_url} label="ASC" />
+                                    <MetaLink
+                                      href={img.download.torrent_url}
+                                      label={tDownload('torrent')}
+                                    />
                                   </div>
                                 </div>
                               </td>
