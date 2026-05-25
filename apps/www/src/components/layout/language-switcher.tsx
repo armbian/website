@@ -8,6 +8,7 @@ import {
   LOCALE_COUNTRY_MAP,
   DOMAIN_LOCALE_MAP,
   DEFAULT_LOCALE,
+  PRIMARY_DOMAIN,
   flagEmoji,
   twemojiFlagUrl,
 } from '@armbian/config';
@@ -19,7 +20,6 @@ import { ConsentGate } from '@/components/consent/consent-gate';
 const LOCALE_DOMAIN_MAP = Object.fromEntries(
   Object.entries(DOMAIN_LOCALE_MAP).map(([domain, loc]) => [loc, domain]),
 ) as Record<string, string>;
-const PRIMARY_DOMAIN = process.env['NEXT_PUBLIC_PRIMARY_DOMAIN'] ?? 'armbian.com';
 const KNOWN_DOMAINS = new Set([PRIMARY_DOMAIN, ...Object.keys(DOMAIN_LOCALE_MAP)]);
 
 /**

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { headers } from 'next/headers';
 import { NextIntlClientProvider } from 'next-intl';
+import { PRIMARY_DOMAIN } from '@armbian/config';
 import { ThemeProvider } from '@/components/layout/theme-provider';
 import { ConsentProvider } from '@/components/consent/consent-provider';
 import { Navbar } from '@/components/layout/navbar';
@@ -22,15 +23,12 @@ export default async function ImagerLayout({ children }: { children: ReactNode }
   // or any other host the imager is just /imager on the main site — keep
   // links local so dev navigation works.
   const host = (await headers()).get('host') ?? '';
-  const apexBaseUrl = host.startsWith('imager.')
-    ? `https://${process.env['NEXT_PUBLIC_PRIMARY_DOMAIN'] ?? 'armbian.com'}`
-    : undefined;
+  const apexBaseUrl = host.startsWith('imager.') ? `https://${PRIMARY_DOMAIN}` : undefined;
 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
-        <link rel="preconnect" href="https://cache.armbian.com" />
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var t=localStorage.getItem('armbian-theme');var d=t==='dark'||((!t||t==='system')&&matchMedia('(prefers-color-scheme:dark)').matches);if(d)document.documentElement.classList.add('dark')}catch(e){}})()`,

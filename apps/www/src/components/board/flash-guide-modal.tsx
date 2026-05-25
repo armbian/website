@@ -103,7 +103,7 @@ export function FlashGuideModal({
                 </div>
               )}
 
-              {/* content is pre-sanitized server-side via sanitizeCmsHtml() in boards/[slug]/page.tsx */}
+              {/* content is pre-sanitized via renderLexicalContent() */}
               <div
                 className="prose prose-sm dark:prose-invert max-w-none"
                 dangerouslySetInnerHTML={{ __html: content }}

@@ -2,7 +2,7 @@
 
 import { Fragment, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { KERNEL_BRANCHES } from '@armbian/config';
+import { KERNEL_BRANCHES, formatBytes } from '@armbian/config';
 import type { ImageFormat, StorageVariant, CompanionFile, DisplayVariant } from '@armbian/schemas';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { DOWNLOAD_EVENT } from '@/components/board/donation-banner';
@@ -81,18 +81,6 @@ function deriveChips(img: FormattedImage, hideAppChip = false): Chip[] {
     if (cleaned) chips.push({ kind: 'modifier', label: cleaned });
   }
   return chips;
-}
-
-function formatBytesShort(bytes: number): string {
-  if (!bytes) return '0 B';
-  const units = ['B', 'KB', 'MB', 'GB'];
-  let i = 0;
-  let v = bytes;
-  while (v >= 1024 && i < units.length - 1) {
-    v /= 1024;
-    i++;
-  }
-  return `${v.toFixed(v < 10 && i > 0 ? 1 : 0)} ${units[i]}`;
 }
 
 interface FormattedGroup {
@@ -246,7 +234,7 @@ function ExtrasStrip({ img, colSpan }: { img: FormattedImage; colSpan: number })
                       />
                       <span>{v.label}</span>
                       <span className="text-[10px] text-[rgb(var(--fg-3))]">
-                        {formatBytesShort(v.size_bytes)}
+                        {formatBytes(v.size_bytes)}
                       </span>
                     </label>
                   ))}
@@ -275,7 +263,7 @@ function ExtrasStrip({ img, colSpan }: { img: FormattedImage; colSpan: number })
                       </span>
                       <span className="text-[rgb(var(--fg-2))]">{c.label}</span>
                       <span className="text-[10px] text-[rgb(var(--fg-3))]">
-                        {formatBytesShort(c.size_bytes)}
+                        {formatBytes(c.size_bytes)}
                       </span>
                       <a
                         href={c.url}

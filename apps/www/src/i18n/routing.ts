@@ -1,9 +1,7 @@
 import { defineRouting } from 'next-intl/routing';
-import { LOCALES, DEFAULT_LOCALE, DOMAIN_LOCALE_MAP } from '@armbian/config';
+import { LOCALES, DEFAULT_LOCALE, DOMAIN_LOCALE_MAP, PRIMARY_DOMAIN } from '@armbian/config';
 
 const DOMAIN_ROUTING_ENABLED = process.env['NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING'] === 'true';
-
-const primaryDomain = process.env['NEXT_PUBLIC_PRIMARY_DOMAIN'] ?? 'armbian.com';
 
 const baseConfig = {
   locales: [...LOCALES] as const,
@@ -18,7 +16,7 @@ const baseConfig = {
 const forcedLocales = new Set(Object.values(DOMAIN_LOCALE_MAP));
 const primaryLocales = LOCALES.filter((l) => !forcedLocales.has(l));
 
-const primaryDefaultLocale = (DOMAIN_LOCALE_MAP[primaryDomain] ??
+const primaryDefaultLocale = (DOMAIN_LOCALE_MAP[PRIMARY_DOMAIN] ??
   DEFAULT_LOCALE) as (typeof LOCALES)[number];
 
 export const routing = DOMAIN_ROUTING_ENABLED
@@ -26,12 +24,12 @@ export const routing = DOMAIN_ROUTING_ENABLED
       ...baseConfig,
       domains: [
         {
-          domain: primaryDomain,
+          domain: PRIMARY_DOMAIN,
           defaultLocale: primaryDefaultLocale,
           locales: [...primaryLocales],
         },
         ...Object.entries(DOMAIN_LOCALE_MAP)
-          .filter(([domain]) => domain !== primaryDomain)
+          .filter(([domain]) => domain !== PRIMARY_DOMAIN)
           .map(([domain, locale]) => ({
             domain,
             defaultLocale: locale as (typeof LOCALES)[number],

@@ -6,4 +6,3 @@ export type {
   BoardFilterInput,
   ImagerRepoPayload,
 } from './client.js';
-export { createServerClient, createBrowserClient } from './factory.js';

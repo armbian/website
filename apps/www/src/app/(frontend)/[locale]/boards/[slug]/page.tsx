@@ -1,11 +1,18 @@
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { getApiClient, formatBytes } from '@/lib/api.server';
+import { getApiClient } from '@/lib/api.server';
 import { SupportBadge } from '@/components/ui/support-badge';
 import { PageHero } from '@/components/layout/page-hero';
 import { ScrollReveal } from '@/components/scroll-reveal';
-import { parseVariant, getOsRelease, KERNEL_BRANCHES, APP_META } from '@armbian/config';
-import { ARMBIAN_URLS, vendorLogoUrl } from '@armbian/config';
+import {
+  parseVariant,
+  getOsRelease,
+  KERNEL_BRANCHES,
+  APP_META,
+  ARMBIAN_URLS,
+  vendorLogoUrl,
+  formatBytes,
+} from '@armbian/config';
 import { ApiClientError } from '@armbian/api-client';
 import { DonationBanner } from '@/components/board/donation-banner';
 import { BoardJsonLd } from '@/components/board/board-jsonld';
@@ -20,7 +27,7 @@ import { FlashGuideModal } from '@/components/board/flash-guide-modal';
 import { SiblingBoardsCarousel } from '@/components/board/sibling-boards-carousel';
 import { getPayload } from 'payload';
 import config from '@payload-config';
-import { sanitizeCmsHtml } from '@/lib/sanitize';
+import { renderLexicalContent } from '@/lib/cms-lexical';
 
 export const dynamic = 'force-dynamic';
 
@@ -211,18 +218,9 @@ export default async function BoardPage({ params }: Props) {
       const prereqs = Array.isArray(doc.prerequisites)
         ? doc.prerequisites.map((p: { item?: string }) => p.item ?? '')
         : [];
-      let htmlContent = '';
-      if (doc.content && typeof doc.content === 'object') {
-        const { convertLexicalToHTMLAsync, defaultHTMLConvertersAsync } =
-          await import('@payloadcms/richtext-lexical/html-async');
-        htmlContent = await convertLexicalToHTMLAsync({
-          converters: defaultHTMLConvertersAsync,
-          data: doc.content as any,
-        });
-      }
       flashGuide = {
         title: doc.title,
-        content: sanitizeCmsHtml(htmlContent),
+        content: await renderLexicalContent(doc.content),
         prerequisites: prereqs.filter(Boolean),
       };
     }

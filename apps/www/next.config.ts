@@ -45,6 +45,7 @@ const config: NextConfig = {
     ];
   },
   async rewrites() {
+    // Loaded by Next outside its bundler — can't import workspace packages here.
     const apiUrl = process.env['API_URL'] ?? 'http://localhost:3001';
     return [
       {

@@ -7,9 +7,10 @@ import type {
   Maintainer,
   BoardFilterParams,
   ImageFilterParams,
+  SupportTier,
 } from '@armbian/schemas';
 import MiniSearch from 'minisearch';
-import { OS_RELEASES } from '@armbian/config';
+import { OS_RELEASES, SUPPORT_TIERS } from '@armbian/config';
 
 export interface ZohoFormTokens {
   xnQsjsdp: string;
@@ -355,17 +356,8 @@ function toBoardSummary(board: BoardDetail): BoardSummary {
   };
 }
 
-const TIER_ORDER: Record<string, number> = {
-  platinum: 1,
-  standard: 2,
-  community: 3,
-  wip: 4,
-  eos: 5,
-  tvb: 6,
-};
-
 function tierSortOrder(tier: string): number {
-  return TIER_ORDER[tier] ?? 99;
+  return SUPPORT_TIERS[tier as SupportTier]?.sortOrder ?? 99;
 }
 
 /** djb2-style hash seeded by `seed`. Used for deterministic random sort. */

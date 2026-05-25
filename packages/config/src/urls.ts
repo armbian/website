@@ -37,8 +37,18 @@ export const API_CLIENT_IDS = {
 } as const;
 export type ApiClientId = (typeof API_CLIENT_IDS)[keyof typeof API_CLIENT_IDS];
 
+/**
+ * Primary public hostname. Override at deploy time via NEXT_PUBLIC_PRIMARY_DOMAIN
+ * for forks or staging environments.
+ */
+export const PRIMARY_DOMAIN: string = process.env['NEXT_PUBLIC_PRIMARY_DOMAIN'] ?? 'armbian.com';
+
+/** Dev/local fallback for the internal API URL when no env override is set. */
+export const DEFAULT_API_URL = 'http://localhost:3001';
+
 /** Armbian external service URLs */
 export const ARMBIAN_URLS = {
+  CDN: 'https://cache.armbian.com',
   DOCS: 'https://docs.armbian.com',
   FORUM: 'https://forum.armbian.com',
   GITHUB_ORG: 'https://github.com/armbian',
@@ -83,7 +93,7 @@ export function boardImageUrl(
   size: string = IMAGE_SIZES.BOARD,
   options?: { cdn?: boolean },
 ): string {
-  if (options?.cdn) return `https://cache.armbian.com/images/${size}/${slug}.png`;
+  if (options?.cdn) return `${ARMBIAN_URLS.CDN}/images/${size}/${slug}.png`;
   return `/api/v1/images/boards/${size}/${slug}.png`;
 }
 
@@ -97,7 +107,7 @@ export function vendorLogoUrl(
   size: string = IMAGE_SIZES.VENDOR,
   options?: { cdn?: boolean },
 ): string {
-  if (options?.cdn) return `https://cache.armbian.com/images/vendors/${size}/${vendor}.png`;
+  if (options?.cdn) return `${ARMBIAN_URLS.CDN}/images/vendors/${size}/${vendor}.png`;
   return `/api/v1/images/vendors/${size}/${vendor}.png`;
 }
 

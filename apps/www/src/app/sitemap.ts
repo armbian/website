@@ -1,7 +1,13 @@
 import type { MetadataRoute } from 'next';
 import { getPayload } from 'payload';
 import config from '@payload-config';
-import { LOCALES, DEFAULT_LOCALE, ARMBIAN_URLS, LEGAL_PAGES } from '@armbian/config';
+import {
+  LOCALES,
+  DEFAULT_LOCALE,
+  ARMBIAN_URLS,
+  LEGAL_PAGES,
+  DEFAULT_API_URL,
+} from '@armbian/config';
 
 const BASE_URL = ARMBIAN_URLS.WEBSITE;
 
@@ -56,7 +62,7 @@ async function fetchCmsPages(): Promise<CmsPageDoc[]> {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const apiUrl = process.env['API_URL'] ?? 'http://localhost:3001';
+  const apiUrl = process.env['API_URL'] ?? DEFAULT_API_URL;
   const now = new Date();
 
   const [boardData, cmsDocs] = await Promise.all([fetchBoardsAndVendors(apiUrl), fetchCmsPages()]);

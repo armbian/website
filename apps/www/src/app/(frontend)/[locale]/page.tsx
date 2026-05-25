@@ -1,7 +1,7 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { getApiClient } from '@/lib/api.server';
-import { ARMBIAN_URLS } from '@armbian/config';
+import { ARMBIAN_URLS, formatCompactNumber } from '@armbian/config';
 import { SupportBadge } from '@/components/ui/support-badge';
 import { BoardImage } from '@/components/board/board-image';
 import { TypingHeadline } from '@/components/typing-headline';
@@ -44,14 +44,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: t('title'),
     description: t('description'),
   };
-}
-
-function formatNumber(n: number): string {
-  if (n >= 1000) {
-    const k = n / 1000;
-    return k % 1 === 0 ? `${k}K` : `${k.toFixed(1)}K`;
-  }
-  return String(n);
 }
 
 export const dynamic = 'force-dynamic';
@@ -703,7 +695,9 @@ export default async function HomePage({ params }: Props) {
                       </div>
                       <span className="bg-[rgb(var(--bg-el))] border border-white/5 px-2 py-1 rounded text-xs font-mono font-bold text-[rgb(var(--fg-2))]">
                         {stats.github_stars
-                          ? tComm('github_stars', { count: formatNumber(stats.github_stars) })
+                          ? tComm('github_stars', {
+                              count: formatCompactNumber(stats.github_stars),
+                            })
                           : tComm('github_stars_empty')}
                       </span>
                     </div>

@@ -54,6 +54,10 @@ export const SUPPORT_TIERS: Record<SupportTier, SupportTierConfig> = {
   },
 };
 
+export const SUPPORT_TIER_ORDER: readonly SupportTier[] = Object.values(SUPPORT_TIERS)
+  .sort((a, b) => a.sortOrder - b.sortOrder)
+  .map((c) => c.key);
+
 /** Compute support tier from raw source fields */
 export function computeSupportTier(boardSupport: string, platinum: string): SupportTier {
   if (platinum === 'true') return 'platinum';

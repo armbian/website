@@ -1,11 +1,12 @@
 import { ArmbianApiClient } from '@armbian/api-client';
+import { API_CLIENT_IDS, DEFAULT_API_URL } from '@armbian/config';
 import { headers } from 'next/headers';
 
 /** Server-side API client — uses internal Docker network URL.
  *  Forwards the original client IP (from Caddy's X-Forwarded-For) to the API
  *  so access logs show the real visitor instead of the www container IP. */
 export async function getApiClient(): Promise<ArmbianApiClient> {
-  const url = process.env['API_URL'] ?? 'http://localhost:3001';
+  const url = process.env['API_URL'] ?? DEFAULT_API_URL;
   let forwardedFor: string | undefined;
   try {
     const h = await headers();
@@ -16,16 +17,7 @@ export async function getApiClient(): Promise<ArmbianApiClient> {
   }
   return new ArmbianApiClient(url, {
     timeout: 5_000,
-    clientId: 'armbian-website',
+    clientId: API_CLIENT_IDS.WEBSITE,
     forwardedFor,
   });
-}
-
-/** Format bytes to human-readable size */
-export function formatBytes(bytes: number): string {
-  if (bytes === 0) return '0 B';
-  const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${Math.round(bytes / Math.pow(k, i))} ${sizes[i]}`;
 }

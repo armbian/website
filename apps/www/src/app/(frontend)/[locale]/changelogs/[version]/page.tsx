@@ -4,7 +4,7 @@ import { getPayload } from 'payload';
 import config from '@payload-config';
 import { PageHero } from '@/components/layout/page-hero';
 import { ScrollReveal } from '@/components/scroll-reveal';
-import { sanitizeCmsHtml } from '@/lib/sanitize';
+import { renderLexicalContent } from '@/lib/cms-lexical';
 import { Link } from '@/i18n/navigation';
 import { ArrowLeft, Download, ExternalLink } from 'lucide-react';
 import type { Metadata } from 'next';
@@ -44,17 +44,7 @@ export default async function ChangelogDetailPage({ params }: Props) {
 
   if (!entry) notFound();
 
-  let htmlContent = '';
-  if (entry.content && typeof entry.content === 'object') {
-    const { convertLexicalToHTMLAsync, defaultHTMLConvertersAsync } =
-      await import('@payloadcms/richtext-lexical/html-async');
-    htmlContent = sanitizeCmsHtml(
-      await convertLexicalToHTMLAsync({
-        converters: defaultHTMLConvertersAsync,
-        data: entry.content as any,
-      }),
-    );
-  }
+  const htmlContent = await renderLexicalContent(entry.content);
 
   const date = new Date(entry.releaseDate).toLocaleDateString('en-US', {
     year: 'numeric',

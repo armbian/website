@@ -2,7 +2,7 @@ import { getPayload } from 'payload';
 import config from '@payload-config';
 import { Info, AlertTriangle, Rocket, CalendarDays, ArrowRight } from 'lucide-react';
 import { AnnouncementDismiss } from './announcement-dismiss';
-import { sanitizeCmsHtml } from '@/lib/sanitize';
+import { renderLexicalContent } from '@/lib/cms-lexical';
 
 const TYPE_CONFIG = {
   info: { icon: Info, bg: 'bg-blue-600', text: 'text-white' },
@@ -33,15 +33,7 @@ export async function AnnouncementsBanner({ readMoreLabel }: Props) {
     if (!doc) return null;
     if (doc.expiresAt && new Date(doc.expiresAt) < new Date()) return null;
 
-    let html = '';
-    if (doc.content && typeof doc.content === 'object') {
-      const { convertLexicalToHTMLAsync, defaultHTMLConvertersAsync } =
-        await import('@payloadcms/richtext-lexical/html-async');
-      html = await convertLexicalToHTMLAsync({
-        converters: defaultHTMLConvertersAsync,
-        data: doc.content as any,
-      });
-    }
+    const html = await renderLexicalContent(doc.content);
     announcement = { ...doc, html };
   } catch {
     return null;
@@ -63,7 +55,7 @@ export async function AnnouncementsBanner({ readMoreLabel }: Props) {
         <span className="hidden md:inline opacity-80">—</span>
         <span
           className="hidden md:inline opacity-80 truncate [&>div]:inline [&>p]:inline"
-          dangerouslySetInnerHTML={{ __html: sanitizeCmsHtml(announcement.html) }}
+          dangerouslySetInnerHTML={{ __html: announcement.html }}
         />
         {announcement.link && (
           <a

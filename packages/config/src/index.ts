@@ -1,4 +1,6 @@
 export * from './support-tiers.js';
+export * from './partner-tiers.js';
+export * from './utils.js';
 export * from './kernel-metadata.js';
 export * from './os-metadata.js';
 export * from './urls.js';
