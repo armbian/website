@@ -1,3 +1,10 @@
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "20m"
+    max-file: "5"
+    compress: "true"
+
 services:
   api:
     image: ghcr.io/armbian/website/api:latest
@@ -5,6 +12,7 @@ services:
       context: .
       dockerfile: apps/api/Dockerfile
     restart: unless-stopped
+    logging: *default-logging
     environment:
       - NODE_ENV=production
       - PORT=3001
@@ -27,6 +35,7 @@ services:
   postgres:
     image: postgres:17-alpine
     restart: unless-stopped
+    logging: *default-logging
     environment:
       - POSTGRES_DB=${POSTGRES_DB:-payload}
       - POSTGRES_USER=${POSTGRES_USER:-payload}
@@ -50,6 +59,7 @@ services:
         NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING: ${NEXT_PUBLIC_DOMAIN_LOCALE_ROUTING:-false}
         NEXT_PUBLIC_PRIMARY_DOMAIN: ${NEXT_PUBLIC_PRIMARY_DOMAIN:-armbian.com}
     restart: unless-stopped
+    logging: *default-logging
     environment:
       - NODE_ENV=production
       - API_URL=http://api:3001
@@ -76,6 +86,7 @@ services:
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
+    logging: *default-logging
     ports:
       - "80:80"
       - "443:443"
