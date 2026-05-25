@@ -4,17 +4,23 @@ import { Link } from '@/i18n/navigation';
 import { PageHero } from '@/components/layout/page-hero';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { ExpandableText } from '@/components/partner/expandable-text';
-import type { Partner } from '@armbian/schemas';
+import { PARTNER_TIERS, PARTNER_TIER_ORDER, extractDomain } from '@armbian/config';
+import type { Partner, PartnerTier } from '@armbian/schemas';
 import { ExternalLink, ArrowRight } from 'lucide-react';
 import type { Metadata } from 'next';
+
+const TIER_DESC_KEYS: Record<
+  PartnerTier,
+  'tier_platinum_desc' | 'tier_gold_desc' | 'tier_silver_desc'
+> = {
+  platinum: 'tier_platinum_desc',
+  gold: 'tier_gold_desc',
+  silver: 'tier_silver_desc',
+};
 
 function cleanLogo(url: string | null): string | null {
   if (!url) return null;
   return url.replace(/-border\.png$/, '.png').replace(/\/150\//, '/480/');
-}
-
-function domain(url: string): string {
-  return url.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
 }
 
 export const dynamic = 'force-dynamic';
@@ -46,32 +52,18 @@ export default async function PartnersPage({ params }: Props) {
     /* graceful */
   }
 
-  const tiers: Record<string, Partner[]> = {};
-  for (const p of partners) (tiers[p.tier] ??= []).push(p);
+  const byTier: Record<PartnerTier, Partner[]> = { platinum: [], gold: [], silver: [] };
+  for (const p of partners) {
+    if (p.tier in byTier) byTier[p.tier as PartnerTier].push(p);
+  }
 
-  const sections = [
-    {
-      key: 'platinum',
-      label: t('tier_platinum'),
-      color: '#D4AF37',
-      description: t('tier_platinum_desc'),
-      partners: tiers['platinum'] ?? [],
-    },
-    {
-      key: 'gold',
-      label: t('tier_gold'),
-      color: '#f26522',
-      description: t('tier_gold_desc'),
-      partners: tiers['gold'] ?? [],
-    },
-    {
-      key: 'silver',
-      label: t('tier_silver'),
-      color: '#64748b',
-      description: t('tier_silver_desc'),
-      partners: tiers['silver'] ?? [],
-    },
-  ].filter((s) => s.partners.length > 0);
+  const sections = PARTNER_TIER_ORDER.map((key) => ({
+    key,
+    label: t(PARTNER_TIERS[key].labelKey),
+    color: PARTNER_TIERS[key].badgeColor,
+    description: t(TIER_DESC_KEYS[key]),
+    partners: byTier[key],
+  })).filter((s) => s.partners.length > 0);
 
   return (
     <main className="min-h-screen">
@@ -141,7 +133,7 @@ export default async function PartnersPage({ params }: Props) {
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1.5 text-xs text-[rgb(var(--fg-3))] hover:text-[rgb(var(--brand))] transition-colors"
                           >
-                            {domain(p.website)}
+                            {extractDomain(p.website)}
                             <ExternalLink size={10} strokeWidth={2} className="opacity-50" />
                           </a>
                         </div>

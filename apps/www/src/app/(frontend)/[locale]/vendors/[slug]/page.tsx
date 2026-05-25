@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { getApiClient } from '@/lib/api.server';
 import { ApiClientError } from '@armbian/api-client';
+import { PARTNER_TIERS, SUPPORT_TIERS } from '@armbian/config';
 import { BoardCard } from '@/components/board/board-card';
 import { PageHero } from '@/components/layout/page-hero';
 import { ScrollReveal } from '@/components/scroll-reveal';
@@ -33,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function VendorPage({ params }: Props) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations('vendors');
+  const [t, tp] = await Promise.all([getTranslations('vendors'), getTranslations('partners')]);
 
   const api = await getApiClient();
   let vendor: Awaited<ReturnType<typeof api.getVendor>>['data'];
@@ -80,8 +81,14 @@ export default async function VendorPage({ params }: Props) {
                     {t('boards_count', { count: vendor.board_count })}
                   </span>
                   {vendor.partner_tier && (
-                    <span className="text-[9px] font-bold uppercase tracking-widest text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full">
-                      {vendor.partner_tier} {t('partner')}
+                    <span
+                      className="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
+                      style={{
+                        color: PARTNER_TIERS[vendor.partner_tier].badgeColor,
+                        backgroundColor: `${PARTNER_TIERS[vendor.partner_tier].badgeColor}1a`,
+                      }}
+                    >
+                      {tp(PARTNER_TIERS[vendor.partner_tier].labelKey)} {t('partner')}
                     </span>
                   )}
                 </div>
@@ -110,17 +117,11 @@ export default async function VendorPage({ params }: Props) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-20">
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {[...vendor.boards]
-            .sort((a, b) => {
-              const tierOrder: Record<string, number> = {
-                platinum: 0,
-                standard: 1,
-                community: 2,
-                wip: 3,
-                eos: 4,
-                tvb: 5,
-              };
-              return (tierOrder[a.support_tier] ?? 99) - (tierOrder[b.support_tier] ?? 99);
-            })
+            .sort(
+              (a, b) =>
+                (SUPPORT_TIERS[a.support_tier]?.sortOrder ?? 99) -
+                (SUPPORT_TIERS[b.support_tier]?.sortOrder ?? 99),
+            )
             .map((board, i) => (
               <ScrollReveal key={board.slug} delay={Math.min(i * 0.04, 0.4)}>
                 <BoardCard board={board} />
