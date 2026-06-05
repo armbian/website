@@ -1,75 +1,30 @@
 import { createContext, useContext } from 'react';
 import { cleanVendorName, vendorLogoUrl } from '@armbian/config';
 import type { BoardSummary } from '@armbian/schemas';
-import { API_BASE } from '../../_lib/api';
-import type { ArmbianData, BoardEntry, DemoTier, MfgInfo, OsEntry, Selection } from './types';
+import { API_BASE, apiClient } from '../../_lib/api';
+import { toOsImage } from './types';
+import type { ArmbianData, BoardEntry, DemoTier, MfgInfo, OsImage, Selection } from './types';
 
 export const DataCtx = createContext<{ data: ArmbianData; sel: Selection }>(null!);
 export const useD = () => useContext(DataCtx);
 
-const DEMO_OS_ENTRIES: OsEntry[] = [
-  {
-    name: 'Armbian 25.5 bookworm',
-    de: 'GNOME',
-    deKey: 'gnome',
-    kernel: 'Current 6.12',
-    kernelKey: 'current',
-    size: '1.4 GB',
-    distro: 'debian',
-  },
-  {
-    name: 'Armbian 25.5 noble',
-    de: 'XFCE',
-    deKey: 'xfce',
-    kernel: 'Edge 6.18',
-    kernelKey: 'edge',
-    size: '1.1 GB',
-    distro: 'ubuntu',
-  },
-  {
-    name: 'Armbian 25.5 bookworm',
-    de: 'CLI',
-    deKey: 'cli',
-    kernel: 'Current 6.12',
-    kernelKey: 'current',
-    size: '320 MB',
-    distro: 'debian',
-  },
-  {
-    name: 'Armbian 25.5 trixie',
-    de: 'KDE',
-    deKey: 'kde',
-    kernel: 'Edge 6.18',
-    kernelKey: 'edge',
-    size: '1.6 GB',
-    distro: 'debian',
-  },
-];
-
-const DEMO_OS_ENTRIES_NO_DESKTOP: OsEntry[] = [
-  {
-    name: 'Armbian 25.5 bookworm',
-    de: 'CLI',
-    deKey: 'cli',
-    kernel: 'Current 6.12',
-    kernelKey: 'current',
-    size: '320 MB',
-    distro: 'debian',
-  },
-  {
-    name: 'Armbian 25.5 noble',
-    de: 'CLI',
-    deKey: 'cli',
-    kernel: 'Vendor 5.10',
-    kernelKey: 'vendor',
-    size: '260 MB',
-    distro: 'ubuntu',
-  },
-];
-
 const DEMO_TIER_ORDER: Record<DemoTier, number> = { platinum: 0, standard: 1, community: 2 };
 
-// Vendor groups + tiers come from the live API; OS rows are synthesized.
+/** Avoids refetching a board's images across auto-play cycles. */
+const imageCache = new Map<string, OsImage[]>();
+
+/** Only sd-format images are flashable, matching the desktop imager allowlist. */
+export async function fetchBoardImages(slug: string): Promise<OsImage[]> {
+  const cached = imageCache.get(slug);
+  if (cached) return cached;
+
+  const res = await apiClient.getBoardImages(slug);
+  const images = res.data.map(toOsImage).filter((i) => i.format === 'sd');
+  imageCache.set(slug, images);
+  return images;
+}
+
+// Vendor groups + tiers come from the live API; per-board images are fetched lazily.
 export function processApiData(boards: BoardSummary[]): ArmbianData {
   const vendorMap = new Map<string, { name: string; logo: string | null; boards: BoardEntry[] }>();
 
@@ -145,12 +100,8 @@ export function processApiData(boards: BoardSummary[]): ArmbianData {
   const boardsByMfg: Record<string, BoardEntry[]> = {};
   for (const [id, v] of vendorMap) boardsByMfg[id] = v.boards;
 
-  const imagesByBoard: Record<string, OsEntry[]> = {};
-  for (const b of boards) {
-    imagesByBoard[b.slug] = b.has_desktop ? DEMO_OS_ENTRIES : DEMO_OS_ENTRIES_NO_DESKTOP;
-  }
-
-  return { manufacturers, boardsByMfg, imagesByBoard };
+  // Images are fetched lazily per board via fetchBoardImages; start empty.
+  return { manufacturers, boardsByMfg, imagesByBoard: {} };
 }
 
 function pickRandom<T>(arr: T[], exclude?: T): T {
@@ -160,14 +111,11 @@ function pickRandom<T>(arr: T[], exclude?: T): T {
   return target[Math.floor(Math.random() * target.length)]!;
 }
 
+/** Selects platinum boards without images so auto-play need not await async fetches. */
 export function makeSelection(data: ArmbianData, prev?: Selection | null): Selection {
   const eligible = data.manufacturers
     .map((m, i) => ({ m, i }))
-    .filter(({ m }) =>
-      (data.boardsByMfg[m.id] || []).some(
-        (b) => b.tier === 'platinum' && (data.imagesByBoard[b.slug] || []).length > 0,
-      ),
-    );
+    .filter(({ m }) => (data.boardsByMfg[m.id] || []).some((b) => b.tier === 'platinum'));
   if (eligible.length === 0) return { mfgIdx: 0, boardIdx: 0, osIdx: 0 };
 
   const mfgEntry = pickRandom(
@@ -176,18 +124,14 @@ export function makeSelection(data: ArmbianData, prev?: Selection | null): Selec
   );
   const { i: mfgIdx, m: mfg } = mfgEntry;
   const boards = data.boardsByMfg[mfg.id] || [];
-  const platBoards = boards
-    .map((b, i) => ({ b, i }))
-    .filter(({ b }) => b.tier === 'platinum' && (data.imagesByBoard[b.slug] || []).length > 0);
+  const platBoards = boards.map((b, i) => ({ b, i })).filter(({ b }) => b.tier === 'platinum');
   const boardEntry = pickRandom(
     platBoards,
     prev && prev.mfgIdx === mfgIdx ? platBoards.find((e) => e.i === prev.boardIdx) : undefined,
   );
-  const { i: boardIdx, b: board } = boardEntry;
-  const osImages = data.imagesByBoard[board.slug] || [];
-  const osIdx = osImages.length > 0 ? Math.floor(Math.random() * osImages.length) : 0;
+  const { i: boardIdx } = boardEntry;
 
-  return { mfgIdx, boardIdx, osIdx };
+  return { mfgIdx, boardIdx, osIdx: 0 };
 }
 
 export function selMfg(d: ArmbianData, s: Selection): MfgInfo {
@@ -199,9 +143,9 @@ export function selBoards(d: ArmbianData, s: Selection): BoardEntry[] {
 export function selBoard(d: ArmbianData, s: Selection): BoardEntry {
   return selBoards(d, s)[s.boardIdx]!;
 }
-export function selOsImages(d: ArmbianData, s: Selection): OsEntry[] {
+export function selOsImages(d: ArmbianData, s: Selection): OsImage[] {
   return d.imagesByBoard[selBoard(d, s).slug] || [];
 }
-export function selOs(d: ArmbianData, s: Selection): OsEntry | undefined {
+export function selOs(d: ArmbianData, s: Selection): OsImage | undefined {
   return selOsImages(d, s)[s.osIdx];
 }

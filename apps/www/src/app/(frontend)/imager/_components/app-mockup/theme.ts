@@ -24,6 +24,7 @@ export const darkT: TC = {
   pillStepBg: 'rgba(255,255,255,0.1)',
   pillStepColor: '#888',
   logoFilter: 'none',
+  logo: '/imager/assets/armbian-logo-white.png',
   selectedBg: `rgba(${ACCENT_RGB},0.1)`,
   clickBg: `rgba(${ACCENT_RGB},0.12)`,
   warningBg: 'rgba(239,68,68,0.12)',
@@ -32,6 +33,17 @@ export const darkT: TC = {
   deviceIconColor: '#60a5fa',
   inactiveTabBg: 'linear-gradient(135deg,#2a2a2a,#252525)',
   inactiveTabBorder: '1px solid #404040',
+  // Inline-panel tokens, mirror desktop theme.css dark theme.
+  bgHover: '#333333',
+  success: '#10b981',
+  info: '#3b82f6',
+  warning: '#f59e0b',
+  islandBg: 'rgba(34,34,34,0.55)',
+  islandBorder: 'rgba(255,255,255,0.1)',
+  cardHoverShadow: '0 30px 60px -15px rgba(0,0,0,0.6), 0 0 30px -10px rgba(242,101,34,0.2)',
+  deviceAlertBg: 'rgba(239,68,68,0.12)',
+  deviceAlertBorder: 'rgba(239,68,68,0.2)',
+  deviceAlertIcon: '#f05252',
 };
 
 export const lightT: TC = {
@@ -56,6 +68,7 @@ export const lightT: TC = {
   pillStepBg: '#e0e3e6',
   pillStepColor: '#666666',
   logoFilter: 'none',
+  logo: '/imager/assets/armbian-logo-black.png',
   selectedBg: `rgba(${ACCENT_RGB},0.08)`,
   clickBg: `rgba(${ACCENT_RGB},0.1)`,
   warningBg: 'rgba(239,68,68,0.08)',
@@ -64,6 +77,17 @@ export const lightT: TC = {
   deviceIconColor: '#3b82f6',
   inactiveTabBg: 'linear-gradient(135deg,#ffffff,#eef0f2)',
   inactiveTabBorder: '1px solid #d0d4d8',
+  // Inline-panel tokens, mirror desktop theme.css light theme.
+  bgHover: '#e9ecef',
+  success: '#10b981',
+  info: '#3b82f6',
+  warning: '#f59e0b',
+  islandBg: 'rgba(255,255,255,0.55)',
+  islandBorder: 'rgba(255,255,255,0.6)',
+  cardHoverShadow: '0 24px 50px -18px rgba(15,23,42,0.28), 0 0 30px -12px rgba(242,101,34,0.18)',
+  deviceAlertBg: 'rgba(239,68,68,0.08)',
+  deviceAlertBorder: 'rgba(239,68,68,0.15)',
+  deviceAlertIcon: '#f05252',
 };
 
 export const ThemeCtx = createContext<TC>(darkT);

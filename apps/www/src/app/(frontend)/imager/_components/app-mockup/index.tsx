@@ -2,22 +2,29 @@
 
 import { motion, useReducedMotion, AnimatePresence } from 'motion/react';
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Settings } from 'lucide-react';
-import Image from 'next/image';
 import { useTheme } from '@/components/layout/theme-provider';
 
 import { ThemeCtx, darkT, lightT } from './theme';
-import { DataCtx, processApiData, makeSelection, selMfg } from './data';
-import { BOARD_CDN, FLASH_STAGES, isModal } from './constants';
+import { DataCtx, processApiData, makeSelection, fetchBoardImages, selMfg, selBoard } from './data';
+import { ACCENT_RGB, BOARD_CDN, FLASH_STAGES, isModal } from './constants';
 import { apiClient } from '../../_lib/api';
-import { StepPills, HomeCards } from './home-cards';
-import { ManufacturerModal, BoardModal, OsModal, StorageModal, ConfirmModal } from './modals';
-import { FlashHeader, FlashStatus, DoneView } from './flash-views';
-import type { ArmbianData, Selection, Phase } from './types';
+import { Header } from './header';
+import { HomeSplit } from './home-split';
+import { FlashScreen } from './flash-screen';
+import type { ArmbianData, Selection, Phase, OsImage } from './types';
 
 const PRELOAD_BOARDS = 6;
 
-const PHASE_TO_CARD: Partial<Record<Phase, number>> = {
+/** Static warm-aurora mesh behind the window content; mirrors desktop .app::before. */
+const AMBIENT_MESH =
+  `linear-gradient(180deg, rgba(${ACCENT_RGB},0.1), transparent 26%),` +
+  `radial-gradient(40% 38% at 14% 16%, rgba(${ACCENT_RGB},0.26), transparent 64%),` +
+  `radial-gradient(34% 32% at 88% 12%, rgba(255,178,66,0.17), transparent 64%),` +
+  `radial-gradient(40% 40% at 92% 96%, rgba(${ACCENT_RGB},0.14), transparent 60%),` +
+  `radial-gradient(34% 34% at 4% 98%, rgba(228,66,96,0.11), transparent 60%)`;
+
+/** Phase to inline-panel step index; `confirm` keeps the storage step (3) active, shown full-bleed. */
+const PHASE_TO_STEP: Partial<Record<Phase, number>> = {
   manufacturer: 0,
   board: 1,
   os: 2,
@@ -38,13 +45,19 @@ export function AppMockup() {
   const [flashStage, setFlashStage] = useState(0);
   const [clicking, setClicking] = useState(false);
   const [fetchError, setFetchError] = useState(false);
+  // OS images for the selected board are fetched lazily; gates the OsGallery skeleton.
+  const [osLoading, setOsLoading] = useState(false);
+  // Auto-play runs only while the mockup is on screen: scrolling away rewinds it to the
+  // start (timers gated on inView), so it replays from the beginning when it returns to view.
+  const rootRef = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
 
   useEffect(() => {
-    // Reduced-motion users get a static empty mockup; skip the fetch.
-    if (prefersReducedMotion) return;
     let alive = true;
     apiClient
-      .getBoards({ limit: 200 })
+      // Fetch the full board set (API total ~338) so per-vendor counts match the app;
+      // limit:200 truncated globally and under-counted vendors (e.g. FriendlyElec showed 19, not 38).
+      .getBoards({ limit: 500 })
       .then(({ data }) => {
         if (!alive) return;
         const processed = processApiData(data);
@@ -64,7 +77,7 @@ export function AppMockup() {
     return () => {
       alive = false;
     };
-  }, [prefersReducedMotion]);
+  }, []);
 
   const mfgIdx = selection?.mfgIdx;
   const preloadedRef = useRef<Set<string>>(new Set());
@@ -83,14 +96,57 @@ export function AppMockup() {
     });
   }, [apiData, mfgIdx]);
 
+  // Lazily fetch the selected board's OS images, then correct osIdx to the first
+  // promoted image (else 0). Runs whenever the selected board changes; the OS step
+  // shows the skeleton until the images land.
+  const boardSlug = apiData && selection ? selBoard(apiData, selection).slug : undefined;
+  useEffect(() => {
+    if (!apiData || !selection || !boardSlug) return;
+    if (apiData.imagesByBoard[boardSlug]) return; // already cached for this board
+
+    let alive = true;
+    setOsLoading(true);
+    fetchBoardImages(boardSlug)
+      .then((images) => {
+        if (!alive) return;
+        setApiData((prev) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            imagesByBoard: { ...prev.imagesByBoard, [boardSlug]: images },
+          };
+        });
+        const promotedIdx = images.findIndex((i: OsImage) => i.promoted);
+        const osIdx = promotedIdx >= 0 ? promotedIdx : 0;
+        setSelection((prev) => (prev ? { ...prev, osIdx } : prev));
+        setOsLoading(false);
+      })
+      .catch(() => {
+        if (!alive) return;
+        // Empty image set: gallery renders its empty state; clear the skeleton.
+        setApiData((prev) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            imagesByBoard: { ...prev.imagesByBoard, [boardSlug]: [] },
+          };
+        });
+        setOsLoading(false);
+      });
+    return () => {
+      alive = false;
+    };
+  }, [apiData, selection, boardSlug]);
+
   const completed = Array.from({ length: Math.min(step, 4) }, (_, i) => i);
-  const activeCard = phase === 'home' ? step : (PHASE_TO_CARD[phase] ?? -1);
+  // Active inline panel: the panel phase's step, or the in-progress step on `home`.
+  const activeStep = phase === 'home' ? step : (PHASE_TO_STEP[phase] ?? step);
 
   const advance = useCallback(() => {
     setClicking(false);
     if (phase === 'home') {
-      const modalForStep: Phase[] = ['manufacturer', 'board', 'os', 'storage'];
-      setPhase(modalForStep[step] || 'manufacturer');
+      const panelForStep: Phase[] = ['manufacturer', 'board', 'os', 'storage'];
+      setPhase(panelForStep[step] || 'manufacturer');
     } else if (phase === 'manufacturer') {
       setStep(1);
       setPhase('home');
@@ -101,9 +157,10 @@ export function AppMockup() {
       setStep(3);
       setPhase('home');
     } else if (phase === 'storage') {
+      // Commit the device now (step 4) so the confirm view collapses the sidebar.
+      setStep(4);
       setPhase('confirm');
     } else if (phase === 'confirm') {
-      setStep(4);
       setFlashStage(0);
       setPhase('flashing');
     } else if (phase === 'flashing') {
@@ -117,19 +174,53 @@ export function AppMockup() {
     }
   }, [phase, step, apiData]);
 
+  // Rewind the whole flow to its opening state (home, fresh random selection).
+  const resetToStart = useCallback(() => {
+    setClicking(false);
+    setProgress(0);
+    setFlashStage(0);
+    setStep(0);
+    setPhase('home');
+    if (apiData) setSelection((prev) => makeSelection(apiData, prev));
+  }, [apiData]);
+
+  // Play while on screen, rewind to the start once scrolled away. The timers below
+  // gate on inView, so they stay idle until the mockup returns to the viewport.
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+    const el = rootRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        const visible = entry?.isIntersecting ?? false;
+        setInView(visible);
+        if (!visible) resetToStart();
+      },
+      { threshold: 0.25 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [prefersReducedMotion, apiData, resetToStart]);
+
   useEffect(() => {
     if (!apiData || !selection) return;
+    if (!inView) return;
     const viewMs: Record<Phase, number> = {
       home: step === 0 ? 1500 : 900,
       manufacturer: 1800,
       board: 2200,
-      os: 1800,
+      // Richer gallery, so linger a touch longer once populated.
+      os: 2600,
       storage: 1800,
       confirm: 1800,
       flashing: 13100,
       done: 2000,
       reset: 400,
     };
+    // Defer the OS advance until images have loaded so the gallery is seen populated.
+    // The effect re-runs when osLoading flips false (it is a dependency), scheduling
+    // the real advance then.
+    if (phase === 'os' && osLoading) return;
     const clickMs = 600;
     const needsClick = phase === 'home' || isModal(phase) || phase === 'done';
     if (needsClick) {
@@ -143,7 +234,7 @@ export function AppMockup() {
       const t = setTimeout(advance, viewMs[phase]);
       return () => clearTimeout(t);
     }
-  }, [phase, step, advance, apiData, selection]);
+  }, [phase, step, advance, apiData, selection, osLoading, inView]);
 
   useEffect(() => {
     if (phase !== 'flashing') {
@@ -185,8 +276,6 @@ export function AppMockup() {
     return () => clearInterval(t);
   }, [phase, flashStage]);
 
-  if (prefersReducedMotion) return null;
-
   if (fetchError) {
     return (
       <p className="py-8 text-center text-sm text-[rgb(var(--fg-3))]">
@@ -197,130 +286,81 @@ export function AppMockup() {
 
   if (!apiData || !selection) return null;
 
-  const homeVisible = phase === 'home' || isModal(phase);
+  const isFlashing = phase === 'flashing' || phase === 'done';
+  // The 'home' resting state renders the same inline panel as its panel phase, so only let
+  // the card pulse during the real panel phase - otherwise it flashes twice (once idle, once selecting).
+  const panelClicking = clicking && isModal(phase);
 
   return (
     <ThemeCtx.Provider value={c}>
       <DataCtx.Provider value={{ data: apiData, sel: selection }}>
         <div
-          className="mx-auto w-full max-w-5xl isolate pointer-events-none select-none overflow-hidden rounded-xl text-left shadow-2xl"
+          ref={rootRef}
+          className="mockup-root relative isolate mx-auto flex aspect-[11/7] w-full max-w-[1100px] flex-col overflow-hidden rounded-xl text-left shadow-2xl pointer-events-none select-none"
           style={{ background: c.bgApp }}
         >
           <div
-            className="relative z-[70] flex items-center justify-center py-[10px]"
-            style={{ background: c.titleBarBg, borderBottom: `1px solid ${c.titleBarBorder}` }}
-          >
-            <div className="absolute left-4 flex gap-[7px]">
-              <span
-                className="block h-[12px] w-[12px] rounded-full"
-                style={{ background: '#ff5f57' }}
-              />
-              <span
-                className="block h-[12px] w-[12px] rounded-full"
-                style={{ background: '#febc2e' }}
-              />
-              <span
-                className="block h-[12px] w-[12px] rounded-full"
-                style={{ background: '#28c840' }}
-              />
-            </div>
-            <span className="text-[12px] font-medium" style={{ color: c.titleBarText }}>
-              Armbian Imager
-            </span>
+            aria-hidden="true"
+            className="pointer-events-none absolute z-0"
+            style={{ inset: '-8% -12%', background: AMBIENT_MESH, filter: 'blur(40px)' }}
+          />
+
+          {/* Overlay titlebar dots, positioned to mirror the app's window chrome. */}
+          <div className="relative z-[1] flex shrink-0 items-center gap-[8px] px-5 pt-[16px] pb-[6px]">
+            <span
+              className="block h-[13px] w-[13px] rounded-full"
+              style={{ background: '#ff5f57' }}
+            />
+            <span
+              className="block h-[13px] w-[13px] rounded-full"
+              style={{ background: '#febc2e' }}
+            />
+            <span
+              className="block h-[13px] w-[13px] rounded-full"
+              style={{ background: '#28c840' }}
+            />
           </div>
 
-          <div className="relative">
-            <div
-              className="flex items-center justify-between px-5 py-[14px] sm:px-7"
-              style={{ background: c.bgApp, borderBottom: `1px solid ${c.borderLight}` }}
-            >
-              <Image
-                src="/imager/assets/armbian-logo.png"
-                alt="Armbian"
-                width={340}
-                height={52}
-                className="h-[38px] w-auto sm:h-[48px]"
-                style={{ filter: c.logoFilter }}
-              />
-              <StepPills completed={completed} />
-            </div>
+          {/* Header + body fill the rest of the 1100×700 (11:7) window. */}
+          <div className="relative z-[1] flex min-h-0 flex-1 flex-col">
+            <Header completed={completed} isFlashing={isFlashing} />
 
-            <div className="relative" style={{ height: 560, background: c.bgApp }}>
-              <div
-                className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-5 transition-opacity duration-300 sm:px-8"
-                style={{ opacity: homeVisible ? 1 : 0 }}
-              >
-                <HomeCards
-                  activeCard={activeCard}
-                  clicking={clicking && phase === 'home'}
-                  step={step}
-                />
-              </div>
-
-              <AnimatePresence>
-                {phase === 'flashing' && (
+            <div className="relative min-h-0 flex-1">
+              <AnimatePresence mode="wait">
+                {isFlashing ? (
                   <motion.div
-                    key="fl"
+                    key="flash"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-[14px] px-6"
-                    style={{ background: c.bgApp }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute inset-0 flex items-center justify-center px-6"
                   >
-                    <FlashHeader />
-                    <FlashStatus stage={flashStage} progress={progress} />
+                    <FlashScreen
+                      phase={phase}
+                      flashStage={flashStage}
+                      progress={progress}
+                      clicking={clicking}
+                    />
                   </motion.div>
-                )}
-              </AnimatePresence>
-
-              <AnimatePresence>
-                {phase === 'done' && (
+                ) : (
                   <motion.div
-                    key="dn"
-                    initial={{ opacity: 0, scale: 0.96 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                    key="home"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="absolute inset-0 z-10 flex items-center justify-center px-6"
-                    style={{ background: c.bgApp }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute inset-0"
                   >
-                    <DoneView clicking={clicking} />
+                    <HomeSplit
+                      activeStep={activeStep}
+                      step={step}
+                      completed={completed}
+                      clicking={panelClicking}
+                      osLoading={osLoading}
+                    />
                   </motion.div>
                 )}
-              </AnimatePresence>
-
-              {phase !== 'flashing' && phase !== 'done' && phase !== 'reset' && (
-                <div className="absolute right-3 bottom-3 z-10">
-                  <div
-                    className="flex h-[36px] w-[36px] items-center justify-center rounded-[10px]"
-                    style={{ background: c.bgCard, border: `1px solid ${c.border}` }}
-                  >
-                    <Settings className="h-[16px] w-[16px]" style={{ color: c.textSec }} />
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <AnimatePresence>
-              {isModal(phase) && (
-                <motion.div
-                  key="ov"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="absolute inset-0 z-50"
-                  style={{ background: c.overlay }}
-                />
-              )}
-            </AnimatePresence>
-
-            <div className="absolute inset-0 z-[60] flex items-center justify-center overflow-hidden p-4">
-              <AnimatePresence mode="wait">
-                {phase === 'manufacturer' && <ManufacturerModal key="mfg" clicking={clicking} />}
-                {phase === 'board' && <BoardModal key="brd" clicking={clicking} />}
-                {phase === 'os' && <OsModal key="os" clicking={clicking} />}
-                {phase === 'storage' && <StorageModal key="stg" clicking={clicking} />}
-                {phase === 'confirm' && <ConfirmModal key="cfm" clicking={clicking} />}
               </AnimatePresence>
             </div>
           </div>
@@ -344,20 +384,6 @@ export function AppMockup() {
                 background-position: 200% 0;
               }
             }
-            .mockup-indeterminate {
-              animation: mockup-indet-kf 1.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
-            }
-            @keyframes mockup-indet-kf {
-              0% {
-                transform: translateX(-100%) scaleX(0.8);
-              }
-              50% {
-                transform: translateX(250%) scaleX(1);
-              }
-              100% {
-                transform: translateX(600%) scaleX(0.8);
-              }
-            }
             .mockup-scroll {
               overflow-y: auto;
               overscroll-behavior: contain;
@@ -376,6 +402,8 @@ export function AppMockup() {
             }
             .mockup-marquee-container.overflow {
               text-overflow: clip;
+              /* Left-align so the scroll loop starts at the text's beginning, not mid-word. */
+              text-align: left;
             }
             .mockup-marquee-container .mockup-marquee-content {
               display: inline-block;
@@ -388,7 +416,138 @@ export function AppMockup() {
                 transform: translateX(0);
               }
               100% {
-                transform: translateX(var(--scroll-percent, -50%));
+                /* Exact px shift (single text + separator) for a seamless loop; falls back to -50%. */
+                transform: translateX(var(--marquee-shift, -50%));
+              }
+            }
+
+            /* Staggered card entrance for the mfr/board/os grids (mfrCardIn).
+               Used as a class (flow-panels) and as an animation name (os-gallery). */
+            .mockup-card-in {
+              animation: mockup-card-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+            }
+            @keyframes mockup-card-in {
+              from {
+                opacity: 0;
+                transform: translateY(18px) scale(0.97);
+              }
+              to {
+                opacity: 1;
+                transform: none;
+              }
+            }
+
+            /* Floating board photo for the confirm + flash heroes (confirmFloat). */
+            @keyframes mockup-confirm-float {
+              0%,
+              100% {
+                transform: translateY(0);
+              }
+              50% {
+                transform: translateY(-12px);
+              }
+            }
+
+            /* Breathing accent halo behind the board (confirmGlow). */
+            @keyframes mockup-confirm-glow {
+              0%,
+              100% {
+                opacity: 0.75;
+                transform: scale(0.96);
+              }
+              50% {
+                opacity: 1;
+                transform: scale(1.06);
+              }
+            }
+
+            /* Confirm/flash content rise + fade (confirmContentIn). */
+            @keyframes mockup-content-in {
+              from {
+                opacity: 0;
+                transform: translateY(16px);
+              }
+              to {
+                opacity: 1;
+                transform: none;
+              }
+            }
+
+            /* Indeterminate flash-track sweep, 32% sliver (flashTrackSlide). */
+            @keyframes mockup-track-slide {
+              0% {
+                transform: translateX(-120%);
+              }
+              100% {
+                transform: translateX(420%);
+              }
+            }
+
+            /* Done-check spring (flashCheckPop). */
+            @keyframes mockup-check-pop {
+              0% {
+                transform: scale(0.4);
+                opacity: 0;
+              }
+              55% {
+                transform: scale(1.18);
+                opacity: 1;
+              }
+              100% {
+                transform: scale(1);
+                opacity: 1;
+              }
+            }
+
+            /* Active stage-icon breathing (pulse). */
+            @keyframes mockup-pulse {
+              0%,
+              100% {
+                opacity: 1;
+              }
+              50% {
+                opacity: 0.5;
+              }
+            }
+
+            /* Panel/sidebar mount (splitIn). Used as a class in home-split. */
+            .mockup-split-in {
+              animation: mockup-split-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+            }
+            @keyframes mockup-split-in {
+              from {
+                opacity: 0;
+                transform: translateY(12px);
+              }
+              to {
+                opacity: 1;
+                transform: none;
+              }
+            }
+
+            /* Used both as a class (SideStep) and as a bare animation name (header chips). */
+            .mockup-ui-up {
+              animation: mockup-ui-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+            }
+            @keyframes mockup-ui-up {
+              from {
+                opacity: 0;
+                transform: translateY(14px);
+              }
+              to {
+                opacity: 1;
+                transform: none;
+              }
+            }
+
+            /* Reduced-motion users see a static frame: render the mockup but drop
+               every entrance/loop animation and transition inside it. */
+            @media (prefers-reduced-motion: reduce) {
+              .mockup-root,
+              .mockup-root * {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.001ms !important;
               }
             }
           `}</style>
