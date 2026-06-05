@@ -14,7 +14,7 @@ export function Preview() {
           <SectionHeading
             label="Preview"
             title="See the workflow"
-            subtitle="A guided 4-step process — select your manufacturer, board, OS image, and storage. Then flash with verification, all from a single screen."
+            subtitle="A guided 4-step process: select your manufacturer, board, OS image, and storage. Then flash with verification, all from a single screen."
           />
         </ScrollReveal>
 
@@ -39,7 +39,7 @@ export function Preview() {
             style={
               {
                 '--mockup-scale': 'min(1, calc((100vw - 48px) / 1024px))',
-                height: 'calc(var(--mockup-scale) * 666px)',
+                height: 'calc(var(--mockup-scale) * 746px)',
               } as React.CSSProperties
             }
           >

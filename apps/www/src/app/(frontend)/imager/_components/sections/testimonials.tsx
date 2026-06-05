@@ -21,7 +21,7 @@ export function Testimonials() {
           <SectionHeading
             label="Reviews"
             title="What people say"
-            subtitle="Loved by developers, makers, and the open-source community."
+            subtitle="Loved by developers and makers across the open-source community."
           />
         </ScrollReveal>
 

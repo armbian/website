@@ -58,7 +58,7 @@ export function Downloads() {
           <SectionHeading
             label="Download"
             title="Get Armbian Imager"
-            subtitle="Native builds for every platform — Intel and ARM, Windows, macOS, and Linux."
+            subtitle="Native builds for every platform: Intel and ARM, Windows, macOS, and Linux."
           />
         </ScrollReveal>
 
@@ -160,7 +160,7 @@ export function Downloads() {
 
         {usingFallback && (
           <p className="mt-6 text-center text-xs text-[rgb(var(--fg-3))] font-mono">
-            Showing cached version — latest release info unavailable right now.
+            Showing a cached version. Latest release info is unavailable right now.
           </p>
         )}
 

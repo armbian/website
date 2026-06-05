@@ -7,12 +7,6 @@ export interface HeroContent {
   secondaryCta: { label: string; href: string };
 }
 
-export interface Feature {
-  title: string;
-  description: string;
-  icon: LucideIcon;
-}
-
 export interface Step {
   title: string;
   description: string;

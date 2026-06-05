@@ -15,7 +15,7 @@ export function HowItWorks() {
           <SectionHeading
             label="How it works"
             title="Five steps to a booting Armbian"
-            subtitle="From install to a running system — no terminal required."
+            subtitle="Pick, flash, boot. No terminal required."
           />
         </ScrollReveal>
 

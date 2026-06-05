@@ -45,12 +45,7 @@ function getImagerRepo(): Promise<ImagerRepoPayload | null> {
   return inflight;
 }
 
-/**
- * Shared GitHub release accessor. Module-scope cache + in-flight dedupe
- * so multiple consumers (Downloads, Testimonials) issue one network
- * call per minute. Cache is browser-only — reading on the server would
- * leak request A's payload into request B's hydrated HTML.
- */
+/** Browser-only cache: server caching would leak one request's payload into another's hydrated HTML. */
 export function useImagerRepo() {
   const [data, setData] = useState<ImagerRepoPayload | null>(() =>
     isBrowser && cached?.ok ? (cached.value ?? null) : null,

@@ -1,7 +1,7 @@
 import { ArmbianApiClient } from '@armbian/api-client';
 import { API_CLIENT_IDS } from '@armbian/config';
 
-// Empty default → relative paths, proxied by next.config rewrite.
+// Empty default keeps requests relative so next.config rewrite can proxy them.
 export const API_BASE =
   (typeof process !== 'undefined' && process.env['NEXT_PUBLIC_API_URL']) || '';
 

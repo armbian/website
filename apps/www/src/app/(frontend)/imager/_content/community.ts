@@ -12,7 +12,7 @@ export const contributeWays: ContributeWay[] = [
 export const contributeContent: ContributeContent = {
   title: 'Contribute to Armbian Imager',
   description:
-    'Armbian Imager is open source and community-driven. Every contribution matters — from code to docs to testing on new boards.',
+    'Armbian Imager is open source and community-driven. Every contribution matters, whether code, docs, or testing on new boards.',
   cta: {
     label: 'Start Contributing',
     href: ARMBIAN_URLS.IMAGER_CONTRIBUTING,

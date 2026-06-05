@@ -10,7 +10,7 @@ import { ScrollToTop } from '@/components/layout/scroll-to-top';
 import { CookieBanner } from '@/components/consent/cookie-banner';
 import enMessages from '@/messages/en.json';
 
-// Narrow subset — shipping the full en.json (~50 KB) is wasteful here.
+// Narrow subset: shipping the full en.json (~50 KB) is wasteful here.
 const imagerMessages = {
   nav: enMessages.nav,
   footer: enMessages.footer,
@@ -20,7 +20,7 @@ const imagerMessages = {
 export default async function ImagerLayout({ children }: { children: ReactNode }) {
   // Internal nav/footer links must jump to the apex site only when the user
   // is actually on the imager sub-host (e.g. imager.armbian.com). On localhost
-  // or any other host the imager is just /imager on the main site — keep
+  // or any other host the imager is just /imager on the main site - keep
   // links local so dev navigation works.
   const host = (await headers()).get('host') ?? '';
   const apexBaseUrl = host.startsWith('imager.') ? `https://${PRIMARY_DOMAIN}` : undefined;

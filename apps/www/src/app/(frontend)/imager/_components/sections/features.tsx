@@ -7,6 +7,9 @@ import {
   MonitorSmartphone,
   Check,
   ArrowRight,
+  Wand2,
+  Usb,
+  Radar,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
@@ -143,6 +146,55 @@ function PlatformsVisual() {
   );
 }
 
+function ProfileVisual() {
+  const items = ['Network', 'Locale', 'Timezone', 'User'];
+  return (
+    <div className="rounded-lg border border-white/10 bg-[rgb(var(--bg-el))] p-3">
+      <span className="mb-2 block font-mono text-[11px] uppercase tracking-widest font-bold text-[rgb(var(--fg-3))]">
+        First-boot profile
+      </span>
+      <div className="flex flex-wrap gap-1.5">
+        {items.map((it) => (
+          <span
+            key={it}
+            className="inline-flex items-center gap-1.5 rounded-md border border-[rgb(var(--brand)/0.25)] bg-[rgb(var(--brand)/0.1)] px-2.5 py-1 text-[11px] font-medium text-[rgb(var(--brand))]"
+          >
+            <Check className="h-3 w-3" /> {it}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function EdlVisual() {
+  return (
+    <div className="flex items-center gap-2.5 rounded-lg border border-white/10 bg-[rgb(var(--bg-el))] p-3 font-mono text-[11px]">
+      <span className="rounded border border-[rgb(var(--brand)/0.3)] bg-[rgb(var(--brand)/0.15)] px-2 py-0.5 font-bold text-[rgb(var(--brand))]">
+        EDL
+      </span>
+      <ArrowRight className="h-3 w-3 shrink-0 text-[rgb(var(--fg-3))]" />
+      <span className="text-[rgb(var(--fg-2))]">Sahara</span>
+      <ArrowRight className="h-3 w-3 shrink-0 text-[rgb(var(--fg-3))]" />
+      <span className="text-[rgb(var(--fg-2))]">Firehose</span>
+    </div>
+  );
+}
+
+function DetectVisual() {
+  return (
+    <div className="flex items-center justify-between rounded-lg border border-white/10 bg-[rgb(var(--bg-el))] p-3">
+      <span className="flex items-center gap-2 font-mono text-[12px] text-[rgb(var(--fg-2))]">
+        <Radar className="h-4 w-4 text-[rgb(var(--brand))]" />
+        This board
+      </span>
+      <span className="rounded border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-widest text-emerald-500 dark:text-emerald-400">
+        Detected
+      </span>
+    </div>
+  );
+}
+
 function getFeatures(
   vendors: string[],
   totalVendors: number,
@@ -150,51 +202,75 @@ function getFeatures(
 ): FeatureCardProps[] {
   return [
     {
-      label: '01 — Catalog',
+      label: '01 · Catalog',
       title: `${totalBoards}+ Boards Supported`,
-      description: `Browse ${totalVendors}+ manufacturers and ${totalBoards}+ single-board computers with real photos, support tiers, and curated image recommendations.`,
+      description: `Browse ${totalVendors}+ manufacturers and ${totalBoards}+ single-board computers, each with real photos, support tiers, and recommended images.`,
       icon: LayoutGrid,
       visual: <BoardsVisual vendors={vendors} totalVendors={totalVendors} />,
     },
     {
-      label: '02 — Integrity',
+      label: '02 · Integrity',
       title: 'Download & Verify',
       description:
-        'Images are downloaded, decompressed, and SHA-verified automatically. Post-write verification ensures every byte on your device is correct.',
+        'Images are downloaded, decompressed, and SHA-verified automatically. After writing, it re-checks every byte on your device.',
       icon: ShieldCheck,
       visual: <VerifyVisual />,
     },
     {
-      label: '03 — Localized',
+      label: '03 · Localized',
       title: '18 Languages',
       description:
-        'Fully localized in 18 languages with automatic system language detection — German, French, Japanese, Chinese and more.',
+        'Fully localized in 18 languages including German, French, Japanese, and Chinese, with automatic system language detection.',
       icon: Languages,
       visual: <LanguagesVisual />,
     },
     {
-      label: '04 — Storage',
+      label: '04 · Storage',
       title: 'Smart Image Caching',
       description:
-        'Downloaded images are cached locally (5–100 GB configurable) so re-flashing the same image to multiple devices is instant.',
+        'Downloaded images are cached locally (5–100 GB configurable), so re-flashing to multiple devices is instant and you can flash from cache with no internet.',
       icon: HardDrive,
       visual: <CacheVisual />,
     },
     {
-      label: '05 — Always Current',
+      label: '05 · Always Current',
       title: 'Auto Updates',
       description:
-        'Built-in update checker notifies you of new releases with changelog preview and one-click install — always stay current.',
+        'Built-in update checker notifies you of new releases, with a changelog preview and one-click install.',
       icon: RefreshCw,
       visual: <UpdatesVisual />,
     },
     {
-      label: '06 — Native',
+      label: '06 · Native',
       title: 'Cross-Platform',
       description:
-        'Native builds for every desktop OS on both Intel and ARM architectures. Consistent experience everywhere.',
+        'Native builds for every desktop OS on both Intel and ARM architectures. Same experience everywhere.',
       icon: MonitorSmartphone,
       visual: <PlatformsVisual />,
+    },
+    {
+      label: '07 · First Boot',
+      title: 'First-Boot Setup',
+      description:
+        'Save reusable profiles for network, locale, timezone, and user accounts. Armbian applies them on first boot, so the board is ready before you plug it in.',
+      icon: Wand2,
+      visual: <ProfileVisual />,
+    },
+    {
+      label: '08 · Qualcomm',
+      title: 'Qualcomm EDL Flashing',
+      description:
+        'Flash Qualcomm boards over USB in EDL mode with Sahara and Firehose, guided by on-screen steps. No vendor tools required.',
+      icon: Usb,
+      visual: <EdlVisual />,
+    },
+    {
+      label: '09 · Detection',
+      title: 'Knows Your Board',
+      description:
+        'Run it on an Armbian device and the app detects and pre-selects that board for you.',
+      icon: Radar,
+      visual: <DetectVisual />,
     },
   ];
 }
@@ -217,7 +293,7 @@ export function Features({ vendors, totalVendors, totalBoards }: FeaturesProps) 
           <SectionHeading
             label="Features"
             title="Built for Armbian"
-            subtitle="Every feature designed around the single-board computer workflow — from board selection to verified flash."
+            subtitle="Every feature designed around the single-board computer workflow, from picking a board to a verified flash."
           />
         </ScrollReveal>
 

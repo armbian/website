@@ -18,8 +18,7 @@ export const metadata: Metadata = {
   title: siteMetadata.title,
   description: siteMetadata.description,
   alternates: { canonical: siteMetadata.url },
-  // og/twitter images are auto-injected by Next.js from the colocated
-  // opengraph-image.png file — no manual override needed.
+  // og/twitter images come from the colocated opengraph-image.png automatically.
   openGraph: {
     type: 'website',
     siteName: 'Armbian Imager',

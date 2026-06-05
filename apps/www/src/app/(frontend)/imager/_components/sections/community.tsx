@@ -69,7 +69,7 @@ export function Community() {
           <SectionHeading
             label="Community"
             title="Built by makers, for makers"
-            subtitle="Connect with thousands of developers, makers, and Armbian enthusiasts worldwide."
+            subtitle="Connect with developers and makers who run Armbian around the world."
           />
         </ScrollReveal>
 

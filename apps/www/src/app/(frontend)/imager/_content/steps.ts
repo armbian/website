@@ -17,19 +17,19 @@ export const steps: Step[] = [
   {
     title: 'Choose an image',
     description:
-      'Browse compatible Armbian images filtered by desktop environment, kernel version, and stability tier.',
+      'Browse desktop, minimal/IoT, dedicated-application, and rolling-release images, filtered by kernel version and stability. Or point the app at your own local image.',
     icon: Database,
   },
   {
     title: 'Select storage',
     description:
-      'Insert your SD card or USB drive — the app detects connected devices and warns before overwriting.',
+      'Insert your SD card, USB drive, or NVMe. The app lists targets and hides system drives by default, then warns before overwriting.',
     icon: HardDrive,
   },
   {
     title: 'Flash & verify',
     description:
-      'One click to download, write, and verify. SHA checksums and post-write validation ensure a perfect flash.',
+      'One click to download, write, and verify. SHA checksums and post-write validation confirm a clean flash, and any first-boot profile is applied automatically.',
     icon: Zap,
   },
 ];
