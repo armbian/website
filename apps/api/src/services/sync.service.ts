@@ -44,6 +44,7 @@ interface SourceResult<T> {
 export class SyncService {
   private normalizer: Normalizer;
   private interval: ReturnType<typeof setInterval> | null = null;
+  private isSyncing = false;
   private lastSyncTime: Date | null = null;
   private nextSyncTime: Date | null = null;
 
@@ -132,6 +133,20 @@ export class SyncService {
   }
 
   async sync(): Promise<void> {
+    // Re-entrancy guard: overlapping triggers (cron + manual) must not stack syncs.
+    if (this.isSyncing) {
+      this.log.warn('Sync already running; skipping concurrent trigger');
+      return;
+    }
+    this.isSyncing = true;
+    try {
+      await this.runSync();
+    } finally {
+      this.isSyncing = false;
+    }
+  }
+
+  private async runSync(): Promise<void> {
     const start = Date.now();
     this.log.info('Starting data sync...');
 

@@ -1,18 +1,29 @@
 import type { FastifyInstance } from 'fastify';
+import { timingSafeEqual } from 'node:crypto';
 import type { SyncService } from '../services/sync.service.js';
 import '../types.js';
 
+const SYNC_TOKEN = process.env['SYNC_TOKEN'] ?? '';
+
+/** Constant-time check of a `Bearer <token>` header against the configured secret. */
+function bearerMatches(header: string | undefined): boolean {
+  if (!SYNC_TOKEN || !header) return false;
+  const match = /^Bearer\s+(.+)$/.exec(header);
+  if (!match) return false;
+  const provided = Buffer.from(match[1]!);
+  const expected = Buffer.from(SYNC_TOKEN);
+  return provided.length === expected.length && timingSafeEqual(provided, expected);
+}
+
 export function registerHealthRoutes(server: FastifyInstance, sync: SyncService): void {
   /**
-   * POST /api/v1/sync — trigger an immediate upstream sync.
-   * Restricted to loopback callers; operators invoke it via `manage.sh sync`
-   * which proxies through `docker exec` so the source is the container's
-   * own loopback interface.
+   * POST /api/v1/sync: gated by SYNC_TOKEN bearer, or loopback for manage.sh sync.
+   * Loopback is safe only because Caddy overwrites X-Forwarded-For.
    */
   server.post('/api/v1/sync', async (request, reply) => {
     const ip = request.ip;
     const isLoopback = ip === '127.0.0.1' || ip === '::1' || ip === '::ffff:127.0.0.1';
-    if (!isLoopback) {
+    if (!bearerMatches(request.headers.authorization) && !isLoopback) {
       return reply.code(403).send({ error: 'Forbidden', statusCode: 403 });
     }
     void sync.sync().catch((err) => server.log.error({ err }, 'Manual sync failed'));

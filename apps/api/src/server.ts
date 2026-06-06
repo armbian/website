@@ -53,9 +53,8 @@ async function main(): Promise<void> {
         },
       },
     },
-    // Trust X-Forwarded-For so the real visitor IP surfaces from Caddy and
-    // the www container. Safe because the API is not exposed to the host —
-    // only reachable from the Docker network.
+    // Caddy overwrites XFF with the real peer (see Caddyfile), so request.ip is
+    // trustworthy and cannot be spoofed.
     trustProxy: true,
     disableRequestLogging: true,
   });

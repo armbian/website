@@ -47,7 +47,10 @@
 {$API_HOSTNAME::8080} {
 	encode zstd gzip
 
-	reverse_proxy api:3001
+	reverse_proxy api:3001 {
+		# Overwrite XFF with the real peer so request.ip cannot be spoofed (e.g. /sync).
+		header_up X-Forwarded-For {remote_host}
+	}
 
 	log {
 		output stdout
