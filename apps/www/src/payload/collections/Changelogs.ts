@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload';
-import { isAdminOrEditor } from '../access';
+import { isAdminOrEditor, publishedOrAuthed } from '../access';
 
 export const Changelogs: CollectionConfig = {
   slug: 'changelogs',
@@ -10,7 +10,7 @@ export const Changelogs: CollectionConfig = {
   },
   access: {
     create: isAdminOrEditor,
-    read: () => true,
+    read: publishedOrAuthed,
     update: isAdminOrEditor,
     delete: isAdminOrEditor,
   },

@@ -1,5 +1,6 @@
-import type { CollectionConfig, Access } from 'payload';
-import { isAdminOrEditor } from '../access';
+import type { CollectionConfig, Access, CollectionBeforeValidateHook } from 'payload';
+import { APIError } from 'payload';
+import { isAdminOrEditor, adminOrEditorField } from '../access';
 
 type UserWithBoards = { role?: string; assignedBoards?: { boardSlug: string }[] };
 
@@ -11,6 +12,20 @@ const canManageFlashGuide: Access = ({ req: { user } }) => {
     return { boardSlug: { in: u.assignedBoards.map((b) => b.boardSlug) } };
   }
   return false;
+};
+
+// The access where-clause scopes which docs a maintainer touches, not the boardSlug
+// value, so enforce the value on create and update.
+const enforceMaintainerBoardScope: CollectionBeforeValidateHook = ({ data, req: { user } }) => {
+  const u = user as UserWithBoards | undefined;
+  if (!u || u.role === 'admin' || u.role === 'editor') return data;
+  if (u.role === 'maintainer' && data?.boardSlug) {
+    const allowed = u.assignedBoards?.map((b) => b.boardSlug) ?? [];
+    if (!allowed.includes(data.boardSlug)) {
+      throw new APIError('You can only manage flash guides for your assigned boards.', 403);
+    }
+  }
+  return data;
 };
 
 export const FlashGuides: CollectionConfig = {
@@ -26,6 +41,9 @@ export const FlashGuides: CollectionConfig = {
     update: canManageFlashGuide,
     delete: isAdminOrEditor,
   },
+  hooks: {
+    beforeValidate: [enforceMaintainerBoardScope],
+  },
   fields: [
     {
       name: 'boardSlug',
@@ -33,6 +51,8 @@ export const FlashGuides: CollectionConfig = {
       required: true,
       index: true,
       unique: true,
+      // Maintainers must not reassign an existing guide to another board.
+      access: { update: adminOrEditorField },
       admin: {
         description: 'Select a board from the Armbian catalog',
         components: {

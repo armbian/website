@@ -11,3 +11,9 @@ export const adminOrSelf: Access = ({ req: { user } }) => {
   return false;
 };
 export const adminOnlyField: FieldAccess = ({ req: { user } }) => user?.role === 'admin';
+export const adminOrEditorField: FieldAccess = ({ req: { user } }) =>
+  user?.role === 'admin' || user?.role === 'editor';
+
+// Public reads see only published docs; authenticated staff see drafts too.
+export const publishedOrAuthed: Access = ({ req: { user } }) =>
+  user ? true : { status: { equals: 'published' } };
