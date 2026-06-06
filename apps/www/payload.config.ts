@@ -74,7 +74,9 @@ export default buildConfig({
   onInit: async (payload: Payload) => {
     const existing = await payload.find({ collection: 'users', limit: 1 });
     if (existing.totalDocs === 0) {
-      const password = randomBytes(24).toString('base64url');
+      // Never log the generated password; prefer INITIAL_ADMIN_PASSWORD or a reset.
+      const provided = process.env.INITIAL_ADMIN_PASSWORD;
+      const password = provided || randomBytes(24).toString('base64url');
       await (payload.create as Function)({
         collection: 'users',
         data: {
@@ -84,9 +86,16 @@ export default buildConfig({
           role: 'admin',
         },
       });
-      payload.logger.info(
-        `Default admin user created — email: admin@armbian.com  password: ${password}`,
-      );
+      if (provided) {
+        payload.logger.info(
+          'Default admin user created (admin@armbian.com) using INITIAL_ADMIN_PASSWORD.',
+        );
+      } else {
+        payload.logger.warn(
+          'Default admin user created (admin@armbian.com) with a random password that was NOT logged. ' +
+            'Set INITIAL_ADMIN_PASSWORD before first boot, or reset it from the admin panel.',
+        );
+      }
     }
   },
 

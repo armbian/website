@@ -114,7 +114,8 @@ export const oidcStrategy: AuthStrategy = {
       if (!claims) return { user: null };
 
       const sub = claims.sub;
-      const email = claims.email ?? claims.preferred_username ?? '';
+      // Link only by a real email claim; preferred_username could hijack an account.
+      const email = typeof claims.email === 'string' ? claims.email : '';
       if (!sub || !email) return { user: null };
 
       const groups = claims.groups ?? [];
@@ -139,8 +140,19 @@ export const oidcStrategy: AuthStrategy = {
         const updates: Record<string, any> = {};
         // Link OIDC sub if not set yet
         if (!existing.docs[0].oidcSub) updates.oidcSub = sub;
-        // Sync role from Authentik groups on every login
-        if (existing.docs[0].role !== role) updates.role = role;
+        // Sync role from groups, but never auto-demote the last admin (lockout guard).
+        if (existing.docs[0].role !== role) {
+          const demotingAdmin = existing.docs[0].role === 'admin' && role !== 'admin';
+          if (demotingAdmin) {
+            const admins = await payload.count({
+              collection: 'users',
+              where: { role: { equals: 'admin' } },
+            });
+            if ((admins.totalDocs ?? 0) > 1) updates.role = role;
+          } else {
+            updates.role = role;
+          }
+        }
 
         if (Object.keys(updates).length > 0) {
           await payload.update({
