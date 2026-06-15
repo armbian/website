@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload';
-import { isAdminOrEditor, publishedOrAuthed } from '../access';
+import { isAdminOrEditor, publishedOrAuthed, hiddenForMaintainer } from '../access';
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -7,6 +7,7 @@ export const Pages: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'status', 'updatedAt'],
     group: 'Content',
+    hidden: hiddenForMaintainer,
   },
   access: {
     create: isAdminOrEditor,

@@ -1,14 +1,15 @@
 import type { GlobalConfig } from 'payload';
-import { isAdminOrEditor } from '../access';
+import { isAdmin, hiddenForNonAdmin } from '../access';
 
 export const CompanyConfig: GlobalConfig = {
   slug: 'company-config',
   admin: {
     group: 'Settings',
+    hidden: hiddenForNonAdmin,
   },
   access: {
     read: () => true,
-    update: isAdminOrEditor,
+    update: isAdmin,
   },
   fields: [
     {

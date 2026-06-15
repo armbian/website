@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload';
-import { isAdminOrEditor, publishedOrAuthed } from '../access';
+import { isAdminOrEditor, publishedOrAuthed, hiddenForMaintainer } from '../access';
 
 export const Changelogs: CollectionConfig = {
   slug: 'changelogs',
@@ -7,6 +7,7 @@ export const Changelogs: CollectionConfig = {
     useAsTitle: 'version',
     defaultColumns: ['version', 'releaseDate', 'major', 'status'],
     group: 'Content',
+    hidden: hiddenForMaintainer,
   },
   access: {
     create: isAdminOrEditor,

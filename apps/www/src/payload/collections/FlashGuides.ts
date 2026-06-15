@@ -14,6 +14,16 @@ const canManageFlashGuide: Access = ({ req: { user } }) => {
   return false;
 };
 
+// Public/admin/editor read every guide; maintainers see only their boards.
+const canReadFlashGuide: Access = ({ req: { user } }) => {
+  const u = user as UserWithBoards | undefined;
+  if (u?.role === 'maintainer') {
+    const boards = u.assignedBoards?.map((b) => b.boardSlug) ?? [];
+    return boards.length ? { boardSlug: { in: boards } } : false;
+  }
+  return true;
+};
+
 // The access where-clause scopes which docs a maintainer touches, not the boardSlug
 // value, so enforce the value on create and update.
 const enforceMaintainerBoardScope: CollectionBeforeValidateHook = ({ data, req: { user } }) => {
@@ -37,7 +47,7 @@ export const FlashGuides: CollectionConfig = {
   },
   access: {
     create: canManageFlashGuide,
-    read: () => true,
+    read: canReadFlashGuide,
     update: canManageFlashGuide,
     delete: isAdminOrEditor,
   },
