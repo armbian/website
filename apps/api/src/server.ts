@@ -22,7 +22,9 @@ import { registerPageRoutes } from './routes/pages.js';
 import { registerImageRoutes } from './routes/images.js';
 import { registerContactRoutes } from './routes/contact.js';
 import { registerImagerRoutes } from './routes/imager.js';
+import { registerQdlRoutes } from './routes/qdl.js';
 import { ImageCache } from './services/image-cache.js';
+import { QdlAssetCache } from './services/qdl-cache.js';
 
 const PORT = parseInt(process.env['API_PORT'] ?? process.env['PORT'] ?? '3001', 10);
 const HOST = process.env['HOST'] ?? '0.0.0.0';
@@ -79,6 +81,9 @@ async function main(): Promise<void> {
   server.addHook('preHandler', async (request, reply) => {
     if (request.url === '/api/v1/health') return;
     if (request.url.startsWith('/api/v1/images/')) return;
+    // QDL blobs are public firehose assets fetched by the imager's plain download
+    // client (no custom headers), same rationale as images.
+    if (request.url.startsWith('/api/v1/qdl/')) return;
     const client = request.headers['x-armbian-client'];
     if (typeof client !== 'string' || client.length === 0) {
       void reply.status(403).send({ error: 'Client identification required', statusCode: 403 });
@@ -161,7 +166,8 @@ async function main(): Promise<void> {
 
   const store = new DataStore();
   const imageCache = new ImageCache(CACHE_DIR, server.log);
-  const sync = new SyncService(store, server.log, imageCache);
+  const qdlCache = new QdlAssetCache(CACHE_DIR, server.log);
+  const sync = new SyncService(store, server.log, imageCache, qdlCache);
 
   // Initial data load — try disk cache first for fast startup, then sync from network
   const cached = await sync.loadFromCache();
@@ -186,6 +192,7 @@ async function main(): Promise<void> {
   // Decorate Fastify with store and image cache
   server.decorate('store', store);
   server.decorate('imageCache', imageCache);
+  server.decorate('qdlCache', qdlCache);
 
   // --- Routes ---
 
@@ -201,6 +208,7 @@ async function main(): Promise<void> {
   registerImageRoutes(server);
   registerContactRoutes(server);
   registerImagerRoutes(server);
+  registerQdlRoutes(server);
 
   // --- Start ---
 
