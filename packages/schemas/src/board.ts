@@ -38,7 +38,6 @@ const QdlMetaBase = z.object({
   loader_rel: z.string().regex(QDL_REL_PATH).nullable(),
   provision_rel: z.string().regex(QDL_REL_PATH).nullable(),
   edl_entry: z.enum(['button', 'jumper']),
-  min_imager_version: z.string().regex(/^\d+\.\d+\.\d+$/),
 });
 
 // Paths are stored family-relative; the API prepends `{family}/`, so a leading
