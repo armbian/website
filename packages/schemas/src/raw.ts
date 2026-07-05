@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { QdlMetaSchema } from './board.js';
 
 /**
  * Raw source schemas — validate upstream JSON from github.armbian.com
@@ -96,5 +97,6 @@ export const BoardEnrichmentSchema = z.object({
   architecture: z.string().optional(),
   features: z.array(z.string()).optional(),
   summary: z.string().optional(),
+  qdl: QdlMetaSchema.optional(),
 });
 export type BoardEnrichment = z.infer<typeof BoardEnrichmentSchema>;
