@@ -1,1 +1,38 @@
-[]
+[
+  {
+    "slug": "radxa-dragon-q6a",
+    "soc": "QCS6490",
+    "qdl": {
+      "family": "Kodiak",
+      "storage": "ufs",
+      "loader_rel": null,
+      "provision_rel": "radxa-dragon-q6a/provision_ufs31_lun0_only.xml",
+      "edl_entry": "button",
+      "min_imager_version": "2.0.3"
+    }
+  },
+  {
+    "slug": "arduino-uno-q",
+    "soc": "QRB2210",
+    "qdl": {
+      "family": "Agatti",
+      "storage": "emmc",
+      "loader_rel": null,
+      "provision_rel": null,
+      "edl_entry": "jumper",
+      "min_imager_version": "2.0.3"
+    }
+  },
+  {
+    "slug": "radxa-dragon-q8b",
+    "soc": "SC8280XP",
+    "qdl": {
+      "family": "Makena",
+      "storage": "ufs",
+      "loader_rel": null,
+      "provision_rel": "radxa-dragon-q8b/provision_ufs31_lun0_only.xml",
+      "edl_entry": "button",
+      "min_imager_version": "2.0.3"
+    }
+  }
+]
