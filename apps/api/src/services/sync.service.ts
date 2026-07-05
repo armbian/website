@@ -15,6 +15,7 @@ import type {
   LegacyRedirectEntry,
   BoardEnrichment,
 } from '@armbian/schemas';
+import { qdlLoaderRelPath, qdlProvisionRelPath } from '@armbian/schemas';
 import { DATA_SOURCES, ARMBIAN_URLS } from '@armbian/config';
 import { z } from 'zod';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
@@ -23,6 +24,7 @@ import { dirname, join } from 'node:path';
 import { Normalizer } from './normalizer.js';
 import type { DataStore, ZohoFormTokens } from './datastore.js';
 import type { ImageCache } from './image-cache.js';
+import type { QdlAssetCache, QdlAssetRef } from './qdl-cache.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = join(__dirname, '..', '..', 'data');
@@ -58,8 +60,27 @@ export class SyncService {
     private store: DataStore,
     private log: FastifyBaseLogger,
     private imageCache: ImageCache,
+    private qdlCache: QdlAssetCache,
   ) {
     this.normalizer = new Normalizer();
+  }
+
+  /** Deduplicated qcombin asset references (loader + provisioning XML) across all QDL boards. */
+  private qdlAssetRefs(enrichments: BoardEnrichment[]): QdlAssetRef[] {
+    const refs: QdlAssetRef[] = [];
+    const seen = new Set<string>();
+    const add = (relPath: string | null, kind: QdlAssetRef['kind']) => {
+      if (relPath && !seen.has(relPath)) {
+        seen.add(relPath);
+        refs.push({ relPath, kind });
+      }
+    };
+    for (const e of enrichments) {
+      if (!e.qdl) continue;
+      add(qdlLoaderRelPath(e.qdl), 'loader');
+      add(qdlProvisionRelPath(e.qdl), 'provision');
+    }
+    return refs;
   }
 
   /** Try to load from local disk cache — fast startup without network */
@@ -210,6 +231,10 @@ export class SyncService {
       z.array(BoardEnrichmentSchema),
     );
 
+    // Cache the qcombin firehose loaders / provisioning XML referenced by QDL
+    // boards and hash them, so the served qdl block carries a verifiable digest.
+    const qdlDigests = await this.qdlCache.warm(this.qdlAssetRefs(enrichments ?? []));
+
     // Normalize and load into store
     const normalized = this.normalizer.normalize(
       {
@@ -222,6 +247,7 @@ export class SyncService {
         redirects: redirects ?? [],
         enrichments: enrichments ?? [],
         boardConfigSlugs,
+        qdlDigests,
       },
     );
 
