@@ -7,8 +7,7 @@
       "storage": "ufs",
       "loader_rel": null,
       "provision_rel": "radxa-dragon-q6a/provision_ufs31_lun0_only.xml",
-      "edl_entry": "button",
-      "min_imager_version": "2.0.3"
+      "edl_entry": "button"
     }
   },
   {
@@ -19,8 +18,7 @@
       "storage": "emmc",
       "loader_rel": null,
       "provision_rel": null,
-      "edl_entry": "jumper",
-      "min_imager_version": "2.0.3"
+      "edl_entry": "jumper"
     }
   },
   {
@@ -31,8 +29,7 @@
       "storage": "ufs",
       "loader_rel": null,
       "provision_rel": "radxa-dragon-q8b/provision_ufs31_lun0_only.xml",
-      "edl_entry": "button",
-      "min_imager_version": "2.0.3"
+      "edl_entry": "button"
     }
   }
 ]
