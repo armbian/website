@@ -19,7 +19,10 @@ import type {
   SupportTier,
   KernelBranchInfo,
   BoardMaintainer,
+  QdlMeta,
+  BoardQdl,
 } from '@armbian/schemas';
+import { qdlLoaderRelPath, qdlProvisionRelPath } from '@armbian/schemas';
 import {
   computeSupportTier,
   boardGithubUrl,
@@ -44,6 +47,20 @@ interface EnrichmentData {
   redirects: LegacyRedirectEntry[];
   enrichments: BoardEnrichment[];
   boardConfigSlugs?: Set<string>;
+  /** relPath → SHA-256 of the cached QDL asset, computed by QdlAssetCache during sync. */
+  qdlDigests?: Map<string, string>;
+}
+
+/** Merge a board's QDL enrichment with the digests the API computed for its assets. */
+function buildBoardQdl(qdl: QdlMeta | undefined, digests?: Map<string, string>): BoardQdl | null {
+  if (!qdl) return null;
+  const loaderRel = qdlLoaderRelPath(qdl);
+  const provisionRel = qdlProvisionRelPath(qdl);
+  return {
+    ...qdl,
+    loader_sha256: loaderRel ? (digests?.get(loaderRel) ?? null) : null,
+    provision_sha256: provisionRel ? (digests?.get(provisionRel) ?? null) : null,
+  };
 }
 
 /**
@@ -69,14 +86,6 @@ const VALID_IMAGE_EXTENSIONS: Record<string, ImageFormat> = {
   'hyperv.zip': 'hyperv',
   'hyperv.zip.xz': 'hyperv',
 };
-
-/**
- * Board slugs whose `.tar.xz` archives are Qualcomm Deep Download (QDL)
- * payloads rather than conventional rootfs tarballs. This is a temporary
- * override until upstream starts emitting a dedicated format marker for
- * them; remove entries here once the JSON exposes the distinction natively.
- */
-const QDL_BOARD_SLUGS = new Set<string>(['arduino-uno-q']);
 
 /**
  * Companion file patterns. Each entry knows how to detect a companion file
@@ -161,7 +170,7 @@ function extractPrimaryBaseName(filename: string): string {
   return filename;
 }
 
-function classifyAsset(asset: RawImageAsset): AssetClassification {
+function classifyAsset(asset: RawImageAsset, qdlSlugs: Set<string>): AssetClassification {
   const filename = (asset.file_url.split('/').pop() ?? '').toLowerCase();
 
   // Companion files are matched first because their suffix is more specific
@@ -192,10 +201,11 @@ function classifyAsset(asset: RawImageAsset): AssetClassification {
   let format = VALID_IMAGE_EXTENSIONS[asset.file_extension];
   if (!format) return { kind: 'unknown' };
 
-  // QDL override: a handful of Qualcomm-based boards ship `.tar.xz` archives
-  // that are really QDL payloads, not rootfs tarballs. Upgrade the format so
-  // the UI can label them correctly.
-  if (format === 'rootfs' && QDL_BOARD_SLUGS.has(asset.board_slug)) {
+  // Qualcomm QDL boards ship `.tar.xz` archives that are firehose payloads,
+  // not rootfs tarballs. Upgrade the format for boards carrying a `qdl`
+  // enrichment block; the `rootfs` guard leaves raw UFS `.img.xz` images
+  // (q6a/q8b) untouched — those route via storage, not format.
+  if (format === 'rootfs' && qdlSlugs.has(asset.board_slug)) {
     format = 'qdl';
   }
 
@@ -214,6 +224,7 @@ export class Normalizer {
 
   normalize(raw: RawSyncData, enrichment: EnrichmentData): NormalizedData {
     const enrichmentMap = new Map(enrichment.enrichments.map((e) => [e.slug, e]));
+    const qdlSlugs = new Set(enrichment.enrichments.filter((e) => e.qdl).map((e) => e.slug));
     const maintainerMap = this.buildMaintainerBoardMap(raw.maintainers);
     const partnerMap = this.buildPartnerMap(raw.partners);
 
@@ -227,7 +238,7 @@ export class Normalizer {
     type ClassifiedAsset = { asset: RawImageAsset; classification: AssetClassification };
     const classified: ClassifiedAsset[] = [];
     for (const asset of raw.images) {
-      const classification = classifyAsset(asset);
+      const classification = classifyAsset(asset, qdlSlugs);
       if (classification.kind === 'unknown') {
         unknownExtensions.add(asset.file_extension);
         continue;
@@ -294,6 +305,7 @@ export class Normalizer {
         soc: enrich?.soc ?? null,
         architecture: enrich?.architecture ?? this.detectArchitecture(slug, boardImages) ?? null,
         summary: enrich?.summary ?? null,
+        qdl: buildBoardQdl(enrich?.qdl, enrichment.qdlDigests),
         features: enrich?.features ?? [],
         docs_url: boardDocsUrl(slug),
         forum_url: boardForumUrl(slug),

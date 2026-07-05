@@ -353,6 +353,7 @@ function toBoardSummary(board: BoardDetail): BoardSummary {
     soc: board.soc,
     architecture: board.architecture,
     summary: board.summary,
+    qdl: board.qdl,
   };
 }
 
