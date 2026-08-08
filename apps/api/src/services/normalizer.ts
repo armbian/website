@@ -85,6 +85,7 @@ const VALID_IMAGE_EXTENSIONS: Record<string, ImageFormat> = {
   'img.qcow2.xz': 'qemu',
   'hyperv.zip': 'hyperv',
   'hyperv.zip.xz': 'hyperv',
+  iso: 'iso',
 };
 
 /**
@@ -160,6 +161,7 @@ function extractPrimaryBaseName(filename: string): string {
     /\.hyperv\.zip\.xz$/i,
     /\.hyperv\.zip$/i,
     /\.img\.xz$/i,
+    /\.iso$/i,
     /\.tar\.xz$/i,
     /\.ufs\.xz$/i,
     /\.xz$/i,

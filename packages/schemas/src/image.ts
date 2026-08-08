@@ -17,7 +17,7 @@ export const StabilityEnum = z.enum(['stable', 'edge', 'nightly']);
 export type Stability = z.infer<typeof StabilityEnum>;
 
 /** Image format — distinguishes raw SD images from VM/rootfs alternatives */
-export const ImageFormatEnum = z.enum(['sd', 'rootfs', 'qemu', 'hyperv', 'qdl']);
+export const ImageFormatEnum = z.enum(['sd', 'rootfs', 'qemu', 'hyperv', 'qdl', 'iso']);
 export type ImageFormat = z.infer<typeof ImageFormatEnum>;
 
 /** Hardware storage variant — only UFS is tracked since eMMC is the norm */
