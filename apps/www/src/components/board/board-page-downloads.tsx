@@ -54,6 +54,7 @@ const FORMAT_LABEL: Record<ImageFormat, string> = {
   qemu: 'QEMU / QCOW2',
   hyperv: 'Hyper-V VHD',
   qdl: 'QDL image',
+  iso: 'UEFI ISO',
 };
 
 const CHIP_STYLE: Record<ChipKind, string> = {
