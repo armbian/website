@@ -49,6 +49,7 @@ export type RawImagesResponse = z.infer<typeof RawImagesResponseSchema>;
 /** Partner from partners.json */
 export const RawPartnerSchema = z.object({
   Account_Name: z.string(),
+  company_slug: z.string().nullable().optional(),
   Description: z.string().nullable().optional(),
   Partnership_Status: z.string(),
   Website: z.string().nullable().optional(),
