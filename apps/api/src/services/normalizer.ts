@@ -592,9 +592,8 @@ export class Normalizer {
     const map = new Map<string, 'platinum' | 'gold' | 'silver'>();
 
     for (const p of partners) {
-      // Try to match partner to vendor by normalizing names
       const tier = normalizePartnerTier(p.Partnership_Status);
-      const slug = normalizeToSlug(p.Account_Name);
+      const slug = p.company_slug?.trim() || normalizeToSlug(p.Account_Name);
       map.set(slug, tier);
     }
 
