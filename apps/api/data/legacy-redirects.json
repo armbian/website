@@ -1080,6 +1080,11 @@
     "legacy": ["/download", "/download/"]
   },
   {
+    "board_id": "__page__",
+    "canonical": "/terms",
+    "legacy": ["/trademark"]
+  },
+  {
     "board_id": "youyeetoo-r1-v3",
     "canonical": "/boards/youyeetoo-r1-v3",
     "legacy": ["/youyeetoo-r1", "/download/youyeetoo-r1"]
