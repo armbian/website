@@ -86,6 +86,105 @@ export function qdlProvisionRelPath(qdl: Pick<QdlMeta, 'family' | 'provision_rel
   return qdl.provision_rel ? `${qdl.family}/${qdl.provision_rel}` : null;
 }
 
+/**
+ * Board test-results feed — normalized from board-performance.json
+ * (armbian/board-performance/v1). Every measured field is optional: absent
+ * means not measured, not zero. Only present when the board has at least
+ * one passing autotest run.
+ */
+export const BoardPerformanceSummarySchema = z.object({
+  cpu_mhz: z.number().optional(),
+  cpu_aes_MBs: z.number().optional(),
+  ethernet_mbits: z.number().optional(),
+  ethernet_interfaces: z.number().int().optional(),
+  wifi_mbits: z.number().optional(),
+  wifi_attach: z.string().optional(),
+  wifi_chip: z.string().optional(),
+  power_min_w: z.number().optional(),
+  power_max_w: z.number().optional(),
+});
+export type BoardPerformanceSummary = z.infer<typeof BoardPerformanceSummarySchema>;
+
+export const BoardPerformanceCpuSchema = z.object({
+  max_mhz: z.number().optional(),
+  min_mhz: z.number().optional(),
+  peak_mhz: z.number().optional(),
+  governor: z.string().optional(),
+  aes_MBs: z.number().optional(),
+  temp_C: z.number().optional(),
+  tested: z.string().optional(),
+  run_id: z.string().optional(),
+  dvfs_tested: z.string().optional(),
+  dvfs_run_id: z.string().optional(),
+});
+export type BoardPerformanceCpu = z.infer<typeof BoardPerformanceCpuSchema>;
+
+export const BoardPerformanceMemorySchema = z.object({
+  copy_MBs: z.number().optional(),
+  tested: z.string().optional(),
+  run_id: z.string().optional(),
+});
+export type BoardPerformanceMemory = z.infer<typeof BoardPerformanceMemorySchema>;
+
+export const BoardPerformanceStorageSchema = z.object({
+  read_MBs: z.number().optional(),
+  write_MBs: z.number().optional(),
+  tested: z.string().optional(),
+  run_id: z.string().optional(),
+});
+export type BoardPerformanceStorage = z.infer<typeof BoardPerformanceStorageSchema>;
+
+/** A single tested network interface. `wireless` and `interface` are the only fields the upstream feed always sets. */
+export const BoardPerformanceNetworkInterfaceSchema = z.object({
+  interface: z.string(),
+  type: z.string().optional(),
+  up_mbits: z.number().optional(),
+  down_mbits: z.number().optional(),
+  wireless: z.boolean(),
+  wifi_chip: z.string().optional(),
+  // PCIe / SDIO / USB — USB marks the test rig's own dongle, not the board's hardware.
+  wifi_attach: z.string().optional(),
+  channel_mhz: z.number().optional(),
+  channel_width_mhz: z.number().optional(),
+});
+export type BoardPerformanceNetworkInterface = z.infer<
+  typeof BoardPerformanceNetworkInterfaceSchema
+>;
+
+export const BoardPerformanceNetworkSchema = z.object({
+  tested: z.string().optional(),
+  run_id: z.string().optional(),
+  interfaces: z.array(BoardPerformanceNetworkInterfaceSchema).optional(),
+});
+export type BoardPerformanceNetwork = z.infer<typeof BoardPerformanceNetworkSchema>;
+
+/** Present only for boards on a metered rig port. */
+export const BoardPerformancePowerSchema = z.object({
+  unit: z.string().optional(),
+  min: z.number().optional(),
+  avg: z.number().optional(),
+  max: z.number().optional(),
+  samples: z.number().int().optional(),
+  tested: z.string().optional(),
+  run_id: z.string().optional(),
+});
+export type BoardPerformancePower = z.infer<typeof BoardPerformancePowerSchema>;
+
+export const BoardPerformanceSchema = z.object({
+  device: z.string().nullable(),
+  last_good_test: z.string(),
+  run_url: z.string().nullable(),
+  image_version: z.string().nullable(),
+  kernel: z.string().nullable(),
+  summary: BoardPerformanceSummarySchema,
+  cpu: BoardPerformanceCpuSchema.nullable(),
+  memory: BoardPerformanceMemorySchema.nullable(),
+  storage: BoardPerformanceStorageSchema.nullable(),
+  network: BoardPerformanceNetworkSchema.nullable(),
+  power: BoardPerformancePowerSchema.nullable(),
+});
+export type BoardPerformance = z.infer<typeof BoardPerformanceSchema>;
+
 /** Board summary — used in list/catalog endpoints */
 export const BoardSummarySchema = z.object({
   slug: z.string(),
@@ -114,5 +213,6 @@ export const BoardDetailSchema = BoardSummarySchema.extend({
   legacy_paths: z.array(z.string()).default([]),
   maintainers: z.array(BoardMaintainerSchema).default([]),
   kernel_branches: z.array(KernelBranchInfoSchema).default([]),
+  performance: BoardPerformanceSchema.nullable(),
 });
 export type BoardDetail = z.infer<typeof BoardDetailSchema>;

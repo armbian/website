@@ -91,6 +91,109 @@ export const LegacyRedirectEntrySchema = z.object({
 });
 export type LegacyRedirectEntry = z.infer<typeof LegacyRedirectEntrySchema>;
 
+/**
+ * board-performance.json (armbian/board-performance/v1), published by
+ * armbian/autotests from its hardware-in-the-loop fleet runs and served at
+ * https://github.armbian.com/board-performance.json. Matches
+ * armbian/autotests results/public-schema.json. Only passing test runs are
+ * published; a board slug absent from `boards` was never measured or never
+ * passed (see boards_skipped_no_passing_run / boards_skipped_no_measurements).
+ */
+const RawBoardPerformanceNetworkInterfaceSchema = z.object({
+  interface: z.string(),
+  type: z.string().optional(),
+  up_mbits: z.number().optional(),
+  down_mbits: z.number().optional(),
+  wireless: z.boolean(),
+  wifi_chip: z.string().optional(),
+  wifi_attach: z.string().optional(),
+  channel_mhz: z.number().optional(),
+  channel_width_mhz: z.number().optional(),
+});
+
+export const RawBoardPerformanceEntrySchema = z.object({
+  board_slug: z.string(),
+  device: z.string().optional(),
+  last_good_test: z.string(),
+  run_url: z.string().optional(),
+  image_version: z.string().optional(),
+  kernel: z.string().optional(),
+  summary: z
+    .object({
+      cpu_mhz: z.number().optional(),
+      cpu_aes_MBs: z.number().optional(),
+      ethernet_mbits: z.number().optional(),
+      ethernet_interfaces: z.number().int().optional(),
+      wifi_mbits: z.number().optional(),
+      wifi_attach: z.string().optional(),
+      wifi_chip: z.string().optional(),
+      power_min_w: z.number().optional(),
+      power_max_w: z.number().optional(),
+    })
+    .optional(),
+  cpu: z
+    .object({
+      max_mhz: z.number().optional(),
+      min_mhz: z.number().optional(),
+      peak_mhz: z.number().optional(),
+      governor: z.string().optional(),
+      aes_MBs: z.number().optional(),
+      temp_C: z.number().optional(),
+      tested: z.string().optional(),
+      run_id: z.string().optional(),
+      dvfs_tested: z.string().optional(),
+      dvfs_run_id: z.string().optional(),
+    })
+    .optional(),
+  memory: z
+    .object({
+      copy_MBs: z.number().optional(),
+      tested: z.string().optional(),
+      run_id: z.string().optional(),
+    })
+    .optional(),
+  storage: z
+    .object({
+      read_MBs: z.number().optional(),
+      write_MBs: z.number().optional(),
+      tested: z.string().optional(),
+      run_id: z.string().optional(),
+    })
+    .optional(),
+  network: z
+    .object({
+      tested: z.string().optional(),
+      run_id: z.string().optional(),
+      interfaces: z.array(RawBoardPerformanceNetworkInterfaceSchema).optional(),
+    })
+    .optional(),
+  power: z
+    .object({
+      unit: z.string().optional(),
+      min: z.number().optional(),
+      avg: z.number().optional(),
+      max: z.number().optional(),
+      samples: z.number().int().optional(),
+      tested: z.string().optional(),
+      run_id: z.string().optional(),
+    })
+    .optional(),
+});
+export type RawBoardPerformanceEntry = z.infer<typeof RawBoardPerformanceEntrySchema>;
+
+/** Top-level board-performance.json structure */
+export const RawBoardPerformanceResponseSchema = z.object({
+  schema: z.literal('armbian/board-performance/v1'),
+  source: z.string(),
+  run_url_template: z.string().optional(),
+  generated: z.string(),
+  boards_total: z.number().int(),
+  boards_skipped_no_passing_run: z.array(z.string()).optional(),
+  boards_skipped_no_measurements: z.array(z.string()).optional(),
+  boards: z.array(RawBoardPerformanceEntrySchema),
+});
+export type RawBoardPerformanceResponse = z.infer<typeof RawBoardPerformanceResponseSchema>;
+
 /** Manual board enrichment — optional extra metadata */
 export const BoardEnrichmentSchema = z.object({
   slug: z.string(),

@@ -4,6 +4,7 @@ export const DATA_SOURCES = {
   PARTNERS: 'https://github.armbian.com/partners.json',
   MAINTAINERS: 'https://github.armbian.com/maintainers.json',
   KERNEL_DESCRIPTIONS: 'https://github.armbian.com/kernel-description.json',
+  BOARD_PERFORMANCE: 'https://github.armbian.com/board-performance.json',
 } as const;
 
 /** Default image sizes */

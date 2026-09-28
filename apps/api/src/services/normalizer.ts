@@ -14,6 +14,7 @@ import type {
   RawPartner,
   RawMaintainer,
   RawKernelDescription,
+  RawBoardPerformanceEntry,
   LegacyRedirectEntry,
   BoardEnrichment,
   SupportTier,
@@ -21,6 +22,7 @@ import type {
   BoardMaintainer,
   QdlMeta,
   BoardQdl,
+  BoardPerformance,
 } from '@armbian/schemas';
 import { qdlLoaderRelPath, qdlProvisionRelPath } from '@armbian/schemas';
 import {
@@ -41,6 +43,7 @@ interface RawSyncData {
   partners: RawPartner[];
   maintainers: RawMaintainer[];
   kernelDescriptions: RawKernelDescription;
+  boardPerformance: RawBoardPerformanceEntry[];
 }
 
 interface EnrichmentData {
@@ -60,6 +63,29 @@ function buildBoardQdl(qdl: QdlMeta | undefined, digests?: Map<string, string>):
     ...qdl,
     loader_sha256: loaderRel ? (digests?.get(loaderRel) ?? null) : null,
     provision_sha256: provisionRel ? (digests?.get(provisionRel) ?? null) : null,
+  };
+}
+
+/**
+ * Map a board's most-recent-passing-run entry from board-performance.json
+ * onto the normalized shape. Absent sub-sections/fields mean "not measured",
+ * not zero — preserved as-is rather than defaulted, except `summary` which
+ * the schema always exposes as an object (possibly empty) for callers.
+ */
+function buildBoardPerformance(raw: RawBoardPerformanceEntry | undefined): BoardPerformance | null {
+  if (!raw) return null;
+  return {
+    device: raw.device ?? null,
+    last_good_test: raw.last_good_test,
+    run_url: raw.run_url ?? null,
+    image_version: raw.image_version ?? null,
+    kernel: raw.kernel ?? null,
+    summary: raw.summary ?? {},
+    cpu: raw.cpu ?? null,
+    memory: raw.memory ?? null,
+    storage: raw.storage ?? null,
+    network: raw.network ?? null,
+    power: raw.power ?? null,
   };
 }
 
@@ -229,6 +255,7 @@ export class Normalizer {
     const qdlSlugs = new Set(enrichment.enrichments.filter((e) => e.qdl).map((e) => e.slug));
     const maintainerMap = this.buildMaintainerBoardMap(raw.maintainers);
     const partnerMap = this.buildPartnerMap(raw.partners);
+    const performanceMap = new Map(raw.boardPerformance.map((p) => [p.board_slug, p]));
 
     // Tracker for unknown extensions encountered during this run; surfaced
     // at the end of normalize() so operators learn about new upstream formats.
@@ -322,6 +349,7 @@ export class Normalizer {
         legacy_paths: this.getLegacyPaths(slug, enrichment.redirects),
         maintainers: boardMaintainers,
         kernel_branches: kernelBranches,
+        performance: buildBoardPerformance(performanceMap.get(slug)),
       });
     }
 

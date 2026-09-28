@@ -6,6 +6,7 @@ import {
   RawKernelDescriptionSchema,
   LegacyRedirectEntrySchema,
   BoardEnrichmentSchema,
+  RawBoardPerformanceResponseSchema,
 } from '@armbian/schemas';
 import type {
   RawImageAsset,
@@ -14,6 +15,7 @@ import type {
   RawKernelDescription,
   LegacyRedirectEntry,
   BoardEnrichment,
+  RawBoardPerformanceEntry,
 } from '@armbian/schemas';
 import { qdlLoaderRelPath, qdlProvisionRelPath } from '@armbian/schemas';
 import { DATA_SOURCES, ARMBIAN_URLS } from '@armbian/config';
@@ -55,6 +57,7 @@ export class SyncService {
   private cachedPartners: RawPartner[] = [];
   private cachedMaintainers: RawMaintainer[] = [];
   private cachedKernels: RawKernelDescription = {};
+  private cachedBoardPerformance: RawBoardPerformanceEntry[] = [];
 
   constructor(
     private store: DataStore,
@@ -92,6 +95,7 @@ export class SyncService {
         partners: RawPartner[];
         maintainers: RawMaintainer[];
         kernels: RawKernelDescription;
+        boardPerformance?: RawBoardPerformanceEntry[];
         savedAt: string;
       };
 
@@ -99,6 +103,7 @@ export class SyncService {
       this.cachedPartners = cached.partners;
       this.cachedMaintainers = cached.maintainers;
       this.cachedKernels = cached.kernels;
+      this.cachedBoardPerformance = cached.boardPerformance ?? [];
 
       // Normalize and load
       const redirects = await this.loadLocalJson<LegacyRedirectEntry[]>(
@@ -115,6 +120,7 @@ export class SyncService {
           partners: this.cachedPartners,
           maintainers: this.cachedMaintainers,
           kernelDescriptions: this.cachedKernels,
+          boardPerformance: this.cachedBoardPerformance,
         },
         { redirects: redirects ?? [], enrichments: enrichments ?? [] },
       );
@@ -144,6 +150,7 @@ export class SyncService {
         partners: this.cachedPartners,
         maintainers: this.cachedMaintainers,
         kernels: this.cachedKernels,
+        boardPerformance: this.cachedBoardPerformance,
         savedAt: new Date().toISOString(),
       });
       await writeFile(join(CACHE_DIR, 'upstream.json'), payload, 'utf-8');
@@ -172,23 +179,33 @@ export class SyncService {
     this.log.info('Starting data sync...');
 
     // Fetch all sources in parallel with individual error isolation
-    const [imagesResult, partnersResult, maintainersResult, kernelsResult, boardConfigSlugs] =
-      await Promise.all([
-        this.fetchSource('images', DATA_SOURCES.IMAGES, (data) => {
-          const parsed = RawImagesResponseSchema.parse(data);
-          return parsed.assets;
-        }),
-        this.fetchSource('partners', DATA_SOURCES.PARTNERS, (data) =>
-          z.array(RawPartnerSchema).parse(data),
-        ),
-        this.fetchSource('maintainers', DATA_SOURCES.MAINTAINERS, (data) =>
-          z.array(RawMaintainerSchema).parse(data),
-        ),
-        this.fetchSource('kernels', DATA_SOURCES.KERNEL_DESCRIPTIONS, (data) =>
-          RawKernelDescriptionSchema.parse(data),
-        ),
-        this.fetchBoardConfigSlugs(),
-      ]);
+    const [
+      imagesResult,
+      partnersResult,
+      maintainersResult,
+      kernelsResult,
+      boardPerformanceResult,
+      boardConfigSlugs,
+    ] = await Promise.all([
+      this.fetchSource('images', DATA_SOURCES.IMAGES, (data) => {
+        const parsed = RawImagesResponseSchema.parse(data);
+        return parsed.assets;
+      }),
+      this.fetchSource('partners', DATA_SOURCES.PARTNERS, (data) =>
+        z.array(RawPartnerSchema).parse(data),
+      ),
+      this.fetchSource('maintainers', DATA_SOURCES.MAINTAINERS, (data) =>
+        z.array(RawMaintainerSchema).parse(data),
+      ),
+      this.fetchSource('kernels', DATA_SOURCES.KERNEL_DESCRIPTIONS, (data) =>
+        RawKernelDescriptionSchema.parse(data),
+      ),
+      this.fetchSource('board_performance', DATA_SOURCES.BOARD_PERFORMANCE, (data) => {
+        const parsed = RawBoardPerformanceResponseSchema.parse(data);
+        return parsed.boards;
+      }),
+      this.fetchBoardConfigSlugs(),
+    ]);
 
     // Use fresh data or fall back to cached
     if (imagesResult.data) {
@@ -220,6 +237,17 @@ export class SyncService {
       this.store.updateSourceStatus('kernels', 'error', kernelsResult.error);
     }
 
+    if (boardPerformanceResult.data) {
+      this.cachedBoardPerformance = boardPerformanceResult.data;
+      this.store.updateSourceStatus('board_performance', 'ok');
+    } else {
+      this.store.updateSourceStatus('board_performance', 'error', boardPerformanceResult.error);
+      this.log.warn(
+        { error: boardPerformanceResult.error },
+        'Using cached board performance data',
+      );
+    }
+
     // Load local data files
     const redirects = await this.loadLocalJson<LegacyRedirectEntry[]>(
       join(DATA_DIR, 'legacy-redirects.json'),
@@ -242,6 +270,7 @@ export class SyncService {
         partners: this.cachedPartners,
         maintainers: this.cachedMaintainers,
         kernelDescriptions: this.cachedKernels,
+        boardPerformance: this.cachedBoardPerformance,
       },
       {
         redirects: redirects ?? [],
