@@ -12,7 +12,6 @@ import {
   ArrowRight,
   Mail,
   Building2,
-  ExternalLink,
   Zap,
 } from 'lucide-react';
 import { SiDiscord } from '@icons-pack/react-simple-icons';
@@ -187,10 +186,10 @@ export default async function ContactPage({ params }: Props) {
                       href={company.calendlyConsultation}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-2 text-xs font-bold text-amber-400 hover:bg-amber-500/20 transition-colors"
+                      className="inline-flex items-center gap-2 rounded-lg bg-amber-600 px-4 py-2 text-xs font-bold text-white hover:bg-amber-700 transition-all shadow-lg shadow-amber-500/20"
                     >
+                      <Briefcase size={12} strokeWidth={2.5} />
                       {t('consultation_cta')}
-                      <ExternalLink size={11} strokeWidth={2} />
                     </a>
                   </div>
                 </div>
