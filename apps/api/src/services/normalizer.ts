@@ -315,6 +315,7 @@ export class Normalizer {
           !enrichment.boardConfigSlugs?.size || enrichment.boardConfigSlugs.has(slug)
             ? boardGithubUrl(slug, supportTier)
             : null,
+        benchmarks_url: enrich?.benchmarks_url ?? null,
         build_command:
           !enrichment.boardConfigSlugs?.size || enrichment.boardConfigSlugs.has(slug)
             ? buildCommand(slug)

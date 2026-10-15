@@ -171,6 +171,7 @@
     "build_description": "Reproducera denna avbildning med Armbian byggramverk",
     "build_docs": "Byggdokumentation",
     "board_config": "Kortkonfigurationskälla",
+    "benchmarks": "Benchmarkresultat för {board}",
     "documentation": "Dokumentation",
     "forum": "Forum",
     "github": "GitHub",

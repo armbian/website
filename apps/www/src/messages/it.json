@@ -181,6 +181,7 @@
     "build_description": "Riproduci questa immagine col framework di build Armbian",
     "build_docs": "Documentazione di build",
     "board_config": "Configurazione board su GitHub",
+    "benchmarks": "Risultati dei benchmark di {board}",
     "back_to_catalog": "Torna al catalogo",
     "documentation": "Documentazione",
     "forum": "Forum",

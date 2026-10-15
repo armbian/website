@@ -99,5 +99,7 @@ export const BoardEnrichmentSchema = z.object({
   features: z.array(z.string()).optional(),
   summary: z.string().optional(),
   qdl: QdlMetaSchema.optional(),
+  /** Independent benchmark results for this board (external page). */
+  benchmarks_url: z.string().url().optional(),
 });
 export type BoardEnrichment = z.infer<typeof BoardEnrichmentSchema>;

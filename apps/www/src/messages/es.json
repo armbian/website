@@ -171,6 +171,7 @@
     "build_description": "Reproduce esta imagen usando el framework de compilación de Armbian",
     "build_docs": "Documentación de compilación",
     "board_config": "Código fuente de configuración de la placa",
+    "benchmarks": "Resultados de benchmarks de {board}",
     "documentation": "Documentación",
     "forum": "Foro",
     "github": "GitHub",

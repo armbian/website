@@ -171,6 +171,7 @@
     "build_description": "Odtworz ten obraz za pomoca frameworka kompilacji Armbian",
     "build_docs": "Dokumentacja kompilacji",
     "board_config": "Zrodlo konfiguracji plyty",
+    "benchmarks": "Wyniki testów wydajności {board}",
     "documentation": "Dokumentacja",
     "forum": "Forum",
     "github": "GitHub",

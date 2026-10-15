@@ -171,6 +171,7 @@
     "build_description": "使用 Armbian 构建框架复现此镜像",
     "build_docs": "构建文档",
     "board_config": "开发板配置源码",
+    "benchmarks": "{board} 基准测试结果",
     "documentation": "文档",
     "forum": "论坛",
     "github": "GitHub",

@@ -110,6 +110,7 @@ export const BoardDetailSchema = BoardSummarySchema.extend({
   docs_url: z.string().url(),
   forum_url: z.string().url(),
   github_url: z.string().url().nullable(),
+  benchmarks_url: z.string().url().nullable().default(null),
   build_command: z.string().nullable(),
   legacy_paths: z.array(z.string()).default([]),
   maintainers: z.array(BoardMaintainerSchema).default([]),

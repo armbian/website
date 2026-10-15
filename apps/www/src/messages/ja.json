@@ -171,6 +171,7 @@
     "build_description": "Armbianビルドフレームワークを使用してこのイメージを再現",
     "build_docs": "ビルドドキュメント",
     "board_config": "ボード設定ソース",
+    "benchmarks": "{board} のベンチマーク結果",
     "documentation": "ドキュメント",
     "forum": "フォーラム",
     "github": "GitHub",

@@ -19,7 +19,7 @@ import { BoardJsonLd } from '@/components/board/board-jsonld';
 import { BoardImage as BoardImageWithFallback } from '@/components/board/board-image';
 import { Link } from '@/i18n/navigation';
 import type { BoardSummary, Image as BoardImage } from '@armbian/schemas';
-import { Download, BookOpen, Code, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Download, BookOpen, Code, ArrowRight, ArrowLeft, ChartColumn } from 'lucide-react';
 import { SiGithub } from '@icons-pack/react-simple-icons';
 import type { Metadata } from 'next';
 import { BoardPageDownloads } from '@/components/board/board-page-downloads';
@@ -381,6 +381,18 @@ export default async function BoardPage({ params }: Props) {
                   <span className="flex-1">{t('build_docs')}</span>
                   <ArrowRight size={12} strokeWidth={2} className="opacity-30 shrink-0" />
                 </a>
+                {board.benchmarks_url && (
+                  <a
+                    href={board.benchmarks_url}
+                    target="_blank"
+                    rel="noopener"
+                    className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-[rgb(var(--fg-2))] transition-colors hover:bg-[rgb(var(--bg-sub))] hover:text-[rgb(var(--fg))] border-t border-[rgb(var(--border)/0.3)]"
+                  >
+                    <ChartColumn size={16} strokeWidth={1.5} className="opacity-50 shrink-0" />
+                    <span className="flex-1">{t('benchmarks', { board: board.name })}</span>
+                    <ArrowRight size={12} strokeWidth={2} className="opacity-30 shrink-0" />
+                  </a>
+                )}
                 {flashGuide && (
                   <FlashGuideModal
                     title={flashGuide.title}

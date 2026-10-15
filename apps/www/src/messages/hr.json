@@ -171,6 +171,7 @@
     "build_description": "Reproducirajte ovu sliku koristeći Armbian okvir za izgradnju",
     "build_docs": "Dokumentacija izgradnje",
     "board_config": "Izvor konfiguracije ploče",
+    "benchmarks": "Rezultati benchmarka za {board}",
     "documentation": "Dokumentacija",
     "forum": "Forum",
     "github": "GitHub",

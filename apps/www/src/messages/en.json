@@ -181,6 +181,7 @@
     "build_description": "Reproduce this exact image using the Armbian build framework",
     "build_docs": "Build documentation",
     "board_config": "Board config source",
+    "benchmarks": "{board} benchmark results",
     "back_to_catalog": "Back to catalog",
     "documentation": "Documentation",
     "forum": "Forum",

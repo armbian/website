@@ -171,6 +171,7 @@
     "build_description": "Dieses Image mit dem Armbian-Build-Framework reproduzieren",
     "build_docs": "Build-Dokumentation",
     "board_config": "Board-Config im Quellcode",
+    "benchmarks": "{board} Benchmark-Ergebnisse",
     "documentation": "Dokumentation",
     "forum": "Forum",
     "github": "GitHub",

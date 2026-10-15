@@ -8,7 +8,8 @@
       "loader_rel": null,
       "provision_rel": "radxa-dragon-q6a/provision_ufs31_lun0_only.xml",
       "edl_entry": "button"
-    }
+    },
+    "benchmarks_url": "https://sbc.compare/radxa-dragon-q6a"
   },
   {
     "slug": "arduino-uno-q",
@@ -19,7 +20,8 @@
       "loader_rel": null,
       "provision_rel": null,
       "edl_entry": "jumper"
-    }
+    },
+    "benchmarks_url": "https://sbc.compare/arduino-uno-q"
   },
   {
     "slug": "radxa-dragon-q8b",
@@ -30,6 +32,251 @@
       "loader_rel": null,
       "provision_rel": "radxa-dragon-q8b/provision_ufs31_lun0_only.xml",
       "edl_entry": "button"
-    }
+    },
+    "benchmarks_url": "https://sbc.compare/radxa-dragon-q8b"
+  },
+  {
+    "slug": "aml-a311d-cc",
+    "benchmarks_url": "https://sbc.compare/libre-computer-alta"
+  },
+  {
+    "slug": "aml-s905d3-cc",
+    "benchmarks_url": "https://sbc.compare/libre-computer-solitude"
+  },
+  {
+    "slug": "armsom-aim7-io",
+    "benchmarks_url": "https://sbc.compare/armsom-aim7"
+  },
+  {
+    "slug": "armsom-cm5-io",
+    "benchmarks_url": "https://sbc.compare/armsom-cm5"
+  },
+  {
+    "slug": "armsom-sige1",
+    "benchmarks_url": "https://sbc.compare/armsom-sige1"
+  },
+  {
+    "slug": "armsom-sige5",
+    "benchmarks_url": "https://sbc.compare/armsom-sige5"
+  },
+  {
+    "slug": "armsom-sige7",
+    "benchmarks_url": "https://sbc.compare/armsom-sige7"
+  },
+  {
+    "slug": "armsom-w3",
+    "benchmarks_url": "https://sbc.compare/armsom-w3"
+  },
+  {
+    "slug": "bananapicm4io",
+    "benchmarks_url": "https://sbc.compare/banana-pi-cm4"
+  },
+  {
+    "slug": "bananapim2zero",
+    "benchmarks_url": "https://sbc.compare/banana-pi-m2-zero"
+  },
+  {
+    "slug": "bananapim4zero",
+    "benchmarks_url": "https://sbc.compare/banana-pi-m4-zero"
+  },
+  {
+    "slug": "bananapim5",
+    "benchmarks_url": "https://sbc.compare/banana-pi-m5"
+  },
+  {
+    "slug": "bananapir4",
+    "benchmarks_url": "https://sbc.compare/banana-pi-r4"
+  },
+  {
+    "slug": "cubie-a7z",
+    "benchmarks_url": "https://sbc.compare/radxa-cubie-a7z"
+  },
+  {
+    "slug": "dshanpi-a1",
+    "benchmarks_url": "https://sbc.compare/dshan-pi-a1"
+  },
+  {
+    "slug": "khadas-vim1s",
+    "benchmarks_url": "https://sbc.compare/khadas-vim1s"
+  },
+  {
+    "slug": "lafrite",
+    "benchmarks_url": "https://sbc.compare/libre-computer-la-frite"
+  },
+  {
+    "slug": "lepotato",
+    "benchmarks_url": "https://sbc.compare/libre-computer-le-potato"
+  },
+  {
+    "slug": "luckfox-lyra-ultra-w",
+    "benchmarks_url": "https://sbc.compare/luckfox-lyra-ultra-w"
+  },
+  {
+    "slug": "mangopi-mq",
+    "benchmarks_url": "https://sbc.compare/mango-pi-mq-pro"
+  },
+  {
+    "slug": "nanopineo",
+    "benchmarks_url": "https://sbc.compare/friendlyelec-nanopi-neo"
+  },
+  {
+    "slug": "odroidc1",
+    "benchmarks_url": "https://sbc.compare/hardkernel-odroid-c1"
+  },
+  {
+    "slug": "odroidc2",
+    "benchmarks_url": "https://sbc.compare/hardkernel-odroid-c2"
+  },
+  {
+    "slug": "odroidn2",
+    "benchmarks_url": "https://sbc.compare/hardkernel-odroid-n2-plus"
+  },
+  {
+    "slug": "orangepi-4a",
+    "benchmarks_url": "https://sbc.compare/orange-pi-4a"
+  },
+  {
+    "slug": "orangepi-r1plus-lts",
+    "benchmarks_url": "https://sbc.compare/orange-pi-r1-lts"
+  },
+  {
+    "slug": "orangepi3b",
+    "benchmarks_url": "https://sbc.compare/orange-pi-3b"
+  },
+  {
+    "slug": "orangepi5-plus",
+    "benchmarks_url": "https://sbc.compare/orange-pi-5-plus"
+  },
+  {
+    "slug": "orangepi5b",
+    "benchmarks_url": "https://sbc.compare/orange-pi-5b"
+  },
+  {
+    "slug": "orangepi5pro",
+    "benchmarks_url": "https://sbc.compare/orange-pi-5-pro"
+  },
+  {
+    "slug": "orangepilite",
+    "benchmarks_url": "https://sbc.compare/orange-pi-lite"
+  },
+  {
+    "slug": "orangepipcplus",
+    "benchmarks_url": "https://sbc.compare/orange-pi-pc-plus"
+  },
+  {
+    "slug": "orangepirv2",
+    "benchmarks_url": "https://sbc.compare/orange-pi-rv2"
+  },
+  {
+    "slug": "orangepizero",
+    "benchmarks_url": "https://sbc.compare/orange-pi-zero-lts"
+  },
+  {
+    "slug": "orangepizero2",
+    "benchmarks_url": "https://sbc.compare/orange-pi-zero-2"
+  },
+  {
+    "slug": "orangepizero2w",
+    "benchmarks_url": "https://sbc.compare/orange-pi-zero-2w"
+  },
+  {
+    "slug": "orangepizero3",
+    "benchmarks_url": "https://sbc.compare/orange-pi-zero-3"
+  },
+  {
+    "slug": "orangepizero3w",
+    "benchmarks_url": "https://sbc.compare/orange-pi-zero-3w"
+  },
+  {
+    "slug": "pine64",
+    "benchmarks_url": "https://sbc.compare/pine64-pine-a64"
+  },
+  {
+    "slug": "radxa-rock-4d",
+    "benchmarks_url": "https://sbc.compare/radxa-rock-4d"
+  },
+  {
+    "slug": "radxa-zero3",
+    "benchmarks_url": "https://sbc.compare/radxa-zero-3w"
+  },
+  {
+    "slug": "renegade",
+    "benchmarks_url": "https://sbc.compare/libre-computer-renegade"
+  },
+  {
+    "slug": "roc-rk3399-pc",
+    "benchmarks_url": "https://sbc.compare/libre-computer-renegade-elite"
+  },
+  {
+    "slug": "rock-2a",
+    "benchmarks_url": "https://sbc.compare/radxa-rock-2a"
+  },
+  {
+    "slug": "rock-2f",
+    "benchmarks_url": "https://sbc.compare/radxa-rock-2f"
+  },
+  {
+    "slug": "rock-3c",
+    "benchmarks_url": "https://sbc.compare/radxa-rock-3c"
+  },
+  {
+    "slug": "rock-4se",
+    "benchmarks_url": "https://sbc.compare/radxa-4-se"
+  },
+  {
+    "slug": "rock-5-itx",
+    "benchmarks_url": "https://sbc.compare/radxa-rock-5-itx"
+  },
+  {
+    "slug": "rock-5a",
+    "benchmarks_url": "https://sbc.compare/radxa-rock-5a"
+  },
+  {
+    "slug": "rock-5b",
+    "benchmarks_url": "https://sbc.compare/radxa-rock-5b"
+  },
+  {
+    "slug": "rock-5b-plus",
+    "benchmarks_url": "https://sbc.compare/radxa-rock-5b-plus"
+  },
+  {
+    "slug": "rock-5c",
+    "benchmarks_url": "https://sbc.compare/radxa-rock-5c"
+  },
+  {
+    "slug": "rock-5t",
+    "benchmarks_url": "https://sbc.compare/radxa-rock-5t"
+  },
+  {
+    "slug": "rockpi-4bplus",
+    "benchmarks_url": "https://sbc.compare/radxa-rock-4b-plus"
+  },
+  {
+    "slug": "rockpi-4cplus",
+    "benchmarks_url": "https://sbc.compare/radxa-rock-4c-plus"
+  },
+  {
+    "slug": "rockpi-e",
+    "benchmarks_url": "https://sbc.compare/radxa-rock-pi-e"
+  },
+  {
+    "slug": "rockpi-s",
+    "benchmarks_url": "https://sbc.compare/radxa-rock-pi-s"
+  },
+  {
+    "slug": "rpi4b",
+    "benchmarks_url": "https://sbc.compare/raspberry-pi"
+  },
+  {
+    "slug": "sweet-potato",
+    "benchmarks_url": "https://sbc.compare/libre-computer-sweet-potato"
+  },
+  {
+    "slug": "tinkerboard",
+    "benchmarks_url": "https://sbc.compare/asus-tinker-board-s"
+  },
+  {
+    "slug": "visionfive2",
+    "benchmarks_url": "https://sbc.compare/starfive-visionfive-2"
   }
 ]

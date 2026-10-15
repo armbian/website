@@ -171,6 +171,7 @@
     "build_description": "Reproduire cette image avec le framework de build Armbian",
     "build_docs": "Documentation de build",
     "board_config": "Source de configuration de la carte",
+    "benchmarks": "Résultats des benchmarks {board}",
     "documentation": "Documentation",
     "forum": "Forum",
     "github": "GitHub",

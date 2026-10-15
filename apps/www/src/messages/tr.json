@@ -171,6 +171,7 @@
     "build_description": "Armbian derleme cercevesini kullanarak bu imaji yeniden uretin",
     "build_docs": "Derleme belgeleri",
     "board_config": "Kart yapilandirma kaynagi",
+    "benchmarks": "{board} kıyaslama sonuçları",
     "documentation": "Belgeler",
     "forum": "Forum",
     "github": "GitHub",

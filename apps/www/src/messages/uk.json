@@ -171,6 +171,7 @@
     "build_description": "Відтворіть цей образ за допомогою системи збірки Armbian",
     "build_docs": "Документація зі збірки",
     "board_config": "Вихідний код конфігурації плати",
+    "benchmarks": "Результати бенчмарків {board}",
     "documentation": "Документація",
     "forum": "Форум",
     "github": "GitHub",

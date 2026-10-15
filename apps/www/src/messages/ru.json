@@ -171,6 +171,7 @@
     "build_description": "Воспроизведите этот образ с помощью системы сборки Armbian",
     "build_docs": "Документация по сборке",
     "board_config": "Исходный код конфигурации платы",
+    "benchmarks": "Результаты бенчмарков {board}",
     "documentation": "Документация",
     "forum": "Форум",
     "github": "GitHub",
