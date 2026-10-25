@@ -85,7 +85,7 @@ export function cleanVendorName(slug: string, companyName?: string): string {
     companyName
       .replace(/\s*\(.*?\)\s*/g, '') // Remove parenthetical
       .replace(
-        /,?\s*(Co\.|Corp|Inc|LLC|Ltd|Limited|GmbH|S\.?A\.?|Technology|Electronics?|Computer|Group|International)\.?\s*/gi,
+        /,?\s*\b(?:Co\.|(?:Corp|Inc|LLC|Ltd|Limited|GmbH|S\.?A|Technology|Electronics?|Computer|Group|International)\b)\.?\s*/gi,
         ' ',
       )
       .replace(/\s+/g, ' ')
