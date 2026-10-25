@@ -51,6 +51,17 @@ export const VENDOR_DISPLAY_NAMES: Record<string, string> = {
   luckfox: 'Luckfox',
   mekotronics: 'Mekotronics',
   minisforum: 'Minisforum',
+  'gl.inet': 'GL.iNet',
+  milkv: 'Milk-V',
+  sifive: 'SiFive',
+  'easy-eai': 'EASY EAI',
+  kickpi: 'KickPi',
+  linkease: 'LinkEase',
+  embedfire: 'EmbedFire',
+  yuzukihd: 'YuzukiHD',
+  ztl: 'ZTL',
+  '9tripod': '9Tripod',
+  cixtech: 'CIX',
 };
 
 /**
