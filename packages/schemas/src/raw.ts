@@ -33,6 +33,7 @@ export const RawImageAssetSchema = z.object({
   promoted: z.string(),
   download_repository: z.string(),
   file_extension: z.string(),
+  file_companion: z.string().optional(),
   kernel_version: z.string(),
   platinum: z.string(),
   platinum_expired: z.string(),

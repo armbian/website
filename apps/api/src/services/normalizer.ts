@@ -78,6 +78,7 @@ const VALID_IMAGE_EXTENSIONS: Record<string, ImageFormat> = {
   'kebab.img.xz': 'sd',
   'boe.img.xz': 'sd',
   'csot.img.xz': 'sd',
+  'burn.img.xz': 'sd',
   xz: 'rootfs',
   'tar.xz': 'rootfs',
   'ufs.xz': 'rootfs',
@@ -89,14 +90,22 @@ const VALID_IMAGE_EXTENSIONS: Record<string, ImageFormat> = {
 };
 
 /**
- * Companion file patterns. Each entry knows how to detect a companion file
- * by filename suffix and how to label it for the UI.
+ * Type and label for the upstream `file_companion` values. Types missing
+ * here are still attached, as a bootloader labelled with the raw type.
  */
-const COMPANION_PATTERNS: { regex: RegExp; type: CompanionType; label: string }[] = [
-  { regex: /\.fip\.img\.xz$/i, type: 'fip', label: 'ARM Trusted Firmware (FIP)' },
-  { regex: /\.lk\.bin\.xz$/i, type: 'bootloader', label: 'Little Kernel bootloader' },
-  { regex: /\.boot_recovery\.img\.xz$/i, type: 'recovery', label: 'Recovery partition' },
-];
+const COMPANION_TYPES: Record<string, { type: CompanionType; label: string }> = {
+  fip: { type: 'fip', label: 'ARM Trusted Firmware (FIP)' },
+  lk: { type: 'bootloader', label: 'Little Kernel bootloader' },
+  bl2: { type: 'bootloader', label: 'BL2 preloader' },
+  spl: { type: 'bootloader', label: 'SPL bootloader' },
+  flash: { type: 'bootloader', label: 'Bootloader (flash.bin)' },
+  'u-boot': { type: 'bootloader', label: 'U-Boot' },
+  boot: { type: 'boot-partition', label: 'Boot partition' },
+  recovery: { type: 'recovery', label: 'Recovery partition' },
+};
+
+/** Companion suffix, e.g. `.fip.img.xz` or `.boot_recovery.img.xz`. */
+const COMPANION_SUFFIX_REGEX = /\.[^.]+\.(?:img|bin|rom)(?:\.(?:xz|gz|zst))?$/i;
 
 /**
  * Display variant pattern: matches device-specific boot partition images
@@ -175,19 +184,6 @@ function extractPrimaryBaseName(filename: string): string {
 function classifyAsset(asset: RawImageAsset, qdlSlugs: Set<string>): AssetClassification {
   const filename = (asset.file_url.split('/').pop() ?? '').toLowerCase();
 
-  // Companion files are matched first because their suffix is more specific
-  // than the bare `.img.xz` extension.
-  for (const pat of COMPANION_PATTERNS) {
-    if (pat.regex.test(filename)) {
-      return {
-        kind: 'companion',
-        companionType: pat.type,
-        label: pat.label,
-        baseName: filename.replace(pat.regex, ''),
-      };
-    }
-  }
-
   // Device-specific boot partitions become display variants. Each board with
   // multiple panels surfaces them as a radio selector in the UI.
   const displayMatch = filename.match(DISPLAY_VARIANT_REGEX);
@@ -196,6 +192,18 @@ function classifyAsset(asset: RawImageAsset, qdlSlugs: Set<string>): AssetClassi
       kind: 'display-variant',
       display: displayMatch[1]!.toUpperCase(),
       baseName: filename.replace(ANY_BOOT_PARTITION_REGEX, ''),
+    };
+  }
+
+  // Files upstream tags with a companion type get attached to their primary.
+  const companion = asset.file_companion;
+  if (companion) {
+    const known = COMPANION_TYPES[companion];
+    return {
+      kind: 'companion',
+      companionType: known?.type ?? 'bootloader',
+      label: known?.label ?? companion.toUpperCase(),
+      baseName: filename.replace(COMPANION_SUFFIX_REGEX, ''),
     };
   }
 
